@@ -1,0 +1,7 @@
+# Ignore failed file logs
+failed*
+
+po_files/
+
+# Do not ignore this file
+!.gitignore
