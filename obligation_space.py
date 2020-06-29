@@ -20,7 +20,7 @@ class ObligationSpace(Box):
         self.extractor = extractor
         bounds_low = [-1.0 for i in range (self.extractor.feature_count)]
         bounds_high = [1.0 for i in range (self.extractor.feature_count)]
-        super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float32)
+        super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float64)
 
     def sample(self):
         """Loads a random PO data point from the data

@@ -18,8 +18,8 @@ class SparseRewarder(Rewarder):
 
         # special treatment for parents
         if len(subepisode.child_episodes) > 0:
-            children_steps = sum([cep.steps_taken + cep.children_steps_taken for cep in self.child_episodes])
-            subepisode.steps_taken += subepisode.children_steps
+            children_steps = sum([cep.steps_taken + cep.children_steps_taken for cep in subepisode.child_episodes])
+            subepisode.steps_taken += children_steps
             child_statuses = [ce.status for ce in subepisode.child_episodes]
             subepisode.set_status(self.calculate_success_status(child_statuses))
 
