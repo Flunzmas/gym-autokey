@@ -74,10 +74,11 @@ FEATURE_DISTRIBUTION_INFORMATION_PATH = (DATA_PATH / 'feature_distribution_infor
 ## --- RL ---
 
 LEARNING_STEPS = 240000
-POWISE_SUCCESS_BUFFER_SIZE = 1000
-STEPWISE_REWARD_BUFFER_SIZE = 10000
-STEPWISE_TACTIC_BUFFER_SIZE = 10000
+POWISE_BUFFER_SIZE = 1000
+STEPWISE_BUFFER_SIZE = 10000
 ROOT_EPIS_MAX_DEPTH = 20
+MAX_STEPS_PER_PO = 100 # After X steps, the current root episode fails by crashing.
+PRE_KILL_FAILED_EPISODES = False # If set to True, Algorithm will discard the whole root episode if a subepisode fails.
 REPRINT_SUCCESSFUL_EPISODES = False # saves successful episodes for printing at the end of the learning algorithm
 
 # rewards
@@ -86,8 +87,5 @@ REWARDER_TYPE = 'sparse' # 'dense'
 PENALTY_STEP = -1.0
 REWARD_EPISODE_END = 500.0
 PENALTY_EPISODE_END = -500.0
-
 PARENT_PROP_GAMMA = 1.0
-MAX_STEPS_PER_PO = 500 # After X steps, the current root episode fails by crashing.
-PRE_KILL_FAILED_EPISODES = False # If set to True, Algorithm will discard the whole root episode if a subepisode fails.
 NON_ROOT_EPIS_FACTOR = 0.0 # Reward is multiplied by this number if the subepisode is not a root episode

@@ -79,14 +79,12 @@ class Subepisode():
         self.child_episodes = child_episodes
         self.set_status("parent")
 
-    def to_line(self, render_status):
+    def to_line(self):
         '''
         Returns a compactified information string for this subepisode.
         '''
         
-        if render_status == 'EXIT_PRE_EXECUTION': tactic_str = '------' 
-        elif render_status == 'KILLED': tactic_str = 'KILLED'
-        else: tactic_str = tactic_str = self.experiences[-1].action + ' on #' + str(self.cur_goal.id)
+        tactic_str = self.experiences[-1].action + ' on #' + str(self.cur_goal.id)
         return "[{steps_taken}/{max_steps}, {status}] {tactic}"\
             .format(steps_taken=str(self.steps_taken).rjust(len(str(cf.ROOT_EPIS_MAX_DEPTH))),\
                     max_steps=str(self.max_steps).rjust(len(str(cf.ROOT_EPIS_MAX_DEPTH))),\

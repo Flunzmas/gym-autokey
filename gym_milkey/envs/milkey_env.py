@@ -31,21 +31,22 @@ class MilkeyEnv(gym.Env):
         self.connector = KeYConnector()
         self.extractor = FeatureExtractor()
         self.rewarder = create_rewarder(cf.REWARDER_TYPE, cf.REWARD_EPISODE_END, cf.PENALTY_EPISODE_END, cf.PENALTY_STEP)
-        self.ac_space = spaces.Discrete(len(self.connector.available_tactics))
-        self.ob_space = ObligationSpace(self.connector, self.extractor)
+        self.action_space = spaces.Discrete(len(self.connector.available_tactics))
+        self.observation_space = ObligationSpace(self.connector, self.extractor)
 
-        self.max_tree_depth = cf.ROOT_EPIS_MAX_DEPTH
         self.max_steps_per_po = cf.MAX_STEPS_PER_PO
         self.pre_kill = cf.PRE_KILL_FAILED_EPISODES
 
         self.env_steps = 0
         self.po_steps = 0 # number of steps for the current po (the currently loaded file)
         self.po_closable = True # while proving a PO, set this to false as soon as anything fails. Reset for new PO.
-        self.batched_exp = []
+        self.topgoal_done = False # returned on episode_exit and set to False if PO is still running
+        self.topgoal_rew = 0 # returned on episode_exit and set to 0 if PO is still running
+        self.last_action = "---"
 
-        self.po_success_history = FixedLengthDeque(cf.POWISE_SUCCESS_BUFFER_SIZE) # holds the results of the last POWISE_SUCCESS_BUFFER_SIZE po's.
-        self.reward_history = FixedLengthDeque(cf.STEPWISE_REWARD_BUFFER_SIZE) # holds the rewards of the last STEPWISE_REWARD_BUFFER_SIZE steps.
-        self.tactic_history = FixedLengthDeque(cf.STEPWISE_TACTIC_BUFFER_SIZE) # holds the tactics used in the last STEPWISE_TACTIC_BUFFER_SIZE steps.
+        self.po_success_history = FixedLengthDeque(cf.POWISE_BUFFER_SIZE)
+        self.reward_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)
+        self.tactic_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)
 
         # if REPRINT_SUCCESSFUL_EPISODES is set to True, this list contains the proving history of all successfully closed POs.
         self.successful_po_proofs = []
@@ -65,7 +66,8 @@ class MilkeyEnv(gym.Env):
         self.open_subepisodes = deque()
 
         # call reset to prepare KeY for its job
-        self.reset()
+        self.cur_subepis = None
+        # self.reset() # if needed
 
     def _del(self):
         '''
@@ -83,19 +85,31 @@ class MilkeyEnv(gym.Env):
         proving process.
         '''
 
-        # time.sleep(0.2)
+        #time.sleep(0.3)
+
+        # initializing bookkeeping
+        cur_tactic_app_str = "(#{id})".format(id=self.cur_subepis.cur_goal.id).rjust(22)
+        self.topgoal_done = False
+        self.topgoal_rew = 0
         self.env_steps += 1
 
         # pre-execution episode checks
-        if self.cur_subepis.child_episodes: return self._episode_exit("parent", 'EXIT_PRE_EXECUTION')
-        if self.po_steps > self.max_steps_per_po: return self._episode_exit("crash", 'EXIT_PRE_EXECUTION')
-        if self.cur_subepis.max_steps_reached(): return self._episode_exit("fail", 'EXIT_PRE_EXECUTION')
+        if self.cur_subepis.child_episodes:
+            self.last_action = "splitting:" + cur_tactic_app_str
+            return self._episode_exit("parent")
+        if self.po_steps > self.max_steps_per_po:
+            self.last_action = "out of PO steps:" + cur_tactic_app_str
+            return self._episode_exit("crash")
+        if self.cur_subepis.max_steps_reached():
+            self.last_action = "tree depth reached:" + cur_tactic_app_str
+            return self._episode_exit("fail")
 
         self.po_steps += 1
 
         # tactic preparation
         cur_tactic = self.connector.available_tactics[action]
-        self.tactic_history.append('{0} on #{1}'.format(cur_tactic, self.cur_subepis.cur_goal.id))
+        cur_tactic_app_str = '{0}'.format(cur_tactic).rjust(13) + ' (#{0})'.format(self.cur_subepis.cur_goal.id).rjust(9)
+        self.tactic_history.append(cur_tactic_app_str)
 
         # tactic execution
         cur_goal_id = self.cur_subepis.cur_goal.id
@@ -103,15 +117,21 @@ class MilkeyEnv(gym.Env):
         self.cur_subepis.add_tactic_app_step(cur_tactic)
 
         # post-execution episode checks
-        if not new_goal_ids: return self._episode_exit("success", 'EXIT_POST_EXECUTION')
-        if new_goal_ids == [-1]: return self._episode_exit("crash", 'EXIT_POST_EXECUTION')
+        if not new_goal_ids:
+            self.last_action = "closed:" + cur_tactic_app_str
+            return self._episode_exit("success")
+        if new_goal_ids == [-1]:
+            self.last_action = "crash (ids == [-1]):" + cur_tactic_app_str
+            return self._episode_exit("crash")
 
         # Create nodes from the resulting PO IDs
         new_goals = []
         for goal_id in new_goal_ids:
             new_goal_node = PONode.from_id(goal_id, self.connector, self.extractor, parent=self.cur_subepis.cur_goal)
             # to catch those rare cases of failed node creations
-            if new_goal_node.id == -1: return self._episode_exit("crash", 'EXIT_POST_EXECUTION')
+            if new_goal_node.id == -1:
+                self.last_action = "crash (an id is -1):" + cur_tactic_app_str
+                return self._episode_exit("crash")
             new_goals.append(new_goal_node)
                  
         # Multiple new goals -> subepisode becomes parent and env continues with a subepisode
@@ -123,29 +143,24 @@ class MilkeyEnv(gym.Env):
             self.open_subepisodes.append(self.cur_subepis)
             self.open_subepisodes.extend(child_episodes)
 
-        # render step after everything is set
-        self.render()
-
         # determine goal for the next step
         # print('new goal ids: {0}'.format(new_goal_ids))
         if len(new_goals) > 1:
-            self.cur_subepis.add_new_experience("MANY", self._observe_defaults())
             self.cur_subepis = self.open_subepisodes.pop()
         else:
-            self.cur_subepis.add_new_experience(new_goals[0].id, new_goals[0].features)
             self.cur_subepis.cur_goal = new_goals[0]
 
-        # finish regular, non-exiting env step by returning no experience
-        return []
+        self.last_action = "open:" + cur_tactic_app_str
+        return self._observe(), 0, False, {} # return obs, rew, done, infos
 
 # -------------------------------------------------------------------------------------------
 
-    def _episode_exit(self, status, render_status):
+    def _episode_exit(self, status):
         '''
         Handles the end of a (sub-)episode, updates counters and prepares for the next (sub-)episode.
         '''
+
         self.cur_subepis.status = status
-        episode_killed = False
 
         # restart KeY and consider as 'fail' if episode ended due to KeY problems
         if status == "crash":
@@ -160,24 +175,18 @@ class MilkeyEnv(gym.Env):
                 while self.open_subepisodes: # status is 'open' for children, 'parent' for parents
                     self.cur_subepis = self.open_subepisodes.pop()
                     self.finalize_subepisode()
-                episode_killed = True
 
-        # finish env step, reset the environment and return batched exp, if any.
-        self.render(render_status = 'KILLED' if episode_killed else render_status)
-        self.reset()
-        if len(self.batched_exp) > 0:
-            exp_batch, self.batched_exp[:] = self.batched_exp[:], []
-            return exp_batch
-        return []
+        # finish env step, reset the environment.
+        obs = self.reset(exit_status=status)
+        done = self.topgoal_done
+        rew = self.topgoal_rew
+        return obs, rew, done, {} # obs, rew, done, infos
 
     def finalize_subepisode(self):
         '''
-        Finalizes a subepisode by filling the corresponding experiences with rewards,
-        ending the episode and updating the episode counters.
+        Finalizes a subepisode by ending the episode and updating the episode counters.
         '''
         self.rewarder.end_and_reward_subepisode(self.cur_subepis)
-        if self.cur_subepis.is_topgoal():
-            self.batched_exp.extend(self.cur_subepis.get_experiences())
         self._update_episode_counter()
 
     def _update_episode_counter(self):
@@ -199,9 +208,8 @@ class MilkeyEnv(gym.Env):
 
     def _observe(self):
         """
-        Returns a list of feature values from the currently considered PO.
+        Returns a list of feature values from the currently considered goal.
         """
-        # get po-side features
         features = self.cur_subepis.cur_goal.features
         # print('features: {0}'.format(features))
         return list(features.values())
@@ -215,13 +223,22 @@ class MilkeyEnv(gym.Env):
 
 # -------------------------------------------------------------------------------------------
 
-    def reset(self):
+    def reset(self, exit_status = "none"):
         """
         Resets the environment;
         If there are still open subepisodes: takes the next subepisode.
         Otherwise returns initial observation of ast and features of a random PO.
         """
-        # print('reset()::open goals in RL: {0}'.format([se.cur_goal.id for se in self.open_subepisodes]))
+        #print('reset()::open goals in RL: {0}'.format([se.cur_goal.id for se in self.open_subepisodes]))
+
+        # extra end-of-topgoal work
+        if self.cur_subepis is not None and self.cur_subepis.is_topgoal():
+            if exit_status == "success":
+                self.topgoal_done = True
+                self.topgoal_rew = cf.REWARD_EPISODE_END
+            elif exit_status == "fail" or exit_status == "crash":
+                self.topgoal_done = True
+                self.topgoal_rew = cf.PENALTY_EPISODE_END
 
         # extra end-of-po work
         if not self.open_subepisodes:
@@ -269,11 +286,11 @@ class MilkeyEnv(gym.Env):
         """
 
         # get the information for the new po
-        datapoints, po_origin_file = self.ob_space.sample()
+        datapoints, po_origin_file = self.observation_space.sample()
         self.cur_po_filepath = po_origin_file
 
         # len(datapoints) is at least 1, otherwise observation_space.sample() would not have returned.
-        assert all([self.ob_space.contains(dp) for dp in datapoints]), "observation is not valid"
+        assert all([self.observation_space.contains(dp) for dp in datapoints]), "observation is not valid"
         goal_nodes = [PONode(str(dp['id']), id=dp['id'], \
             ast=dp['ast'], features=dp['features'], origin=dp['origin']) for dp in datapoints]
         goal_subepisodes = [Subepisode(gn, parent_episode=None) for gn in goal_nodes]
@@ -292,16 +309,23 @@ class MilkeyEnv(gym.Env):
         '''
         Returns a compactified information string for the environment.
         '''
-        return "steps: {n_env} ENV, {n_po} PO  \u2588  \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
-            .format(n_env=str(self.env_steps).rjust(6), n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count,\
-                    suc_po=self.successful_po_count, tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count,\
-                    tot_se=self.total_subep_count, suc_se=self.successful_subep_count)
+        po_done_str = "F, 0"
+        if self.topgoal_done:
+            if self.topgoal_rew < 0: po_done_str = "T, -"
+            elif self.topgoal_rew > 0: po_done_str = "T, +"
 
-    def render(self, render_status='NON_EXIT'):
+        return "{ac} \u2588  step: {n_env} ENV, {n_po} PO  \u2588"\
+            "  \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
+            "  \u2588  TG_done: {po_dn}"\
+            .format(ac = self.last_action.rjust(43), n_env=str(self.env_steps).rjust(6), \
+            n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count, suc_po=self.successful_po_count, \
+            tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count, \
+            suc_se=self.successful_subep_count, po_dn=po_done_str.rjust(4))
+
+    def render(self):
         """
         Prints output to trace the learning process.
         """
         open_goals_print = [se.cur_goal.id for se in self.open_subepisodes]
         if len(open_goals_print) > 3: open_goals_print = '[..., ' + str(open_goals_print[-3:])[1:]
-        print(self.cur_subepis.to_line(render_status) + '  \u2588  ' + self.env_to_line() + \
-            '  \u2588  open: {1} | active: #{0}]'.format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
+        print(self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'.format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))

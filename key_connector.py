@@ -103,7 +103,7 @@ class KeYConnector():
 
     # ===================================
 
-    def start_key(self):
+    def start_key(self, restart = False):
         '''
         Deletes tmp files from the last KeY instance (if any) and then starts KeY.
         Ensures it's running by fetching the currently available tactics.
@@ -114,7 +114,9 @@ class KeYConnector():
         while len(self.available_tactics) < 1: # retrieve the tactics as soon as KeY is available
             sleep(1)
             self.retrieve_available_tactics()
-        print("started KeY. Available tactics: {0}".format(self.available_tactics))
+
+        if not restart:
+            print("\nstarted KeY. Available tactics: {0}\n".format(self.available_tactics))
 
     def quit_key(self):
         '''
@@ -132,7 +134,7 @@ class KeYConnector():
         Quits and then restarts KeY.
         '''
         self.quit_key()
-        self.start_key()
+        self.start_key(restart = True)
 
     # ===================================
 
