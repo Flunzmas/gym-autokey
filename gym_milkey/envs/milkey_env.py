@@ -23,7 +23,7 @@ from datastructures.fixed_length_deque import FixedLengthDeque
 class MilkeyEnv(gym.Env):
     metadata = {'render.modes': ['human']} # needed?
 
-    def __init__(self):
+    def __init__(self, self_render : bool = True):
         '''
         Initializes all env variables necessary for running the environment.
         Properly initializes the KeY Connector and sets up counters etc.
@@ -36,6 +36,9 @@ class MilkeyEnv(gym.Env):
 
         self.max_steps_per_po = cf.MAX_STEPS_PER_PO
         self.pre_kill = cf.PRE_KILL_FAILED_EPISODES
+        self.self_render = self_render
+        if self_render:
+            print("MilkeyEnv: self_render is set to True!")
 
         self.env_steps = 0
         self.po_steps = 0 # number of steps for the current po (the currently loaded file)
@@ -65,7 +68,6 @@ class MilkeyEnv(gym.Env):
 
         self.open_subepisodes = deque()
 
-        # call reset to prepare KeY for its job
         self.cur_subepis = None
         # self.reset() # if needed
 
@@ -85,7 +87,12 @@ class MilkeyEnv(gym.Env):
         proving process.
         '''
 
-        #time.sleep(0.3)
+        # time.sleep(0.3)
+
+        # render the past step at the beginning if self_render
+        if self.self_render:
+            self.render() 
+        # print_open_goals("step")
 
         # initializing bookkeeping
         cur_tactic_app_str = "(#{id})".format(id=self.cur_subepis.cur_goal.id).rjust(22)
@@ -229,16 +236,8 @@ class MilkeyEnv(gym.Env):
         If there are still open subepisodes: takes the next subepisode.
         Otherwise returns initial observation of ast and features of a random PO.
         """
-        #print('reset()::open goals in RL: {0}'.format([se.cur_goal.id for se in self.open_subepisodes]))
-
-        # extra end-of-topgoal work
-        if self.cur_subepis is not None and self.cur_subepis.is_topgoal():
-            if exit_status == "success":
-                self.topgoal_done = True
-                self.topgoal_rew = cf.REWARD_EPISODE_END
-            elif exit_status == "fail" or exit_status == "crash":
-                self.topgoal_done = True
-                self.topgoal_rew = cf.PENALTY_EPISODE_END
+        
+        # print_open_goals("reset")
 
         # extra end-of-po work
         if not self.open_subepisodes:
@@ -251,9 +250,8 @@ class MilkeyEnv(gym.Env):
                 # all goals went through nicely -> po successful
                 if self.po_closable:
                     # assert that KeY doesn't have open goals left either
-                    open_goals_in_key = self.connector.get_open_goals()
-                    # print('reset()::open goals in KeY: {0}'.format(open_goals_in_key))
-                    assert len(open_goals_in_key) == 0, 'KeY still has open goals as opposed to the RL env!'
+                    assert len(self.connector.get_open_goals()) == 0, \
+                        'KeY still has open goals as opposed to the RL env!'
 
                     self.successful_po_count += 1
                     self.po_success_history.append(1)
@@ -272,6 +270,19 @@ class MilkeyEnv(gym.Env):
             self._sample_file()
             self.po_steps = 0
             self.po_closable = True
+
+        # reset() calls with default status 'none' should not affect the env if there are open subepisodes.
+        elif exit_status == "none" and self.cur_subepis is not None:
+            return
+
+        # extra end-of-topgoal work
+        if self.cur_subepis is not None and self.cur_subepis.is_topgoal():
+            if exit_status == "success":
+                self.topgoal_done = True
+                self.topgoal_rew = cf.REWARD_EPISODE_END
+            elif exit_status == "fail" or exit_status == "crash":
+                self.topgoal_done = True
+                self.topgoal_rew = cf.PENALTY_EPISODE_END
 
         # pop new subepisode, regardless of whether new po or not
         self.cur_subepis = self.open_subepisodes.pop()
@@ -294,7 +305,7 @@ class MilkeyEnv(gym.Env):
         goal_nodes = [PONode(str(dp['id']), id=dp['id'], \
             ast=dp['ast'], features=dp['features'], origin=dp['origin']) for dp in datapoints]
         goal_subepisodes = [Subepisode(gn, parent_episode=None) for gn in goal_nodes]
-        # print('sample_file()::new goals: {0}'.format([se.cur_goal.id for se in goal_subepisodes]))
+        #print('sample_file()::new goals: {0}'.format(sorted([se.cur_goal.id for se in goal_subepisodes])))
         self.open_subepisodes.extend(goal_subepisodes)
 
 # -------------------------------------------------------------------------------------------
@@ -329,3 +340,11 @@ class MilkeyEnv(gym.Env):
         open_goals_print = [se.cur_goal.id for se in self.open_subepisodes]
         if len(open_goals_print) > 3: open_goals_print = '[..., ' + str(open_goals_print[-3:])[1:]
         print(self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'.format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
+
+    def print_open_goals(origin_func : str):
+        og_rl = [se.cur_goal.id for se in self.open_subepisodes]
+        if self.cur_subepis is not None:
+            og_rl.append(self.cur_subepis.cur_goal.id)
+        og_key = self.connector.get_open_goals()
+        print('{0}()::open goals in RL : {1}'.format(origin_func, sorted(og_rl)))
+        print('{0}()::open goals in KeY: {1}'.format(origin_func, sorted(og_key)))
