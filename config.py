@@ -61,6 +61,20 @@ AST_CATEGORIES = {
         'quantifiers': ('class', r'^Quantifier$', 1)
 }
 
+TACTIC_ABBR = {
+        'INT': 'INT',
+        'HEAP': 'HP ',
+        'EQUALITY': 'EQ ',
+        'AUTO': 'AT ',
+        'AUTO_NOSPLIT': 'ATN',
+        'MODELSEARCH': 'MS ',
+        'SMT': 'SMT',
+        'NOTHING': 'NTH',
+        'DEPENDENCY': 'DPN',
+        'QUANT': 'QNT',
+        'EXPAND': 'EXP'
+}
+
 '''
 5 features for each active entry in AST_CATEGORIES, plus:
         overall node count

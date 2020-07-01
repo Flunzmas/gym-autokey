@@ -37,8 +37,8 @@ class MilkeyEnv(gym.Env):
         self.max_steps_per_po = cf.MAX_STEPS_PER_PO
         self.pre_kill = cf.PRE_KILL_FAILED_EPISODES
         self.self_render = self_render
-        if self_render:
-            print("MilkeyEnv: self_render is set to True!")
+        if self_render: print("MilkeyEnv: self_render is set to True!")
+        self.initial_reset = False
 
         self.env_steps = 0
         self.po_steps = 0 # number of steps for the current po (the currently loaded file)
@@ -92,10 +92,10 @@ class MilkeyEnv(gym.Env):
         # render the past step at the beginning if self_render
         if self.self_render:
             self.render() 
-        # print_open_goals("step")
+        # self.print_open_goals("step")
 
         # initializing bookkeeping
-        cur_tactic_app_str = "(#{id})".format(id=self.cur_subepis.cur_goal.id).rjust(22)
+        cur_tactic_app_str = "(#{id})".format(id=self.cur_subepis.cur_goal.id).rjust(13)
         self.topgoal_done = False
         self.topgoal_rew = 0
         self.env_steps += 1
@@ -115,7 +115,7 @@ class MilkeyEnv(gym.Env):
 
         # tactic preparation
         cur_tactic = self.connector.available_tactics[action]
-        cur_tactic_app_str = '{0}'.format(cur_tactic).rjust(13) + ' (#{0})'.format(self.cur_subepis.cur_goal.id).rjust(9)
+        cur_tactic_app_str = ' {0}'.format(cf.TACTIC_ABBR[cur_tactic]) + ' (#{0})'.format(self.cur_subepis.cur_goal.id).rjust(9)
         self.tactic_history.append(cur_tactic_app_str)
 
         # tactic execution
@@ -153,6 +153,7 @@ class MilkeyEnv(gym.Env):
         # determine goal for the next step
         # print('new goal ids: {0}'.format(new_goal_ids))
         if len(new_goals) > 1:
+            # if self.cur_subepis is not None: print("multiple new goals_prePop: {}".format(self.cur_subepis.cur_goal.id))
             self.cur_subepis = self.open_subepisodes.pop()
         else:
             self.cur_subepis.cur_goal = new_goals[0]
@@ -180,6 +181,7 @@ class MilkeyEnv(gym.Env):
             # end whole root episode on crash or if pre_kill is set to True.
             if status == 'crash' or self.pre_kill:
                 while self.open_subepisodes: # status is 'open' for children, 'parent' for parents
+                    # if self.cur_subepis is not None: print("killing_subep_prePop: {}".format(self.cur_subepis.cur_goal.id))
                     self.cur_subepis = self.open_subepisodes.pop()
                     self.finalize_subepisode()
 
@@ -237,7 +239,17 @@ class MilkeyEnv(gym.Env):
         Otherwise returns initial observation of ast and features of a random PO.
         """
         
-        # print_open_goals("reset")
+        # print("reset():: {}".format(exit_status))
+        # self.print_open_goals("reset")
+
+        # reset() calls with default status 'none' should not affect the env if it was initially reset.
+        if exit_status == "none":
+            if self.initial_reset:
+                # print("reset():: non-initial external reset, ignored.")
+                return self._observe()
+            else:
+                # print("reset():: initial external reset!")
+                self.initial_reset = True
 
         # extra end-of-po work
         if not self.open_subepisodes:
@@ -271,10 +283,6 @@ class MilkeyEnv(gym.Env):
             self.po_steps = 0
             self.po_closable = True
 
-        # reset() calls with default status 'none' should not affect the env if there are open subepisodes.
-        elif exit_status == "none" and self.cur_subepis is not None:
-            return
-
         # extra end-of-topgoal work
         if self.cur_subepis is not None and self.cur_subepis.is_topgoal():
             if exit_status == "success":
@@ -285,6 +293,7 @@ class MilkeyEnv(gym.Env):
                 self.topgoal_rew = cf.PENALTY_EPISODE_END
 
         # pop new subepisode, regardless of whether new po or not
+        # if self.cur_subepis is not None: print("killing_subep_prePop: {}".format(self.cur_subepis.cur_goal.id))
         self.cur_subepis = self.open_subepisodes.pop()
         return self._observe()
 
@@ -324,14 +333,16 @@ class MilkeyEnv(gym.Env):
         if self.topgoal_done:
             if self.topgoal_rew < 0: po_done_str = "T, -"
             elif self.topgoal_rew > 0: po_done_str = "T, +"
+        po_percent = str(round(100 * sum(self.po_success_history) / len(self.po_success_history), 1)).rjust(5) \
+            if len(self.po_success_history) > 0 else "-----"
 
-        return "{ac} \u2588  step: {n_env} ENV, {n_po} PO  \u2588"\
-            "  \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
-            "  \u2588  TG_done: {po_dn}"\
-            .format(ac = self.last_action.rjust(43), n_env=str(self.env_steps).rjust(6), \
+        return "{ac} \u2588 step: {n_env} ENV, {n_po} PO \u2588"\
+            " \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
+            " \u2588 PO%: {po_p} \u2588 TG_done: {po_dn}"\
+            .format(ac = self.last_action.rjust(34), n_env=str(self.env_steps).rjust(6), \
             n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count, suc_po=self.successful_po_count, \
             tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count, \
-            suc_se=self.successful_subep_count, po_dn=po_done_str.rjust(4))
+            suc_se=self.successful_subep_count, po_p=po_percent, po_dn=po_done_str.rjust(4))
 
     def render(self):
         """
@@ -341,7 +352,7 @@ class MilkeyEnv(gym.Env):
         if len(open_goals_print) > 3: open_goals_print = '[..., ' + str(open_goals_print[-3:])[1:]
         print(self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'.format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
 
-    def print_open_goals(origin_func : str):
+    def print_open_goals(self, origin_func : str):
         og_rl = [se.cur_goal.id for se in self.open_subepisodes]
         if self.cur_subepis is not None:
             og_rl.append(self.cur_subepis.cur_goal.id)
