@@ -1,0 +1,4 @@
+*.log
+
+# Do not ignore this file
+!.gitignore
