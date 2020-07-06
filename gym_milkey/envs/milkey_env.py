@@ -46,6 +46,7 @@ class MilkeyEnv(gym.Env):
         self.topgoal_done = False # returned on episode_exit and set to False if PO is still running
         self.topgoal_rew = 0 # returned on episode_exit and set to 0 if PO is still running
         self.last_action = "---"
+        self.po_percent_logfile = (cf.LOG_PATH / ("po_percentage_" + time.strftime("%d%m%Y-%H%M%S"))).as_posix()
 
         self.po_success_history = FixedLengthDeque(cf.POWISE_BUFFER_SIZE)
         self.reward_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)
@@ -92,6 +93,10 @@ class MilkeyEnv(gym.Env):
         # render the past step at the beginning if self_render
         if self.self_render:
             self.render() 
+        if self.env_steps % 1000 == 0 and len(self.po_success_history) > 0:
+            with open(self.po_percent_logfile, 'a') as po_p_file:
+                po_p_file.write(str(round(100 * sum(self.po_success_history) / len(self.po_success_history), 1)) + "\n")
+
         # self.print_open_goals("step")
 
         # initializing bookkeeping
