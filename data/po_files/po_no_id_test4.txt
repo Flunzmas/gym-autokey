@@ -1,0 +1,53 @@
+heap/list_recursiveSpec/symbexed_ListOperationsNonNull(ListOperationsNonNull__remove(ListNN,int)).JML normal_behavior operation contract.0.proof
+heap/quicksort/symbexed_Quicksort(Quicksort__sort((I,int,int)).JML normal_behavior operation contract.0.proof
+heap/vacid0_01_SparseArray/symbexed_Harness(Harness__sparseArrayTestHarness1()).JML normal_behavior operation contract.0.proof
+heap/observer/symbexed_ExampleSubject(ExampleSubject__ExampleSubject()).JML normal_behavior operation contract.0.proof
+heap/comprehensions/symbexed_bsum_negative.key.proof
+heap/vacid0_01_SparseArray/symbexed_SparseArray(java.lang.Object___inv_()).JML accessible clause.0.proof
+heap/simple/symbexed_locsets.key.proof
+DualPivot_KeY_Proofs/proof/sort/SinglePivotPartition/symbexed_SinglePivotPartition(SinglePivotPartition__insertionSort((I,int,int,boolean)).JML normal_behavior operation contract.0.proof
+newBook/09.list_modelfield/symbexed_ArrayList(List__empty()).JML normal_behavior operation contract.0.proof
+heap/simple/symbexed_operation_contracts.proof
+heap/model_methods/symbexed_Recell(Recell__footprint()).JML model_behavior operation contract.0.proof
+DualPivot_KeY_Proofs/proof/overflow/DualPivotQuicksort/symbexed_DualPivotQuicksort(DualPivotQuicksort__eInsertionSort((I,int,int,int,int,int,int,int)).JML block contract.2.proof
+heap/block_contracts/symbexed_Simple(Simple__addWithTwoBlockContracts(int,int,int)).JML operation contract.0.proof
+heap/list/symbexed_ArrayList.ArrayListIterator(ArrayList.ArrayListIterator__ArrayListIterator(ArrayList)).JML normal_behavior operation contract.0.proof
+heap/vacid0_01_SparseArray/symbexed_SparseArray(SparseArray__get(int)).JML normal_behavior operation contract.0.proof
+heap/SmansEtAl/symbexed_ArrayList(ArrayList__add(java.lang.Object)).JML normal_behavior operation contract.0.proof
+firstTouch/09-Quicktour/symbexed_paycard.LogFile(paycard.LogFile__getMaximumRecord()).JML normal_behavior operation contract.0.proof
+DualPivot_KeY_Proofs/proof/permutation/SwapValues_perm/symbexed_swap_values.proof
+heap/WeideEtAl_02_BinarySearch/symbexed_BinarySearch(BinarySearch__search((I,int)).JML normal_behavior operation contract.0.proof
+heap/list_seq/symbexed_ArrayList(List__contains(java.lang.Object)).JML normal_behavior operation contract.0.proof
+heap/list_ghost/symbexed_ArrayList(List__get(int)).JML normal_behavior operation contract.0.proof
+newBook/Using_KeY/Building_Dynamic_Logic_Proofs/07-quantifyProgVals/symbexed_quantifyProgVals.key.proof
+heap/list/symbexed_ListIterator(ListIterator___pos()).JML accessible clause.0.proof
+heap/removeDups/symbexed_RemoveDup(RemoveDup__arrayPart((I,int)).JML normal_behavior operation contract.0.proof
+heap/list/symbexed_ArrayList(List__get(int)).JML normal_behavior operation contract.0.proof
+heap/vacid0_01_SparseArray/symbexed_MemoryAllocator(MemoryAllocator__alloc(int)).JML normal_behavior operation contract.0.proof
+heap/list_ghost/symbexed_ArrayList(List__get(int)).JML accessible clause.0.proof
+heap/list/symbexed_MySet(MySet___footprint()).JML accessible clause.0.proof
+heap/list/symbexed_Client(Client__n(List)).JML normal_behavior operation contract.0.proof
+heap/list/symbexed_ArrayList(List__contains(java.lang.Object)).JML accessible clause.0.proof
+heap/quicksort/symbexed_Quicksort(Quicksort__sort((I)).JML normal_behavior operation contract.0.proof
+heap/list_ghost/symbexed_ArrayList(List__add(java.lang.Object)).JML normal_behavior operation contract.0.proof
+heap/simple/symbexed_array_creation.key.proof
+heap/model_methods/symbexed_Recell(Recell__post_set(int)).JML model_behavior operation contract.0.proof
+heap/model_methods/symbexed_Coll2(Coll__add_pre(int)).JML model_behavior operation contract.0.proof
+newBook/Using_KeY/Building_Dynamic_Logic_Proofs/01-exchange/symbexed_exchange.key.proof
+heap/SmansEtAl/symbexed_Iterator(Iterator___footprint()).JML accessible clause.0.proof
+DualPivot_KeY_Proofs/proof/permutation/SwapValues_perm/symbexed_SwapValues(SwapValues__swapValues((I,int,int,int,int)).JML normal_behavior operation contract.0.proof
+heap/SmansEtAl/symbexed_Cell(Cell__Cell()).JML normal_behavior operation contract.0.proof
+heap/verifyThis17_1_PairInsertionSort/symbexed_PairInsertionSort(PairInsertionSort__sort((I,int,int)).JML normal_behavior operation contract.0.proof
+heap/observer/symbexed_ExampleObserver(ExampleObserver__value()).JML normal_behavior operation contract.0.proof
+heap/block_contracts/symbexed_Simple(Simple__addAbsoluteValues(int,int)).JML normal_behavior operation contract.0.proof
+heap/vstte10_05_Queue/symbexed_AmortizedQueue(AmortizedQueue__front()).JML normal_behavior operation contract.0.proof
+heap/observer/symbexed_ExampleObserver(Observer___upToDate()).JML accessible clause.0.proof
+heap/list_ghost/symbexed_ArrayList(List__size()).JML accessible clause.0.proof
+DualPivot_KeY_Proofs/proof/overflow/ThreeWayQs/symbexed_ThreeWayQs(ThreeWayQs__sort((I)).JML normal_behavior operation contract.0.proof
+heap/SmansEtAl/symbexed_Stack(Stack___footprint()).JML accessible clause.0.proof
+heap/comprehensions/symbexed_bsumSplit.key.proof
+newBook/09.list_modelfield/symbexed_ArrayList(List__remFirst()).JML normal_behavior operation contract.0.proof
+heap/model_methods/symbexed_Recell(Cell__post_set(int)).JML model_behavior operation contract.0.proof
+heap/list/symbexed_ArrayList.ArrayListIterator(ListIterator__next()).JML normal_behavior operation contract.0.proof
+heap/SmansEtAl/symbexed_Stack(java.lang.Object___inv_()).JML accessible clause.0.proof
+DualPivot_KeY_Proofs/proof/overflow/ThreeWayQs/symbexed_ThreeWayQs(ThreeWayQs__sort((I,int,int)).JML normal_behavior operation contract.0.proof
