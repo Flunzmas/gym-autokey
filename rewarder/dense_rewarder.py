@@ -2,6 +2,10 @@ import config as cf
 from rewarder.rewarder import Rewarder
 
 class DenseRewarder(Rewarder):
+    '''
+    The dense rewarder tries to provide rewards more frequently than just on
+    proof completion or time-out.
+    '''
 
     def __init__(self, r_ep_end : float, p_ep_end : float, p_step : float):
         self.reward_episode_end = r_ep_end
@@ -10,6 +14,6 @@ class DenseRewarder(Rewarder):
 
     def end_and_reward_subepisode(self, subepisode):
         '''
-        TODO
+        TODO implement
         '''
         raise NotImplementedError
