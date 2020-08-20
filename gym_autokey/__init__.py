@@ -4,6 +4,6 @@ from gym.envs.registration import register
 logger = logging.getLogger(__name__)
 
 register(
-    id='milkey-v0',
-    entry_point='gym_milkey.envs:MilkeyEnv',
+    id='autokey-v0',
+    entry_point='gym_autokey.envs:AutokeyEnv',
 )

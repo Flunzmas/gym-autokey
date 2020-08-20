@@ -20,7 +20,7 @@ from datastructures.po_node import PONode
 from datastructures.fixed_length_deque import FixedLengthDeque
 
 
-class MilkeyEnv(gym.Env):
+class AutokeyEnv(gym.Env):
     metadata = {'render.modes': ['human']} # needed?
 
     def __init__(self, self_render : bool = True):
@@ -37,7 +37,7 @@ class MilkeyEnv(gym.Env):
         self.max_steps_per_po = cf.MAX_STEPS_PER_PO
         self.pre_kill = cf.PRE_KILL_FAILED_EPISODES
         self.self_render = self_render
-        if self_render: print("MilkeyEnv: self_render is set to True!")
+        if self_render: print("AutokeyEnv: self_render is set to True!")
         self.initial_reset = False
 
         self.env_steps = 0
