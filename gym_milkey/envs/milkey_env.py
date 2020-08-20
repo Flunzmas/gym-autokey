@@ -46,7 +46,7 @@ class MilkeyEnv(gym.Env):
         self.topgoal_done = False # returned on episode_exit and set to False if PO is still running
         self.topgoal_rew = 0 # returned on episode_exit and set to 0 if PO is still running
         self.last_action = "---"
-        self.po_percent_logfile = (cf.LOG_PATH / ("po_percentage_" + time.strftime("%d%m%Y-%H%M%S"))).as_posix()
+        self.po_percent_logfile = (cf.LOG_PATH / ("po_percentage_" + time.strftime("%d%m%Y-%H%M%S") + ".txt")).as_posix()
 
         self.po_success_history = FixedLengthDeque(cf.POWISE_BUFFER_SIZE)
         self.reward_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)

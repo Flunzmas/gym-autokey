@@ -88,7 +88,6 @@ greenlet==0.4.15
 grpcio==1.26.0
 gunicorn==20.0.4
 gym==0.15.4
--e git+git@git.scc.kit.edu:boltres/gym-milkey.git@4245e3e88c60fe5c6c435c00341ec579a8630294#egg=gym_milkey
 h11==0.8.1
 h2==3.1.1
 h5py==2.10.0

@@ -4,7 +4,8 @@ import shutil
 
 def remove_key_auto_generated_files(key_log_path : str, key_files_path : str):
     '''
-    TODO
+    Recursively searches for all automatically generated .proof files in the
+    examples folder and deletes them. They would litter the directories otherwise.
     '''
     key_log_file = open(key_log_path, 'wb')
     key_log_file.write(b"\n Deleting KeY auto-generated files...\n")   
