@@ -87,7 +87,6 @@ FEATURE_DISTRIBUTION_INFORMATION_PATH = (DATA_PATH / 'feature_distribution_infor
 
 ## --- RL ---
 
-LEARNING_STEPS = 240000
 POWISE_BUFFER_SIZE = 1000
 STEPWISE_BUFFER_SIZE = 10000
 ROOT_EPIS_MAX_DEPTH = 20
@@ -101,5 +100,3 @@ REWARDER_TYPE = 'sparse' # 'dense'
 PENALTY_STEP = -1.0
 REWARD_EPISODE_END = 500.0
 PENALTY_EPISODE_END = -500.0
-PARENT_PROP_GAMMA = 1.0
-NON_ROOT_EPIS_FACTOR = 0.0 # Reward is multiplied by this number if the subepisode is not a root episode

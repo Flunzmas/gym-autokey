@@ -2,7 +2,7 @@ import socket
 
 def socket_receive(socket):
     """
-    Minimal recv wrapper capable of reading very long streams of data.
+    Minimal socket.recv wrapper capable of reading very long streams of data.
     """
     received_bytes = b""
     while True:

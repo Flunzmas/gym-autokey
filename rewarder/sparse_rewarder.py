@@ -1,11 +1,11 @@
 from rewarder.rewarder import Rewarder
 
 class SparseRewarder(Rewarder):
+    '''
+    The SparseRewarder yields a reward only on completion of a topgoal proof.
+    '''
 
     def __init__(self, r_ep_end : float, p_ep_end : float, p_step : float):
-        '''
-        TODO
-        '''
         
         self.reward_episode_end = r_ep_end
         self.penalty_episode_end = p_ep_end
@@ -13,7 +13,8 @@ class SparseRewarder(Rewarder):
 
     def end_and_reward_subepisode(self, subepisode):
         '''
-        TODO
+        Determine the due reward by checking the termination status of all
+        concerned subepisodes of given topgoal. 
         '''
 
         # special treatment for parents

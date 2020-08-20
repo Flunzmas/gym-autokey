@@ -1,4 +1,8 @@
 class Experience(object):
+    '''
+    An experience is the result of an environment step, encapsulating a goal's
+    id, its features, the action taken, the reward and the new id and features.
+    '''
 
     def __init__(self, id : str = "XXXX", obs=None, action="NONE", reward=None, new_id="XXXX", new_obs=None):
 

@@ -237,7 +237,10 @@ class FeatureExtractor(object):
 # ----------------------------------------------------------------------------------------
 
     def compare_features(self, features_1, features_2):
-        """Returns the edit distance between two feature vectors."""
+        """
+        Returns the edit distance between two feature vectors.
+        """
+        
         if features_1.keys() != features_2.keys():
             raise AttributeError("feature vectors don't contain the same features!")
         squared_dist = 0.0

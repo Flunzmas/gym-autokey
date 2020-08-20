@@ -21,7 +21,16 @@ from datastructures.fixed_length_deque import FixedLengthDeque
 
 
 class AutokeyEnv(gym.Env):
-    metadata = {'render.modes': ['human']} # needed?
+    '''
+    This environment executes deductive proofs in KeY. Each of its actions is a
+    bundle of deduction rules (called 'tactic') applied to the currently active
+    goal. In order to successfully conduct the proof for a given proof
+    obligation, all of its underlying goals have to be proven using such tactic
+    applications. Rewards correspond to the resulting proving performance and
+    the amount of closed goals and POs.
+    '''
+
+    metadata = {'render.modes': ['human']}
 
     def __init__(self, self_render : bool = True):
         '''
@@ -52,7 +61,7 @@ class AutokeyEnv(gym.Env):
         self.reward_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)
         self.tactic_history = FixedLengthDeque(cf.STEPWISE_BUFFER_SIZE)
 
-        # if REPRINT_SUCCESSFUL_EPISODES is set to True, this list contains the proving history of all successfully closed POs.
+        # if cf.REPRINT_SUCCESSFUL_EPISODES is set to True, this list contains the proving history of all successfully closed POs.
         self.successful_po_proofs = []
 
         # each loaded file is a proof obligation (po). Set to -1 since there is an initial reset before learning starts.
@@ -358,6 +367,9 @@ class AutokeyEnv(gym.Env):
         print(self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'.format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
 
     def print_open_goals(self, origin_func : str):
+        '''
+        Prints two lines containing the currently open goal numbers, both in KeY and the env.
+        '''
         og_rl = [se.cur_goal.id for se in self.open_subepisodes]
         if self.cur_subepis is not None:
             og_rl.append(self.cur_subepis.cur_goal.id)

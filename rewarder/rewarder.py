@@ -1,4 +1,10 @@
 class Rewarder():
+    '''
+    Base class for all rewarders.
+    While each of them implement their own rewarding system, determining the
+    success status of a parent goal given its children is common for every
+    rewarding type as for a successful proof, everything has to be closed.
+    '''
 
     def calculate_success_status(self, child_statuses):
         '''

@@ -20,8 +20,8 @@ def parse_obligation_ast(content):
 
 def parse_second_level_ast(content, root_node, key, junctor_name, depth):
     """
-    This method is needed because the succedent and antecedent nodes each hold a list of
-    subtrees which are joined by logical and/or.
+    This method is needed because the succedent and antecedent nodes of a goal AST
+    each hold a list of subtrees joined by a logical conjunction/disjunction.
     """
     global node_id
     subtree = content[key]

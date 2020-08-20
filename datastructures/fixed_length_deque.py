@@ -1,14 +1,18 @@
 from collections import deque
 
 class FixedLengthDeque(deque):
+    '''
+    A deque initialized with a fixed size. When a new item is added
+    to a full deque, the oldest item is removed.
+    '''
 
-    max_length = 1
+    size = 1
 
-    def __init__(self, max_length):
-        assert max_length > 0, "FixedLengthDeque max_size < 1!"
-        self.max_length = max_length
+    def __init__(self, size):
+        assert size > 0, "tried to initialize FixedLengthDeque with size < 1!"
+        self.size = size
 
     def append(self, elem):
         super(FixedLengthDeque, self).append(elem)
-        if len(self) > self.max_length:
+        if len(self) > self.size:
             self.popleft()
