@@ -2,13 +2,15 @@ from anytree import Node
 
 from datastructures.ck_status_error import CKStatusError
 
+
 class PONode(Node):
     """
     A subclass of an anytree node which holds id, ast, features and tactic executed on this
     node (if present).
     """
 
-    def __init__(self, name, id, ast, features, tactic=None, reward=0, origin=None, parent=None, children=None, **kwargs):
+    def __init__(
+            self, name, id, ast, features, tactic=None, reward=0, origin=None, parent=None, children=None, **kwargs):
         self.id = id
         self.ast = ast
         self.features = features

@@ -16,7 +16,7 @@ class Rewarder():
         status = "fail"
         if child_statuses == set(['success']):
             self.status = "success"
-        elif "crash" in child_statuses: 
+        elif "crash" in child_statuses:
             self.status = "crash"
         return status
 

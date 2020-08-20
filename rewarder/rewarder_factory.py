@@ -9,4 +9,4 @@ def create_rewarder(rewarder_type : str, r_ep_end : float,
 
     if rewarder_type == 'dense': return DenseRewarder(r_ep_end, p_ep_end, p_step)
     elif rewarder_type == 'sparse': return SparseRewarder(r_ep_end, p_ep_end, p_step)
-    else: return SparseRewarder()
+    else: return SparseRewarder(r_ep_end, p_ep_end, p_step)

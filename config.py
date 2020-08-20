@@ -1,22 +1,22 @@
 from pathlib import Path
 
-## --- dirs ---
+# --- dirs ---
 
 PROJ_ROOT = Path(__file__).parent
 DATA_PATH = PROJ_ROOT / "data"
 LOG_PATH = PROJ_ROOT / "logs"
 MODELS_PATH = PROJ_ROOT / "models"
 
-## --- data ---
+# --- data ---
 
 PO_PATH = DATA_PATH / 'po_files'
 ALL_PO_FILES = PO_PATH / 'po_no_id_all.txt'
 TRAIN_PO_FILES = PO_PATH / 'po_no_id_all.txt'
 TEST_PO_FILES = PO_PATH / 'po_no_id_all_except_simple_training.txt'
-PO_TRAIN_RATIO = 0.8 # fraction of train POs of total POs
+PO_TRAIN_RATIO = 0.8  # fraction of train POs of total POs
 FEATURE_NAMES_FILE = DATA_PATH / 'feature_names.txt'
 
-## --- KeY ---
+# --- KeY ---
 
 KEY_PATH = PROJ_ROOT / "key"
 KEY_LOG_PATH = LOG_PATH / "key.log"
@@ -31,33 +31,42 @@ MAX_FAILED_LOADING_ATTEMPTS = 5
 
 GRADLE_DAEMON_CACHE_DIR = (Path.home() / '.gradle' / 'daemon').as_posix()
 
-## --- socket connections ---
+# --- socket connections ---
 
 KEY_SERVER_ADDRESS = 'localhost'
 KEY_SERVER_PORT = 5533
 TACTIC_SERVER_ADDRESS = 'localhost'
 TACTIC_SERVER_PORT = 6767
 
-## --- misc ---
+# --- misc ---
 
-OP_CLASSES = ["ElementaryUpdate", "Equality", "FormulaSV", "Function",
-        "IfExThenElse", "IfThenElse", "Junctor", "LocationVariable", "LogicVariable",
-        "Modality", "ModalOperatorSV", "ObserverFunction", "ProgramConstant",
-        "ProgramMethod", "ProgramSV", "Quantifier", "SchemaVariableFactory",
-        "SkolemTermSV", "SortDependingFunction", "TermLabelSV", "TermSV", "Transformer",
-        "UpdateApplication", "UpdateJunctor", "UpdateSV", "VariableSV", "WarySubstOp"]
+OP_CLASSES = [
+    "ElementaryUpdate", "Equality", "FormulaSV", "Function",
+    "IfExThenElse", "IfThenElse", "Junctor", "LocationVariable",
+    "LogicVariable", "Modality", "ModalOperatorSV", "ObserverFunction",
+    "ProgramConstant", "ProgramMethod", "ProgramSV", "Quantifier",
+    "SchemaVariableFactory", "SkolemTermSV", "SortDependingFunction",
+    "TermLabelSV", "TermSV", "Transformer", "UpdateApplication",
+    "UpdateJunctor", "UpdateSV", "VariableSV", "WarySubstOp"]
 
 AST_CATEGORIES = {
-        # name: (class or name-based, regex to match, alpha-parameter for the counting feature)
+        # name: (class or name-based, regex to match, alpha-parameter for the
+        # counting feature)
         'equalities': ('class', r'^Equality$', 1),
-        'inequalities': ('name', r'^(lt|leq|gt|geq)$', 1), # lt, gt, geq, leq
-        'heapStuff': ('name', r'(?i).*(heap).*', 1), # everything containing 'heap'
-        'anonStuff': ('name', r'(?i).*(anon).*', 1), # everything containing 'anon'
-        'numbers': ('name', r'^Z$', 1), # 1235 etc. and neglit are not necessary to perceive, # is there iff Z is there
+        'inequalities': ('name', r'^(lt|leq|gt|geq)$', 1),  # lt, gt, geq, leq
+        'heapStuff': ('name', r'(?i).*(heap).*', 1),  # everything 'heap'
+        'anonStuff': ('name', r'(?i).*(anon).*', 1),  # everything 'anon'
+
+        # 1235 etc. and neglit are not necessary to perceive;
+        # '#' is there iff Z is there.
+        'numbers': ('name', r'^Z$', 1),
         'programConstants': ('class', r'^ProgramConstant$', 1),
         'modalities': ('class', r'^Modality$', 1),
         'if-then-elses': ('class', r'^(IfExThenElse|IfThenElse)$', 1),
-        'dependencyContracts': ('class', r'^(ProgramMethod|ObserverFunction)$', 1), # stuff needed for the usage of dependency contracts
+
+        # stuff needed for the usage of dependency contracts
+        'dependencyContracts': (
+            'class', r'^(ProgramMethod|ObserverFunction)$', 1),
         'quantifiers': ('class', r'^Quantifier$', 1)
 }
 
@@ -83,20 +92,26 @@ TACTIC_ABBR = {
         select(store(...)) - count
 '''
 FEATURE_COUNT = len(AST_CATEGORIES) * 5 + 4
-FEATURE_DISTRIBUTION_INFORMATION_PATH = (DATA_PATH / 'feature_distribution_information.json').as_posix()
+FEATURE_DISTRIBUTION_INFORMATION_PATH = (
+    DATA_PATH / 'feature_distribution_information.json').as_posix()
 
-## --- RL ---
+# --- RL ---
 
 POWISE_BUFFER_SIZE = 1000
 STEPWISE_BUFFER_SIZE = 10000
 ROOT_EPIS_MAX_DEPTH = 20
-MAX_STEPS_PER_PO = 100 # After X steps, the current root episode fails by crashing.
-PRE_KILL_FAILED_EPISODES = False # If set to True, Algorithm will discard the whole root episode if a subepisode fails.
-REPRINT_SUCCESSFUL_EPISODES = False # saves successful episodes for printing at the end of the learning algorithm
+
+# After X steps, the current root episode fails by crashing.
+MAX_STEPS_PER_PO = 100
+
+# If set to True, whole root episode is discarded if a subepisode fails.
+PRE_KILL_FAILED_EPISODES = False
+# saves successful episodes for printing at the end of the learning algorithm
+REPRINT_SUCCESSFUL_EPISODES = False
 
 # rewards
 
-REWARDER_TYPE = 'sparse' # 'dense'
+REWARDER_TYPE = 'sparse'  # 'dense'
 PENALTY_STEP = -1.0
 REWARD_EPISODE_END = 500.0
 PENALTY_EPISODE_END = -500.0

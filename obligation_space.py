@@ -6,7 +6,6 @@ import tensorflow as tf
 from gym.spaces.box import Box
 
 import config as cf
-from datastructures.po_anytree import validate_anytree
 import po_loader as pl
 
 
@@ -62,7 +61,6 @@ class ObligationSpace(Box):
         try:
             if observation['id'] < 0: return False
             if not self.extractor.validate_features(observation['features']): return False
-            if not validate_anytree(observation['ast']): return False
         except KeyError:
             return False # a mandatory key is missing
         return True
