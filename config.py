@@ -18,7 +18,7 @@ FEATURE_NAMES_FILE = DATA_PATH / 'feature_names.txt'
 
 ## --- KeY ---
 
-KEY_PATH = PROJ_ROOT / "key" / "key"
+KEY_PATH = PROJ_ROOT / "key"
 KEY_LOG_PATH = LOG_PATH / "key.log"
 KEY_FILES_PATH = KEY_PATH / "key.ui" / "examples"
 KEY_TMP_FILE_PATH = "/tmp/"
