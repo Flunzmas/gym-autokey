@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>Definitions of tactics in terms of rulesets</comment>
+  <entry key="INT">simplify,
+    polySimp_elimSubNeg,
+    polySimp_dist,
+    polySimp_addAssoc,
+    polySimp_mulAssoc,
+    polySimp_addOrder,
+    polySimp_mulOrder,
+    polySimp_mulOne,
+    polySimp_balance,
+    polySimp_elimOneLeft,
+    polySimp_elimOneRight,
+    polySimp_normalise,
+    polySimp_applyEq,
+    polySimp_applyEqRigid,
+    polySimp_homo,
+    polySimp_pullOutFactor,
+    polySimp_critPair,
+    polySimp_newSym,
+    polySimp_applyEqPseudo,
+    simplify_literals,
+    closure
+  </entry>
+  <entry key="HEAP">
+    simplify_heap_high_costs,
+    pull_out_select,
+    concrete,
+    simplify_select,
+    simplify,
+    simplify_enlarging,
+    hide_auxiliary_eq,
+    inReachableStateImplication,
+    cnf_setComm,
+    conjNormalForm
+  </entry>
+  <entry key="QUANT">
+    gamma
+  </entry>
+  <entry key="EQUALITY">
+    apply_equations,
+    apply_select_eq
+  </entry>
+  <entry key="DEPENDENCY">
+    Use Dependency Contract
+  </entry>
+  <entry key="EXPAND">
+    query_axiom,
+    class_axiom
+  </entry>
+</properties>

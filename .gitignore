@@ -126,8 +126,6 @@ dmypy.json
 
 # ====== Custom ======
 
-key/
-
 # Non-python misc
 .vscode
 *.lock

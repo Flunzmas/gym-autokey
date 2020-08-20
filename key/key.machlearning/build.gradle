@@ -1,0 +1,19 @@
+plugins {
+    id("application")
+}
+
+
+dependencies {
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile project(":key.core")
+    compile project(":key.ui")    
+}
+
+task server(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'org.key_project.machlearning.Server'
+}
+
+application {
+    mainClassName 'org.key_project.machlearning.AIKeYMain'
+}

@@ -1,0 +1,239 @@
+\profile "Java Profile";
+
+\settings {
+"#Proof-Settings-Config-File
+#Fri Nov 08 15:00:15 CET 2019
+[Labels]UseOriginLabels=true
+[StrategyProperty]QUERYAXIOM_OPTIONS_KEY=QUERYAXIOM_ON
+[SMTSettings]invariantForall=false
+[Strategy]ActiveStrategy=JavaCardDLStrategy
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY1=USER_TACLETS_OFF
+[StrategyProperty]QUANTIFIERS_OPTIONS_KEY=QUANTIFIERS_NON_SPLITTING_WITH_PROGS
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY2=USER_TACLETS_OFF
+[Choice]DefaultChoices=assertions-assertions\\:on , initialisation-initialisation\\:disableStaticInitialisation , intRules-intRules\\:arithmeticSemanticsIgnoringOF , programRules-programRules\\:Java , runtimeExceptions-runtimeExceptions\\:ban , JavaCard-JavaCard\\:off , Strings-Strings\\:on , modelFields-modelFields\\:treatAsAxiom , bigint-bigint\\:on , sequences-sequences\\:on , moreSeqRules-moreSeqRules\\:off , reach-reach\\:on , integerSimplificationRules-integerSimplificationRules\\:full , permissions-permissions\\:off , wdOperator-wdOperator\\:L , wdChecks-wdChecks\\:on , mergeGenerateIsWeakeningGoal-mergeGenerateIsWeakeningGoal\\:off , methodExpansion-methodExpansion\\:modularOnly
+[StrategyProperty]LOOP_OPTIONS_KEY=LOOP_SCOPE_INVARIANT
+[StrategyProperty]INF_FLOW_CHECK_PROPERTY=INF_FLOW_CHECK_FALSE
+[SMTSettings]UseBuiltUniqueness=false
+[SMTSettings]explicitTypeHierarchy=false
+[SMTSettings]instantiateHierarchyAssumptions=true
+[StrategyProperty]NON_LIN_ARITH_OPTIONS_KEY=NON_LIN_ARITH_NONE
+[SMTSettings]SelectedTaclets=
+[StrategyProperty]DEP_OPTIONS_KEY=DEP_ON
+[StrategyProperty]AUTO_INDUCTION_OPTIONS_KEY=AUTO_INDUCTION_OFF
+[Strategy]MaximumNumberOfAutomaticApplications=10000
+[StrategyProperty]STOPMODE_OPTIONS_KEY=STOPMODE_DEFAULT
+[StrategyProperty]CLASS_AXIOM_OPTIONS_KEY=CLASS_AXIOM_FREE
+[SMTSettings]useConstantsForBigOrSmallIntegers=true
+[StrategyProperty]MPS_OPTIONS_KEY=MPS_MERGE
+[StrategyProperty]SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OPTIONS_KEY=SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OFF
+[Strategy]Timeout=-1
+[StrategyProperty]SYMBOLIC_EXECUTION_ALIAS_CHECK_OPTIONS_KEY=SYMBOLIC_EXECUTION_ALIAS_CHECK_NEVER
+[StrategyProperty]QUERY_NEW_OPTIONS_KEY=QUERY_OFF
+[SMTSettings]useUninterpretedMultiplication=true
+[StrategyProperty]BLOCK_OPTIONS_KEY=BLOCK_CONTRACT_INTERNAL
+[StrategyProperty]METHOD_OPTIONS_KEY=METHOD_CONTRACT
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY3=USER_TACLETS_OFF
+[SMTSettings]maxGenericSorts=2
+[StrategyProperty]OSS_OPTIONS_KEY=OSS_ON
+[StrategyProperty]SPLITTING_OPTIONS_KEY=SPLITTING_DELAYED
+[SMTSettings]integersMinimum=-2147483645
+[StrategyProperty]VBT_PHASE=VBT_SYM_EX
+[SMTSettings]integersMaximum=2147483645
+"
+}
+
+\javaSource "src";
+
+\proofObligation "#Proof Obligation Settings
+#Fri Nov 08 15:00:15 CET 2019
+contract=CellClient[CellClient\\:\\:m()].JML operation contract.0
+name=CellClient[CellClient\\:\\:m()].JML operation contract.0
+class=de.uka.ilkd.key.proof.init.FunctionalOperationContractPO
+";
+
+\proof {
+(keyLog "0" (keyUser "Andy" ) (keyVersion "2bbea99a67"))
+
+(autoModeTime "246")
+
+(branch "dummy ID"
+ (builtin "One Step Simplification" (formula "1") (newnames "self,result,exc,heapAtPre,o,f"))
+(rule "impRight" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "notLeft" (formula "2"))
+(rule "assignment" (formula "7"))
+(rule "Class_invariant_axiom_for_CellClient" (formula "5") (ifseqformula "3"))
+(rule "true_left" (formula "5"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_m,savedHeapBefore_m"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "variableDeclarationAssign" (formula "6") (term "1"))
+(rule "variableDeclaration" (formula "6") (term "1") (newnames "c1"))
+ (builtin "Use Operation Contract" (formula "6") (newnames "heapBefore_Cell,self_0,exc_0,heapAfter_Cell,anon_heap_Cell") (contract "Cell[Cell::Cell()].JML normal_behavior operation contract.0"))
+(branch "Post (Cell)"
+    (builtin "One Step Simplification" (formula "8"))
+    (builtin "One Step Simplification" (formula "6"))
+   (rule "andLeft" (formula "6"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "7") (term "1,1,0,1,0") (ifseqformula "6"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "10"))
+   (rule "andLeft" (formula "7"))
+   (rule "notLeft" (formula "7"))
+   (rule "andLeft" (formula "7"))
+   (rule "notLeft" (formula "7"))
+   (rule "replace_known_right" (formula "7") (term "0") (ifseqformula "13"))
+    (builtin "One Step Simplification" (formula "7"))
+   (rule "assignment" (formula "16") (term "1"))
+    (builtin "One Step Simplification" (formula "16"))
+    (builtin "Use Operation Contract" (formula "16") (newnames "heapBefore_setX,exc_1,heapAfter_setX,anon_heap_setX") (contract "Cell[Cell::setX(int)].JML normal_behavior operation contract.0"))
+   (branch "Post (setX)"
+       (builtin "One Step Simplification" (formula "14"))
+       (builtin "One Step Simplification" (formula "18"))
+      (rule "andLeft" (formula "14"))
+      (rule "andLeft" (formula "15"))
+      (rule "andLeft" (formula "16"))
+      (rule "andLeft" (formula "16"))
+      (rule "andLeft" (formula "17"))
+      (rule "variableDeclarationAssign" (formula "22") (term "1"))
+      (rule "variableDeclaration" (formula "22") (term "1") (newnames "c2"))
+      (rule "commuteUnion" (formula "17") (term "1"))
+       (builtin "Use Operation Contract" (formula "22") (newnames "heapBefore_Cell_0,self_1,exc_2,heapAfter_Cell_0,anon_heap_Cell_0") (contract "Cell[Cell::Cell()].JML normal_behavior operation contract.0"))
+      (branch "Post (Cell)"
+          (builtin "One Step Simplification" (formula "24"))
+          (builtin "One Step Simplification" (formula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "20") (term "0,0,1,0,1,0,1") (ifseqformula "14"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "20") (term "0,0,0,1,0,1,0,1") (ifseqformula "6"))
+         (rule "andLeft" (formula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "1,1,0,1,0") (ifseqformula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,1,1,0,1,0") (ifseqformula "14"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,0,1,1,0,1,0") (ifseqformula "6"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "22"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "22"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "24"))
+         (rule "andLeft" (formula "21"))
+         (rule "notLeft" (formula "21"))
+         (rule "andLeft" (formula "21"))
+         (rule "notLeft" (formula "21"))
+         (rule "orRight" (formula "27"))
+         (rule "orRight" (formula "27"))
+         (rule "replace_known_right" (formula "21") (term "0,0,0") (ifseqformula "27"))
+          (builtin "One Step Simplification" (formula "21") (ifInst ""  (formula "28")) (ifInst ""  (formula "29")))
+         (rule "assignment" (formula "34") (term "1"))
+          (builtin "One Step Simplification" (formula "34"))
+          (builtin "Use Operation Contract" (formula "34") (newnames "heapBefore_setX_0,exc_3,heapAfter_setX_0,anon_heap_setX_0") (contract "Cell[Cell::setX(int)].JML normal_behavior operation contract.0"))
+         (branch "Post (setX)"
+             (builtin "One Step Simplification" (formula "28"))
+             (builtin "One Step Simplification" (formula "36"))
+            (rule "andLeft" (formula "28"))
+            (rule "andLeft" (formula "29"))
+            (rule "andLeft" (formula "30"))
+            (rule "andLeft" (formula "30"))
+            (rule "andLeft" (formula "31"))
+            (rule "commuteUnion" (formula "31") (term "1"))
+            (rule "methodCallReturn" (formula "40") (term "1"))
+            (rule "assignment" (formula "40") (term "1"))
+             (builtin "One Step Simplification" (formula "40"))
+            (rule "methodCallEmpty" (formula "40") (term "1"))
+            (rule "tryEmpty" (formula "40") (term "1"))
+            (rule "emptyModality" (formula "40") (term "1"))
+             (opengoal " ")
+         )
+         (branch "Exceptional Post (setX)"
+             (builtin "One Step Simplification" (formula "28"))
+             (builtin "One Step Simplification" (formula "36"))
+            (rule "andLeft" (formula "28"))
+            (rule "selectCreatedOfAnonAsFormulaEQ" (formula "29") (term "1,0") (ifseqformula "28"))
+            (rule "selectCreatedOfAnonAsFormulaEQ" (formula "29") (term "0,1,0") (ifseqformula "20"))
+            (rule "selectCreatedOfAnonAsFormulaEQ" (formula "29") (term "0,0,1,0") (ifseqformula "14"))
+            (rule "selectCreatedOfAnonAsFormulaEQ" (formula "29") (term "0,0,0,1,0") (ifseqformula "6"))
+            (rule "andLeft" (formula "29"))
+            (rule "andLeft" (formula "30"))
+            (rule "andLeft" (formula "29"))
+            (rule "andLeft" (formula "31"))
+            (rule "notLeft" (formula "29"))
+            (rule "close" (formula "33") (ifseqformula "32"))
+         )
+         (branch "Pre (setX)"
+             (opengoal " ")
+         )
+         (branch "Null reference (c2 = null)"
+             (opengoal " ")
+         )
+      )
+      (branch "Exceptional Post (Cell)"
+          (builtin "One Step Simplification" (formula "20"))
+          (builtin "One Step Simplification" (formula "24"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "20") (term "0,0,1,0,1,0,1") (ifseqformula "14"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "20") (term "0,0,0,1,0,1,0,1") (ifseqformula "6"))
+         (rule "andLeft" (formula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "1,0,0") (ifseqformula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,1,0,0") (ifseqformula "14"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,0,1,0,0") (ifseqformula "6"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "1,1,0,1,0") (ifseqformula "20"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,1,1,0,1,0") (ifseqformula "14"))
+         (rule "selectCreatedOfAnonAsFormulaEQ" (formula "21") (term "0,0,1,1,0,1,0") (ifseqformula "6"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "23"))
+         (rule "andLeft" (formula "21"))
+         (rule "andLeft" (formula "23"))
+         (rule "andLeft" (formula "25"))
+         (rule "notLeft" (formula "21"))
+         (rule "close" (formula "27") (ifseqformula "26"))
+      )
+      (branch "Pre (Cell)"
+          (opengoal " ")
+      )
+   )
+   (branch "Exceptional Post (setX)"
+       (builtin "One Step Simplification" (formula "18"))
+       (builtin "One Step Simplification" (formula "14"))
+      (rule "andLeft" (formula "14"))
+      (rule "selectCreatedOfAnonAsFormulaEQ" (formula "15") (term "1,0") (ifseqformula "14"))
+      (rule "selectCreatedOfAnonAsFormulaEQ" (formula "15") (term "0,1,0") (ifseqformula "6"))
+      (rule "andLeft" (formula "15"))
+      (rule "andLeft" (formula "16"))
+      (rule "andLeft" (formula "15"))
+      (rule "andLeft" (formula "17"))
+      (rule "notLeft" (formula "15"))
+      (rule "close" (formula "19") (ifseqformula "18"))
+   )
+   (branch "Pre (setX)"
+       (opengoal " ")
+   )
+   (branch "Null reference (c1 = null)"
+       (opengoal " ")
+   )
+)
+(branch "Exceptional Post (Cell)"
+    (builtin "One Step Simplification" (formula "8"))
+    (builtin "One Step Simplification" (formula "6"))
+   (rule "andLeft" (formula "6"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "7") (term "1,0,0") (ifseqformula "6"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "7") (term "1,1,0,1,0") (ifseqformula "6"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "9"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "12"))
+   (rule "andLeft" (formula "9"))
+   (rule "notLeft" (formula "7"))
+   (rule "close" (formula "15") (ifseqformula "14"))
+)
+(branch "Pre (Cell)"
+    (opengoal " ")
+)
+)
+}

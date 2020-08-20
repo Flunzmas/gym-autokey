@@ -1,0 +1,14 @@
+This folder contains the Java files used for the correctness proof of the JDK sorting 
+engine for integer arrays.
+We proved that the output is sorted, that it is a permutation of the input, and that 
+there are no integer overflows.
+These proofs have been separated into different subfolders.
+Java's Dual Pivot Quicksort implementation uses three different partitioning styles; 
+in order to break down the proof into smaller, more manageable parts, each of these 
+partitiong styles was extracted into its own class. The Dual Pivot partition uses 
+two pivot elements, the Three Way partition uses only one pivot, and the Swap Pivots 
+partition shifts the elements equal to the pivots to the left and right part of the array.
+The files used for the correctness proofs of each of these partioning styles are stored
+in their respective subfolder (e.g., the proof/permutation/DualPivotQuicksort_perm folder
+contains the proof for the permutation property of the dual pivot partitioning algorithm).
+

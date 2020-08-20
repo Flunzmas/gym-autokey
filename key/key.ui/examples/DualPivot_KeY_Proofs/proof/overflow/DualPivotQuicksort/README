@@ -1,0 +1,3 @@
+calcE can be proved using CBMC for right < MAXINT-1
+
+for split termination needs not be proved.
