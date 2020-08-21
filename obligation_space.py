@@ -2,7 +2,6 @@ import os
 import random
 
 import numpy as np
-import tensorflow as tf
 from gym.spaces.box import Box
 
 import config as cf
