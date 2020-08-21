@@ -1,0 +1,1934 @@
+
+macro autopilot-prep;
+
+select formula="{heapAtPre:=heap
+  || _a:=a
+  || _left:=left
+  || _right:=right
+  || _pivot1:=pivot1
+  || _pivot2:=pivot2
+  || exc:=null
+  || (heapBefore_split:=heap
+  || _aBefore_split:=a)
+  || heap:=heapAfter_move_great_left
+  || k:=-1 + DualPivotQuicksort.less@anon_heap_move_less_right<<anonHeapFunction>>}
+   seqPerm(seqUpd(seqUpd(array2seq(heap, _a), _left, _pivot1), _right, _pivot2), array2seq(heapBefore_split, _aBefore_split))";
+
+rule seqPermDoubleSwap
+    iv="left"
+    jv="int::select(heap, null, DualPivotQuicksort::$e2)"
+    iu="right"
+    ju="int::select(heap, null, DualPivotQuicksort::$e4)";
+
+macro split-prop;
+
+
+select formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), seqDef{int u;}(Z(0(#)), length(a), any::select(heap, a, arr(u))))";
+
+rule seqPermSym
+    formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), seqDef{int u;}(Z(0(#)), length(a), any::select(heap, a, arr(u))))";
+
+cut "seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(anon(heapAfter_move_great_left, 
+            union(union(singleton(null,DualPivotQuicksort::$great),singleton(null,DualPivotQuicksort::$less)), 
+            arrayRange(a, left, right)), anon_heap_LOOP<<anonHeapFunction>>), a, arr(u))), left, pivot1), right, pivot2),
+        seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2))";
+
+rule seqPermSym
+    formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left,
+                           pivot1),
+                    right,
+                    pivot2),
+             seqDef{int u;}(Z(0(#)), length(a), int::select(heap, a, arr(u))))";
+
+rule seqPermTrans
+    formula="seqPerm(seqDef{int u;}(Z(0(#)), length(a), int::select(heap, a, arr(u))),
+             seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left,
+                           pivot1),
+                    right,
+                    pivot2))";
+
+select succedent formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                      length(a),
+                                      any::select(anon(heapAfter_move_great_left,
+                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                  a,
+                                                  arr(u))),
+                       left,
+                       pivot1),
+                right,
+                pivot2),
+         seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2))";
+rule seqPermSym
+    formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left,
+                           pivot1),
+                    right,
+                    pivot2),
+             seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2))";
+rule seqPermDef
+    formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2),
+                     seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left,
+                           pivot1),
+                    right,
+                    pivot2))";
+
+rule andRight;
+
+select formula="\exists Seq s;
+   (  seqLen(s) = seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2))
+    & seqNPerm(s)
+    & \forall int iv;
+        (   leq(Z(0(#)), iv) & lt(iv, seqLen(s))
+         ->   any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), iv)
+            = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                       length(a),
+                                                       any::select(anon(heapAfter_move_great_left,
+                                                                        union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                              arrayRange(a, left, right)),
+                                                                        anon_heap_LOOP<<anonHeapFunction>>),
+                                                                   a,
+                                                                   arr(u))),
+                                        left,
+                                        pivot1),
+                                 right,
+                                 pivot2),
+                          int::seqGet(s, iv))))";
+        
+rule schiffl_lemma_2 formula="seqPerm(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))),
+         seqDef{int u;}(Z(0(#)),
+                        length(a),
+                        any::select(anon(heapAfter_move_great_left,
+                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                    a,
+                                    arr(u))))";
+
+rule allLeft
+    formula="\forall int x_9;
+       \forall int y;
+         (       any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), x_9)
+               = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                            length(a),
+                                            any::select(anon(heapAfter_move_great_left,
+                                                             union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                   arrayRange(a, left, right)),
+                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                        a,
+                                                        arr(u))),
+                             x_9)
+             &   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), y)
+               = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                            length(a),
+                                            any::select(anon(heapAfter_move_great_left,
+                                                             union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                   arrayRange(a, left, right)),
+                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                        a,
+                                                        arr(u))),
+                             y)
+             & leq(Z(0(#)), x_9)
+             & lt(x_9, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+             & leq(Z(0(#)), y)
+             & lt(y, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+          -> \exists Seq r;
+               (  seqLen(r) = seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))
+                & seqNPerm(r)
+                & \forall int iv;
+                    (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+                     ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+                        = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                                     length(a),
+                                                     any::select(anon(heapAfter_move_great_left,
+                                                                      union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                            arrayRange(a, left, right)),
+                                                                      anon_heap_LOOP<<anonHeapFunction>>),
+                                                                 a,
+                                                                 arr(u))),
+                                      int::seqGet(r, iv)))
+                & int::seqGet(r, x_9) = x_9
+                & int::seqGet(r, y) = y))"
+    t="left";
+
+rule allLeft
+    formula="\forall int y;
+       (       any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left)
+             = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left)
+           &   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), y)
+             = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           y)
+           & leq(Z(0(#)), left)
+           & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+           & leq(Z(0(#)), y)
+           & lt(y, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+        -> \exists Seq r;
+             (  seqLen(r) = seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))
+              & seqNPerm(r)
+              & \forall int iv;
+                  (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+                   ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+                      = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    int::seqGet(r, iv)))
+              & int::seqGet(r, left) = left
+              & int::seqGet(r, y) = y))"
+    t="right";
+
+rule impLeft formula="       any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left)
+      = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                   length(a),
+                                   any::select(anon(heapAfter_move_great_left,
+                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                               a,
+                                               arr(u))),
+                    left)
+    &   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), right)
+      = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                   length(a),
+                                   any::select(anon(heapAfter_move_great_left,
+                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                               a,
+                                               arr(u))),
+                    right)
+    & leq(Z(0(#)), left)
+    & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+    & leq(Z(0(#)), right)
+    & lt(right, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+ -> \exists Seq r;
+      (  seqLen(r) = seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))
+       & seqNPerm(r)
+       & \forall int iv;
+           (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+            ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+               = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                            length(a),
+                                            any::select(anon(heapAfter_move_great_left,
+                                                             union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                   arrayRange(a, left, right)),
+                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                        a,
+                                                        arr(u))),
+                             int::seqGet(r, iv)))
+       & int::seqGet(r, left) = left
+       & int::seqGet(r, right) = right)";
+
+rule andRight;
+rule andRight;
+rule andRight;
+
+select antecedent formula="\exists Seq r;
+   (  seqLen(r) = seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))
+    & seqNPerm(r)
+    & \forall int iv;
+        (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+         ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+            = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                         length(a),
+                                         any::select(anon(heapAfter_move_great_left,
+                                                          union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                arrayRange(a, left, right)),
+                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                     a,
+                                                     arr(u))),
+                          int::seqGet(r, iv)))
+    & int::seqGet(r, left) = left
+    & int::seqGet(r, right) = right)";
+
+rule exLeft formula="\exists Seq r;
+   (  seqLen(r) = seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))
+    & seqNPerm(r)
+    & \forall int iv;
+        (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+         ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+            = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                         length(a),
+                                         any::select(anon(heapAfter_move_great_left,
+                                                          union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                arrayRange(a, left, right)),
+                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                     a,
+                                                     arr(u))),
+                          int::seqGet(r, iv)))
+    & int::seqGet(r, left) = left
+    & int::seqGet(r, right) = right)";
+
+rule exRightHide
+    formula="\exists Seq s;
+       (  seqLen(s) = seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2))
+        & seqNPerm(s)
+        & \forall int iv;
+            (   leq(Z(0(#)), iv) & lt(iv, seqLen(s))
+             ->   any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), iv)
+                = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                           length(a),
+                                                           any::select(anon(heapAfter_move_great_left,
+                                                                            union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                                  arrayRange(a, left, right)),
+                                                                            anon_heap_LOOP<<anonHeapFunction>>),
+                                                                       a,
+                                                                       arr(u))),
+                                            left,
+                                            pivot1),
+                                     right,
+                                     pivot2),
+                              int::seqGet(s, iv))))"
+    t="r_0";
+
+rule andRight;
+rule andRight;
+
+select succedent formula="\forall int iv;
+   (   leq(Z(0(#)), iv) & lt(iv, seqLen(r_0))
+    ->   any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), iv)
+       = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                  length(a),
+                                                  any::select(anon(heapAfter_move_great_left,
+                                                                   union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                         arrayRange(a, left, right)),
+                                                                   anon_heap_LOOP<<anonHeapFunction>>),
+                                                              a,
+                                                              arr(u))),
+                                   left,
+                                   pivot1),
+                            right,
+                            pivot2),
+                     int::seqGet(r_0, iv)))";
+
+rule allRight formula="\forall int iv;
+     (   leq(Z(0(#)), iv) & lt(iv, seqLen(r_0))
+      ->   any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), iv)
+         = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              right,
+                              pivot2),
+                       int::seqGet(r_0, iv)))";
+
+rule impRight;
+
+cut "iv_0 = left";
+
+select succedent formula="iv_0 = left";
+
+cut "iv_0 = right";
+
+select succedent formula="iv_0 = right";
+
+rule getOfUpd 
+    formula="  any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2), iv_0)
+     = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2),
+                   int::seqGet(r_0, iv_0))"
+    on="seqUpd(seqUpd(seqDef{int u;}(0, a.length, any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), right, pivot2)[iv_0]";
+
+rule getOfUpd 
+    formula="  \if (leq(Z(0(#)), right) & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1))) & right = iv_0)
+           \then ((any)pivot2)
+           \else (any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1), iv_0))
+     = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2),
+                   int::seqGet(r_0, iv_0))"
+    on="seqUpd(seqDef{int u;}(0, a.length, any::select(heapAfter_loop_body, a, arr(u))), left, pivot1)[iv_0]";
+
+rule getOfUpd
+    formula="  \if (leq(Z(0(#)), right) & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1))) & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2),
+                   int::seqGet(r_0, iv_0))"
+    on="any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2),
+                   int::seqGet(r_0, iv_0))";
+
+rule andLeft formula="leq(Z(0(#)), iv_0) & lt(iv_0, seqLen(r_0))";
+rule andLeft;
+rule andLeft;
+rule andLeft;
+rule andLeft;
+
+rule seqNPermInjective formula="seqNPerm(r_0)";
+
+cut "int::seqGet(r_0, iv_0) = right";
+
+rule allLeft
+    formula="\forall int iv;
+       \forall int jv; (leq(Z(0(#)), iv) & lt(iv, seqLen(r_0)) & leq(Z(0(#)), jv) & lt(jv, seqLen(r_0)) & int::seqGet(r_0, iv) = int::seqGet(r_0, jv) -> iv = jv)"
+    t="right";
+
+rule allLeft
+    formula="\forall int jv; (leq(Z(0(#)), right) & lt(right, seqLen(r_0)) & leq(Z(0(#)), jv) & lt(jv, seqLen(r_0)) & int::seqGet(r_0, right) = int::seqGet(r_0, jv) -> right = jv)"
+    t="iv_0";
+
+rule eqSymm
+    formula="  \if (  leq(Z(0(#)), right)
+            & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1)))
+            & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = \if (  leq(Z(0(#)), right)
+            & lt(right,
+                 seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                              length(a),
+                                              any::select(anon(heapAfter_move_great_left,
+                                                               union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                           singleton(null, DualPivotQuicksort::$less)),
+                                                                     arrayRange(a, left, right)),
+                                                               anon_heap_LOOP<<anonHeapFunction>>),
+                                                          a,
+                                                          arr(u))),
+                               left,
+                               pivot1)))
+            & right = int::seqGet(r_0, iv_0))
+           \then ((any)pivot2)
+           \else (any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                 singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              int::seqGet(r_0, iv_0)))"
+    on="right = int::seqGet(r_0, iv_0)";
+
+rule replace_known_left
+    formula="  \if (  leq(Z(0(#)), right)
+            & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1)))
+            & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = \if (  leq(Z(0(#)), right)
+            & lt(right,
+                 seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                              length(a),
+                                              any::select(anon(heapAfter_move_great_left,
+                                                               union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                           singleton(null, DualPivotQuicksort::$less)),
+                                                                     arrayRange(a, left, right)),
+                                                               anon_heap_LOOP<<anonHeapFunction>>),
+                                                          a,
+                                                          arr(u))),
+                               left,
+                               pivot1)))
+            & int::seqGet(r_0, iv_0) = right)
+           \then ((any)pivot2)
+           \else (any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                 singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              int::seqGet(r_0, iv_0)))"
+    on="int::seqGet(r_0, iv_0) = right";
+
+#ast seqGet(r, iv_0) = right geht zu.
+
+select succedent formula="int::seqGet(r_0, iv_0) = right";
+
+cut "int::seqGet(r_0, iv_0) = left";
+
+rule allLeft formula="\forall int iv;
+   \forall int jv;
+     (leq(Z(0(#)), iv) & lt(iv, seqLen(r_0)) & leq(Z(0(#)), jv) & lt(jv, seqLen(r_0)) & int::seqGet(r_0, iv) = int::seqGet(r_0, jv) -> iv = jv)"
+    t="left";
+
+rule allLeft formula="\forall int jv;
+   (leq(Z(0(#)), left) & lt(left, seqLen(r_0)) & leq(Z(0(#)), jv) & lt(jv, seqLen(r_0)) & int::seqGet(r_0, left) = int::seqGet(r_0, jv) -> left = jv)"
+    t="iv_0";
+
+#geht zu
+
+select succedent formula="int::seqGet(r_0, iv_0) = left";
+
+rule eqSymm
+    formula="  \if (  leq(Z(0(#)), right)
+            & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1)))
+            & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = \if (  leq(Z(0(#)), right)
+            & lt(right,
+                 seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                              length(a),
+                                              any::select(anon(heapAfter_move_great_left,
+                                                               union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                           singleton(null, DualPivotQuicksort::$less)),
+                                                                     arrayRange(a, left, right)),
+                                                               anon_heap_LOOP<<anonHeapFunction>>),
+                                                          a,
+                                                          arr(u))),
+                               left,
+                               pivot1)))
+            & right = int::seqGet(r_0, iv_0))
+           \then ((any)pivot2)
+           \else (any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                 singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              int::seqGet(r_0, iv_0)))"
+    on="right = int::seqGet(r_0, iv_0)";
+
+rule replace_known_right
+    formula="  \if (  leq(Z(0(#)), right)
+            & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1)))
+            & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = \if (  leq(Z(0(#)), right)
+            & lt(right,
+                 seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                              length(a),
+                                              any::select(anon(heapAfter_move_great_left,
+                                                               union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                           singleton(null, DualPivotQuicksort::$less)),
+                                                                     arrayRange(a, left, right)),
+                                                               anon_heap_LOOP<<anonHeapFunction>>),
+                                                          a,
+                                                          arr(u))),
+                               left,
+                               pivot1)))
+            & int::seqGet(r_0, iv_0) = right)
+           \then ((any)pivot2)
+           \else (any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                 singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              int::seqGet(r_0, iv_0)))"
+    on="int::seqGet(r_0, iv_0) = right";
+
+macro onestep;
+
+rule getOfUpd
+    formula="  \if (leq(Z(0(#)), right) & lt(right, seqLen(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), left, pivot1))) & right = iv_0)
+           \then ((any)pivot2)
+           \else (\if (leq(Z(0(#)), left) & lt(left, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))))) & left = iv_0)
+                      \then ((any)pivot1)
+                      \else (any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv_0)))
+     = any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                         length(a),
+                                         any::select(anon(heapAfter_move_great_left,
+                                                          union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                arrayRange(a, left, right)),
+                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                     a,
+                                                     arr(u))),
+                          left,
+                          pivot1),
+                   int::seqGet(r_0, iv_0))"
+    on="any::seqGet(seqUpd(seqDef{int u;}(Z(0(#)),
+                                         length(a),
+                                         any::select(anon(heapAfter_move_great_left,
+                                                          union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                arrayRange(a, left, right)),
+                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                     a,
+                                                     arr(u))),
+                          left,
+                          pivot1),
+                   int::seqGet(r_0, iv_0))";
+
+rule allLeft
+    formula="\forall int iv;
+       (   leq(Z(0(#)), iv) & lt(iv, seqLen(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u)))))
+        ->   any::seqGet(seqDef{int u;}(Z(0(#)), length(a), any::select(heapAfter_loop_body, a, arr(u))), iv)
+           = any::seqGet(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         int::seqGet(r_0, iv)))"
+    t="iv_0";
+
+# use case 
+
+select succedent formula="{heapAtPre:=heap
+  || exc:=null
+  || heap:=store(store(store(store(anon(heapAfter_move_great_left,
+                                        union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                        anon_heap_LOOP<<anonHeapFunction>>),
+                                   a,
+                                   arr(left),
+                                   arr_11<<selectSK>>),
+                             a,
+                             arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                             pivot1),
+                       a,
+                       arr(right),
+                       arr_14<<selectSK>>),
+                 a,
+                 arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                 pivot2)}
+   seqPerm(seqDef{int u;}(Z(0(#)), length(a), any::select(heap, a, arr(u))), seqDef{int u;}(Z(0(#)), length(a), any::select(heapAtPre, a, arr(u))))";
+
+macro onestep;
+
+cut "seqPerm(seqDef{int u;}(Z(0(#)), length(a), any::select(store(store(store(store(
+            anon(heapAfter_move_great_left, union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), 
+            arrayRange(a, left, right)), anon_heap_LOOP<<anonHeapFunction>>), a, arr(left), arr_11<<selectSK>>), a, arr(add(Z(neglit(1(#))), 
+            int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))), pivot1), a, arr(right), arr_14<<selectSK>>), 
+            a, arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))), pivot2), a, arr(u))),
+        seqUpd(seqUpd(seqDef{int u;}(Z(0(#)), length(a), any::select(anon(heapAfter_move_great_left, 
+            union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)), 
+            anon_heap_LOOP<<anonHeapFunction>>), a, arr(u))), left,pivot1),right,pivot2))";  
+
+rule seqPermSym formula="seqPerm(seqDef{int u;}(Z(0(#)),
+                        length(a),
+                        any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(left),
+                                                            arr_11<<selectSK>>),
+                                                      a,
+                                                      arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                      pivot1),
+                                                a,
+                                                arr(right),
+                                                arr_14<<selectSK>>),
+                                          a,
+                                          arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                          pivot2),
+                                    a,
+                                    arr(u))),
+         seqDef{int u;}(Z(0(#)), length(a), any::select(heap, a, arr(u))))";
+
+rule seqPermSym formula="seqPerm(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                      length(a),
+                                      any::select(anon(heapAfter_move_great_left,
+                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                  a,
+                                                  arr(u))),
+                       left,
+                       pivot1),
+                right,
+                pivot2),
+         seqDef{int u;}(Z(0(#)), length(a), int::select(heap, a, arr(u))))";
+
+rule seqPermSym formula="seqPerm(seqDef{int u;}(Z(0(#)),
+                        length(a),
+                        any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(left),
+                                                            arr_11<<selectSK>>),
+                                                      a,
+                                                      arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                      pivot1),
+                                                a,
+                                                arr(right),
+                                                arr_14<<selectSK>>),
+                                          a,
+                                          arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                          pivot2),
+                                    a,
+                                    arr(u))),
+         seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                      length(a),
+                                      any::select(anon(heapAfter_move_great_left,
+                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                  a,
+                                                  arr(u))),
+                       left,
+                       pivot1),
+                right,
+                pivot2))";
+
+rule seqPermTrans formula="seqPerm(seqDef{int u;}(Z(0(#)), length(a), int::select(heap, a, arr(u))),
+         seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                      length(a),
+                                      any::select(anon(heapAfter_move_great_left,
+                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                  a,
+                                                  arr(u))),
+                       left,
+                       pivot1),
+                right,
+                pivot2))";
+
+# this branch is closable; on to the last one 
+
+select succedent formula="seqPerm(seqDef{int u;}(Z(0(#)),
+                        length(a),
+                        any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(left),
+                                                            arr_11<<selectSK>>),
+                                                      a,
+                                                      arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                      pivot1),
+                                                a,
+                                                arr(right),
+                                                arr_14<<selectSK>>),
+                                          a,
+                                          arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                          pivot2),
+                                    a,
+                                    arr(u))),
+         seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                      length(a),
+                                      any::select(anon(heapAfter_move_great_left,
+                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                             arrayRange(a, left, right)),
+                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                  a,
+                                                  arr(u))),
+                       left,
+                       pivot1),
+                right,
+                pivot2))";
+
+rule hide_right formula="seqPerm(seqDef{int u;}(Z(0(#)),
+                        length(a),
+                        any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(left),
+                                                            arr_11<<selectSK>>),
+                                                      a,
+                                                      arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                      pivot1),
+                                                a,
+                                                arr(right),
+                                                arr_14<<selectSK>>),
+                                          a,
+                                          arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                          pivot2),
+                                    a,
+                                    arr(u))),
+         seqDef{int u;}(Z(0(#)), length(a), any::select(heap, a, arr(u))))";
+
+rule seqPermDoubleSwap
+    iv="left"
+    jv="-1 + DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>"
+    iu="right"
+    ju="1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>"
+    formula="seqPerm(seqDef{int u;}(Z(0(#)),
+                            length(a),
+                            any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(left),
+                                                                arr_11<<selectSK>>),
+                                                          a,
+                                                          arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                          pivot1),
+                                                    a,
+                                                    arr(right),
+                                                    arr_14<<selectSK>>),
+                                              a,
+                                              arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                              pivot2),
+                                        a,
+                                        arr(u))),
+             seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                          length(a),
+                                          any::select(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                 arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(u))),
+                           left,
+                           pivot1),
+                    right,
+                    pivot2))";
+rule andRight;
+rule andRight;
+rule andRight;
+rule andRight;
+rule andRight;
+rule andRight;
+rule andRight;
+rule andRight;
+
+select succedent formula="  seqDef{int u;}(Z(0(#)),
+                  length(a),
+                  any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                 arrayRange(a, left, right)),
+                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                      a,
+                                                      arr(left),
+                                                      arr_11<<selectSK>>),
+                                                a,
+                                                arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                pivot1),
+                                          a,
+                                          arr(right),
+                                          arr_14<<selectSK>>),
+                                    a,
+                                    arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                    pivot2),
+                              a,
+                              arr(u)))
+ = seqSwap(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2),
+                   left,
+                   add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+           right,
+           add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)))";
+
+rule equalityToSeqGetAndSeqLenRight;
+
+rule andRight;
+
+select succedent formula="\forall int iv;
+   (     leq(Z(0(#)), iv)
+       & lt(iv,
+            seqLen(seqDef{int u;}(Z(0(#)),
+                                  length(a),
+                                  any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                           union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                       singleton(null, DualPivotQuicksort::$less)),
+                                                                                 arrayRange(a, left, right)),
+                                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                                      a,
+                                                                      arr(left),
+                                                                      arr_11<<selectSK>>),
+                                                                a,
+                                                                arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                                pivot1),
+                                                          a,
+                                                          arr(right),
+                                                          arr_14<<selectSK>>),
+                                                    a,
+                                                    arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                                    pivot2),
+                                              a,
+                                              arr(u)))))
+    ->   any::seqGet(seqDef{int u;}(Z(0(#)),
+                                    length(a),
+                                    any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                             union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                         singleton(null, DualPivotQuicksort::$less)),
+                                                                                   arrayRange(a, left, right)),
+                                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                                        a,
+                                                                        arr(left),
+                                                                        arr_11<<selectSK>>),
+                                                                  a,
+                                                                  arr(add(Z(neglit(1(#))),
+                                                                          int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                                  pivot1),
+                                                            a,
+                                                            arr(right),
+                                                            arr_14<<selectSK>>),
+                                                      a,
+                                                      arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                                      pivot2),
+                                                a,
+                                                arr(u))),
+                     iv)
+       = any::seqGet(seqSwap(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                  length(a),
+                                                                  any::select(anon(heapAfter_move_great_left,
+                                                                                   union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                               singleton(null, DualPivotQuicksort::$less)),
+                                                                                         arrayRange(a, left, right)),
+                                                                                   anon_heap_LOOP<<anonHeapFunction>>),
+                                                                              a,
+                                                                              arr(u))),
+                                                   left,
+                                                   pivot1),
+                                            right,
+                                            pivot2),
+                                     left,
+                                     add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                             right,
+                             add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                     iv))";
+
+rule allRight;
+rule impRight;
+
+select succedent formula="  any::seqGet(seqDef{int u;}(Z(0(#)),
+                              length(a),
+                              any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                             arrayRange(a, left, right)),
+                                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                                  a,
+                                                                  arr(left),
+                                                                  arr_11<<selectSK>>),
+                                                            a,
+                                                            arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                            pivot1),
+                                                      a,
+                                                      arr(right),
+                                                      arr_14<<selectSK>>),
+                                                a,
+                                                arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                                pivot2),
+                                          a,
+                                          arr(u))),
+               iv_1)
+ = any::seqGet(seqSwap(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                            length(a),
+                                                            any::select(anon(heapAfter_move_great_left,
+                                                                             union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                         singleton(null, DualPivotQuicksort::$less)),
+                                                                                   arrayRange(a, left, right)),
+                                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                                        a,
+                                                                        arr(u))),
+                                             left,
+                                             pivot1),
+                                      right,
+                                      pivot2),
+                               left,
+                               add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                       right,
+                       add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+               iv_1)";
+
+cut "-1 + DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>> = left";
+
+cut "x_9 > int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)";
+
+rule allLeft 
+    t="x_9"
+    formula="\forall int l;
+       (   lt(int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great), l) & lt(l, right)
+        -> gt(int::select(anon(heapAfter_move_great_left,
+                               union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                               anon_heap_LOOP<<anonHeapFunction>>),
+                          a,
+                          arr(l)),
+              pivot2))";
+
+select succedent formula="x_9 >  DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule allLeft
+    t="x_9"
+    formula="\forall int j;
+       (     lt(j, add(Z(1(#)), k_0))
+           & leq(j, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))
+           & geq(j, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))
+        ->   geq(int::select(anon(heapAfter_move_great_left,
+                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                  anon_heap_LOOP<<anonHeapFunction>>),
+                             a,
+                             arr(j)),
+                 pivot1)
+           & leq(int::select(anon(heapAfter_move_great_left,
+                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                  anon_heap_LOOP<<anonHeapFunction>>),
+                             a,
+                             arr(j)),
+                 pivot2))";
+
+rule impLeft formula="     lt(x_9, add(Z(1(#)), k_0))
+    & leq(x_9, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))
+    & geq(x_9, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))
+ ->   geq(int::select(anon(heapAfter_move_great_left,
+                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                           anon_heap_LOOP<<anonHeapFunction>>),
+                      a,
+                      arr(x_9)),
+          pivot1)
+    & leq(int::select(anon(heapAfter_move_great_left,
+                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                           anon_heap_LOOP<<anonHeapFunction>>),
+                      a,
+                      arr(x_9)),
+          pivot2)";
+
+cut "x_9 >= DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>";
+
+select succedent formula="-1 + DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>> = left";
+
+cut "right = 1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+cut "y_1 < DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule allLeft
+    t="y_1"
+    formula="\forall int i;
+       (   lt(left, i) & lt(i, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))
+        -> lt(int::select(anon(heapAfter_move_great_left,
+                               union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                               anon_heap_LOOP<<anonHeapFunction>>),
+                          a,
+                          arr(i)),
+              pivot1))";
+
+select succedent formula="y_1 < DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>";
+
+cut "y_1 <= DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule allLeft
+    t="y_1"
+    formula="\forall int j;
+       (     lt(j, add(Z(1(#)), k_0))
+           & leq(j, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))
+           & geq(j, int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))
+        ->   geq(int::select(anon(heapAfter_move_great_left,
+                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                  anon_heap_LOOP<<anonHeapFunction>>),
+                             a,
+                             arr(j)),
+                 pivot1)
+           & leq(int::select(anon(heapAfter_move_great_left,
+                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                  anon_heap_LOOP<<anonHeapFunction>>),
+                             a,
+                             arr(j)),
+                 pivot2))";
+
+select succedent formula="right = 1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule getOfSwap formula="  any::seqGet(seqDef{int u;}(Z(0(#)),
+                              length(a),
+                              any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                             arrayRange(a, left, right)),
+                                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                                  a,
+                                                                  arr(left),
+                                                                  arr_11<<selectSK>>),
+                                                            a,
+                                                            arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                            pivot1),
+                                                      a,
+                                                      arr(right),
+                                                      arr_14<<selectSK>>),
+                                                a,
+                                                arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                                pivot2),
+                                          a,
+                                          arr(u))),
+               iv_1)
+ = any::seqGet(seqSwap(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                            length(a),
+                                                            any::select(anon(heapAfter_move_great_left,
+                                                                             union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                         singleton(null, DualPivotQuicksort::$less)),
+                                                                                   arrayRange(a, left, right)),
+                                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                                        a,
+                                                                        arr(u))),
+                                             left,
+                                             pivot1),
+                                      right,
+                                      pivot2),
+                               left,
+                               add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                       right,
+                       add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+               iv_1)";
+
+rule ifthenelse_negated formula="  any::seqGet(seqDef{int u;}(Z(0(#)),
+                              length(a),
+                              any::select(store(store(store(store(anon(heapAfter_move_great_left,
+                                                                       union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                             arrayRange(a, left, right)),
+                                                                       anon_heap_LOOP<<anonHeapFunction>>),
+                                                                  a,
+                                                                  arr(left),
+                                                                  arr_11<<selectSK>>),
+                                                            a,
+                                                            arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                            pivot1),
+                                                      a,
+                                                      arr(right),
+                                                      arr_14<<selectSK>>),
+                                                a,
+                                                arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                                                pivot2),
+                                          a,
+                                          arr(u))),
+               iv_1)
+ = \if (!(  leq(Z(0(#)), right)
+          & leq(Z(0(#)), add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)))
+          & lt(right,
+               seqLen(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                           length(a),
+                                                           any::select(anon(heapAfter_move_great_left,
+                                                                            union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                        singleton(null, DualPivotQuicksort::$less)),
+                                                                                  arrayRange(a, left, right)),
+                                                                            anon_heap_LOOP<<anonHeapFunction>>),
+                                                                       a,
+                                                                       arr(u))),
+                                            left,
+                                            pivot1),
+                                     right,
+                                     pivot2),
+                              left,
+                              add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))))
+          & lt(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)),
+               seqLen(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                           length(a),
+                                                           any::select(anon(heapAfter_move_great_left,
+                                                                            union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                        singleton(null, DualPivotQuicksort::$less)),
+                                                                                  arrayRange(a, left, right)),
+                                                                            anon_heap_LOOP<<anonHeapFunction>>),
+                                                                       a,
+                                                                       arr(u))),
+                                            left,
+                                            pivot1),
+                                     right,
+                                     pivot2),
+                              left,
+                              add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))))))
+       \then (any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                               length(a),
+                                                               any::select(anon(heapAfter_move_great_left,
+                                                                                union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                            singleton(null, DualPivotQuicksort::$less)),
+                                                                                      arrayRange(a, left, right)),
+                                                                                anon_heap_LOOP<<anonHeapFunction>>),
+                                                                           a,
+                                                                           arr(u))),
+                                                left,
+                                                pivot1),
+                                         right,
+                                         pivot2),
+                                  left,
+                                  add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                          iv_1))
+       \else (\if (iv_1 = right)
+                  \then (any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                          length(a),
+                                                                          any::select(anon(heapAfter_move_great_left,
+                                                                                           union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                                       singleton(null, DualPivotQuicksort::$less)),
+                                                                                                 arrayRange(a, left, right)),
+                                                                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                                                                      a,
+                                                                                      arr(u))),
+                                                           left,
+                                                           pivot1),
+                                                    right,
+                                                    pivot2),
+                                             left,
+                                             add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                     add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))))
+                  \else (\if (iv_1 = add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)))
+                             \then (any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                                     length(a),
+                                                                                     any::select(anon(heapAfter_move_great_left,
+                                                                                                      union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                                                  singleton(null, DualPivotQuicksort::$less)),
+                                                                                                            arrayRange(a, left, right)),
+                                                                                                      anon_heap_LOOP<<anonHeapFunction>>),
+                                                                                                 a,
+                                                                                                 arr(u))),
+                                                                      left,
+                                                                      pivot1),
+                                                               right,
+                                                               pivot2),
+                                                        left,
+                                                        add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                right))
+                             \else (any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                                     length(a),
+                                                                                     any::select(anon(heapAfter_move_great_left,
+                                                                                                      union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                                                  singleton(null, DualPivotQuicksort::$less)),
+                                                                                                            arrayRange(a, left, right)),
+                                                                                                      anon_heap_LOOP<<anonHeapFunction>>),
+                                                                                                 a,
+                                                                                                 arr(u))),
+                                                                      left,
+                                                                      pivot1),
+                                                               right,
+                                                               pivot2),
+                                                        left,
+                                                        add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                                                iv_1))))";
+
+rule cut_direct on="0 <= right";
+
+rule cut_direct on="0 <= 1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule cut_direct on="lt(right,
+             seqLen(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                         length(a),
+                                                         any::select(anon(heapAfter_move_great_left,
+                                                                          union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                      singleton(null, DualPivotQuicksort::$less)),
+                                                                                arrayRange(a, left, right)),
+                                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                                     a,
+                                                                     arr(u))),
+                                          left,
+                                          pivot1),
+                                   right,
+                                   pivot2),
+                            left,
+                            add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))))";
+
+rule cut_direct on="lt(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)),
+             seqLen(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                         length(a),
+                                                         any::select(anon(heapAfter_move_great_left,
+                                                                          union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                      singleton(null, DualPivotQuicksort::$less)),
+                                                                                arrayRange(a, left, right)),
+                                                                          anon_heap_LOOP<<anonHeapFunction>>),
+                                                                     a,
+                                                                     arr(u))),
+                                          left,
+                                          pivot1),
+                                   right,
+                                   pivot2),
+                            left,
+                            add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))))";
+
+macro onestep;
+
+rule cut_direct on="iv_1 = right";
+
+macro onestep;
+
+rule getOfSwap on="any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              right,
+                              pivot2),
+                       left,
+                       add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+               add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great)))";
+
+rule ifthenelse_negated;
+
+rule cut_direct on="0 <= left";
+
+rule cut_direct on="0 <= -1 + DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule cut_direct on="lt(left,
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))";
+
+rule cut_direct on="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))";
+
+macro onestep;
+
+rule cut_direct on="1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>> = left";
+
+macro onestep; #ast iv_1 = right geht zu
+
+select succedent formula="iv_1 = right";
+
+macro onestep;
+
+rule cut_direct on="iv_1 = 1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+select succedent formula="iv_1 = 1 + DualPivotQuicksort.great@anon_heap_LOOP<<anonHeapFunction>>";
+
+macro onestep;
+
+rule getOfSwap on="any::seqGet(seqSwap(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                    length(a),
+                                                    any::select(anon(heapAfter_move_great_left,
+                                                                     union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                           arrayRange(a, left, right)),
+                                                                     anon_heap_LOOP<<anonHeapFunction>>),
+                                                                a,
+                                                                arr(u))),
+                                     left,
+                                     pivot1),
+                              right,
+                              pivot2),
+                       left,
+                       add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+               iv_1)";
+
+rule ifthenelse_negated on="\if (!(  leq(Z(0(#)), left)
+          & leq(Z(0(#)), add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))
+          & lt(left,
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))
+          & lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))))
+       \then (any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                       length(a),
+                                                       any::select(anon(heapAfter_move_great_left,
+                                                                        union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                    singleton(null, DualPivotQuicksort::$less)),
+                                                                              arrayRange(a, left, right)),
+                                                                        anon_heap_LOOP<<anonHeapFunction>>),
+                                                                   a,
+                                                                   arr(u))),
+                                        left,
+                                        pivot1),
+                                 right,
+                                 pivot2),
+                          iv_1))
+       \else (\if (iv_1 = left)
+                  \then (any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                  length(a),
+                                                                  any::select(anon(heapAfter_move_great_left,
+                                                                                   union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                               singleton(null, DualPivotQuicksort::$less)),
+                                                                                         arrayRange(a, left, right)),
+                                                                                   anon_heap_LOOP<<anonHeapFunction>>),
+                                                                              a,
+                                                                              arr(u))),
+                                                   left,
+                                                   pivot1),
+                                            right,
+                                            pivot2),
+                                     add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))))
+                  \else (\if (iv_1 = add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)))
+                             \then (any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                             length(a),
+                                                                             any::select(anon(heapAfter_move_great_left,
+                                                                                              union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                                          singleton(null, DualPivotQuicksort::$less)),
+                                                                                                    arrayRange(a, left, right)),
+                                                                                              anon_heap_LOOP<<anonHeapFunction>>),
+                                                                                         a,
+                                                                                         arr(u))),
+                                                              left,
+                                                              pivot1),
+                                                       right,
+                                                       pivot2),
+                                                left))
+                             \else (any::seqGet(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                                             length(a),
+                                                                             any::select(anon(heapAfter_move_great_left,
+                                                                                              union(union(singleton(null, DualPivotQuicksort::$great),
+                                                                                                          singleton(null, DualPivotQuicksort::$less)),
+                                                                                                    arrayRange(a, left, right)),
+                                                                                              anon_heap_LOOP<<anonHeapFunction>>),
+                                                                                         a,
+                                                                                         arr(u))),
+                                                              left,
+                                                              pivot1),
+                                                       right,
+                                                       pivot2),
+                                                iv_1))))";
+
+rule cut_direct on="0 <= left";
+
+rule cut_direct on="0 <= -1 + DualPivotQuicksort.less@anon_heap_LOOP<<anonHeapFunction>>";
+
+rule cut_direct on="lt(left,
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))";
+
+rule cut_direct on="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+               seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                   length(a),
+                                                   any::select(anon(heapAfter_move_great_left,
+                                                                    union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                          arrayRange(a, left, right)),
+                                                                    anon_heap_LOOP<<anonHeapFunction>>),
+                                                               a,
+                                                               arr(u))),
+                                    left,
+                                    pivot1),
+                             right,
+                             pivot2)))";
+
+rule cut_direct on="iv_1 = left"; 
+
+select succedent formula="lt(right,
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))";
+
+rule lenOfUpd; 
+rule lenOfUpd; 
+rule lenOfSeqDef; 
+
+select succedent formula="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))";
+
+rule lenOfUpd formula="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))"
+        on="seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2))"; 
+rule lenOfUpd on="seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                 length(a),
+                                 any::select(anon(heapAfter_move_great_left,
+                                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                        arrayRange(a, left, right)),
+                                                  anon_heap_LOOP<<anonHeapFunction>>),
+                                             a,
+                                             arr(u))),
+                  left,
+                  pivot1))"; 
+rule lenOfSeqDef on="seqLen(seqDef{int u;}(Z(0(#)),
+                          length(a),
+                          any::select(anon(heapAfter_move_great_left,
+                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                 arrayRange(a, left, right)),
+                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                      a,
+                                      arr(u))))"; 
+
+select succedent formula="lt(left,
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))";
+
+rule lenOfUpd formula="lt(left,
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))" 
+            on="seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2))"; 
+rule lenOfUpd on="seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                 length(a),
+                                 any::select(anon(heapAfter_move_great_left,
+                                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                        arrayRange(a, left, right)),
+                                                  anon_heap_LOOP<<anonHeapFunction>>),
+                                             a,
+                                             arr(u))),
+                  left,
+                  pivot1))"; 
+rule lenOfSeqDef on="seqLen(seqDef{int u;}(Z(0(#)),
+                          length(a),
+                          any::select(anon(heapAfter_move_great_left,
+                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                 arrayRange(a, left, right)),
+                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                      a,
+                                      arr(u))))"; 
+
+select succedent formula="lt(left,
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))";
+
+rule lenOfUpd formula="lt(left,
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))"
+        on="seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                                length(a),
+                                                any::select(anon(heapAfter_move_great_left,
+                                                                 union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                       arrayRange(a, left, right)),
+                                                                 anon_heap_LOOP<<anonHeapFunction>>),
+                                                            a,
+                                                            arr(u))),
+                                 left,
+                                 pivot1),
+                          right,
+                          pivot2))";
+
+rule lenOfUpd on="seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                 length(a),
+                                 any::select(anon(heapAfter_move_great_left,
+                                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                        arrayRange(a, left, right)),
+                                                  anon_heap_LOOP<<anonHeapFunction>>),
+                                             a,
+                                             arr(u))),
+                  left,
+                  pivot1))";
+
+rule lenOfSeqDef on="seqLen(seqDef{int u;}(Z(0(#)),
+                          length(a),
+                          any::select(anon(heapAfter_move_great_left,
+                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                 arrayRange(a, left, right)),
+                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                      a,
+                                      arr(u))))";
+
+select succedent formula="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))";
+
+rule lenOfUpd formula="lt(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less)),
+    seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                        length(a),
+                                        any::select(anon(heapAfter_move_great_left,
+                                                         union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                               arrayRange(a, left, right)),
+                                                         anon_heap_LOOP<<anonHeapFunction>>),
+                                                    a,
+                                                    arr(u))),
+                         left,
+                         pivot1),
+                  right,
+                  pivot2)))"
+    on="seqLen(seqUpd(seqUpd(seqDef{int u;}(Z(0(#)),
+                                            length(a),
+                                            any::select(anon(heapAfter_move_great_left,
+                                                             union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                                   arrayRange(a, left, right)),
+                                                             anon_heap_LOOP<<anonHeapFunction>>),
+                                                        a,
+                                                        arr(u))),
+                             left,
+                             pivot1),
+                      right,
+                      pivot2))";
+
+rule lenOfUpd on="seqLen(seqUpd(seqDef{int u;}(Z(0(#)),
+                                 length(a),
+                                 any::select(anon(heapAfter_move_great_left,
+                                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                        arrayRange(a, left, right)),
+                                                  anon_heap_LOOP<<anonHeapFunction>>),
+                                             a,
+                                             arr(u))),
+                  left,
+                  pivot1))";
+
+rule lenOfSeqDef on="seqLen(seqDef{int u;}(Z(0(#)),
+                          length(a),
+                          any::select(anon(heapAfter_move_great_left,
+                                           union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)),
+                                                 arrayRange(a, left, right)),
+                                           anon_heap_LOOP<<anonHeapFunction>>),
+                                      a,
+                                      arr(u))))";
+
+select succedent formula="{heapAtPre:=heap
+  || _a:=a
+  || _left:=left
+  || _right:=right
+  || _pivot1:=pivot1
+  || _pivot2:=pivot2
+  || exc:=null
+  || (heapBefore_split:=heap
+  || _aBefore_split:=a)
+  || heap:=heapAfter_move_great_left
+  || k:=-1 + DualPivotQuicksort.less@anon_heap_move_less_right<<anonHeapFunction>>}
+   (  seqUpd(seqUpd(array2seq(heap, _a), _left, _pivot1), _right, _pivot2)
+    = seqSwap(seqSwap(array2seq(heapBefore_split, _aBefore_split), left, DualPivotQuicksort.e2), right, DualPivotQuicksort.e4))";
+
+macro simp-heap; smt;
+
+select succedent formula="\forall Field f;
+   \forall java.lang.Object o;
+     (  o = null & f = DualPivotQuicksort::$less
+      | o = null
+      & f = DualPivotQuicksort::$great
+      | o = a
+      & \exists int iv; (f = arr(iv) & iv >= left & iv <= right)
+      | !o = null
+      & !o.<created>@heapAfter_move_great_left = TRUE
+      | o.f@heapAfter_move_great_left = o.f@heapAfter_loop_body)";
+
+macro simp-heap; smt;
+
+select succedent formula="{heapAtPre:=heap
+  || _a:=a
+  || _pivot2:=pivot2
+  || exc:=null
+  || heap:=store(store(anon(heapAfter_move_great_left,
+                            union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                            anon_heap_LOOP<<anonHeapFunction>>),
+                       a,
+                       arr(left),
+                       arr_11<<selectSK>>),
+                 a,
+                 arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                 pivot1)
+  || x_arr_7:=a
+  || x_19:=right
+  || x_arr_8:=a
+  || x_21:=add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))}
+   false";
+
+macro simp-heap; smt;
+
+select succedent formula="{heapAtPre:=heap
+  || _a:=a
+  || _right:=right
+  || _pivot1:=pivot1
+  || _pivot2:=pivot2
+  || exc:=null
+  || heap:=store(anon(heapAfter_move_great_left,
+                      union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                      anon_heap_LOOP<<anonHeapFunction>>),
+                 a,
+                 arr(left),
+                 arr_11<<selectSK>>)
+  || x_arr_6:=a
+  || x_17:=add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))}
+   false";
+
+macro simp-heap; smt;
+
+select succedent formula="{heapAtPre:=heap
+  || _a:=a
+  || _right:=right
+  || _pivot1:=pivot1
+  || _pivot2:=pivot2
+  || exc:=null
+  || heap:=anon(heapAfter_move_great_left,
+                union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                anon_heap_LOOP<<anonHeapFunction>>)
+  || (x_arr_4:=a
+  || x_10:=left
+  || x_arr_5:=a)
+  || x_12:=add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))}
+   false";
+
+macro simp-heap; smt;
+
+select succedent formula="{heapAtPre:=heap
+  || _pivot2:=pivot2
+  || exc:=null
+  || heap:=store(store(store(anon(heapAfter_move_great_left,
+                                  union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                  anon_heap_LOOP<<anonHeapFunction>>),
+                             a,
+                             arr(left),
+                             arr_11<<selectSK>>),
+                       a,
+                       arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                       pivot1),
+                 a,
+                 arr(right),
+                 arr_14<<selectSK>>)
+  || x_arr_9:=a
+  || x_23:=add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))}
+   false";
+
+macro simp-heap; smt;
+
+select succedent formula="{heapAtPre:=heap
+  || exc:=null
+  || heap:=store(store(store(store(anon(heapAfter_move_great_left,
+                                        union(union(singleton(null, DualPivotQuicksort::$great), singleton(null, DualPivotQuicksort::$less)), arrayRange(a, left, right)),
+                                        anon_heap_LOOP<<anonHeapFunction>>),
+                                   a,
+                                   arr(left),
+                                   arr_11<<selectSK>>),
+                             a,
+                             arr(add(Z(neglit(1(#))), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$less))),
+                             pivot1),
+                       a,
+                       arr(right),
+                       arr_14<<selectSK>>),
+                 a,
+                 arr(add(Z(1(#)), int::select(anon_heap_LOOP<<anonHeapFunction>>, null, DualPivotQuicksort::$great))),
+                 pivot2)}
+   \forall Field f;
+     \forall java.lang.Object o;
+       (  o = null & f = DualPivotQuicksort::$less
+        | o = null
+        & f = DualPivotQuicksort::$great
+        | o = a
+        & \exists int iv; (f = arr(iv) & geq(iv, left) & leq(iv, right))
+        | !o = null
+        & !boolean::select(heapAtPre, o, java.lang.Object::<created>) = TRUE
+        | any::select(heapAtPre, o, f) = any::select(heap, o, f))";
+
+
+macro simp-heap; smt;
+
+tryclose steps=15000;

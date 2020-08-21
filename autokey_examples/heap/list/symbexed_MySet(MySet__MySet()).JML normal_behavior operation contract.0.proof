@@ -1,0 +1,185 @@
+\profile "Java Profile";
+
+\settings {
+"#Proof-Settings-Config-File
+#Sun Nov 10 12:44:22 CET 2019
+[Labels]UseOriginLabels=true
+[StrategyProperty]QUERYAXIOM_OPTIONS_KEY=QUERYAXIOM_ON
+[SMTSettings]invariantForall=false
+[Strategy]ActiveStrategy=JavaCardDLStrategy
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY1=USER_TACLETS_OFF
+[StrategyProperty]QUANTIFIERS_OPTIONS_KEY=QUANTIFIERS_NON_SPLITTING_WITH_PROGS
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY2=USER_TACLETS_OFF
+[Choice]DefaultChoices=assertions-assertions\\:on , initialisation-initialisation\\:disableStaticInitialisation , intRules-intRules\\:arithmeticSemanticsIgnoringOF , programRules-programRules\\:Java , runtimeExceptions-runtimeExceptions\\:ban , JavaCard-JavaCard\\:on , Strings-Strings\\:on , modelFields-modelFields\\:treatAsAxiom , bigint-bigint\\:on , sequences-sequences\\:on , moreSeqRules-moreSeqRules\\:off , reach-reach\\:on , integerSimplificationRules-integerSimplificationRules\\:full , permissions-permissions\\:off , wdOperator-wdOperator\\:L , wdChecks-wdChecks\\:on , mergeGenerateIsWeakeningGoal-mergeGenerateIsWeakeningGoal\\:off , methodExpansion-methodExpansion\\:modularOnly
+[StrategyProperty]LOOP_OPTIONS_KEY=LOOP_SCOPE_INVARIANT
+[StrategyProperty]INF_FLOW_CHECK_PROPERTY=INF_FLOW_CHECK_FALSE
+[SMTSettings]UseBuiltUniqueness=false
+[SMTSettings]explicitTypeHierarchy=false
+[SMTSettings]instantiateHierarchyAssumptions=true
+[StrategyProperty]NON_LIN_ARITH_OPTIONS_KEY=NON_LIN_ARITH_NONE
+[SMTSettings]SelectedTaclets=
+[StrategyProperty]DEP_OPTIONS_KEY=DEP_ON
+[StrategyProperty]AUTO_INDUCTION_OPTIONS_KEY=AUTO_INDUCTION_OFF
+[Strategy]MaximumNumberOfAutomaticApplications=10000
+[StrategyProperty]STOPMODE_OPTIONS_KEY=STOPMODE_DEFAULT
+[StrategyProperty]CLASS_AXIOM_OPTIONS_KEY=CLASS_AXIOM_FREE
+[SMTSettings]useConstantsForBigOrSmallIntegers=true
+[StrategyProperty]MPS_OPTIONS_KEY=MPS_MERGE
+[StrategyProperty]SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OPTIONS_KEY=SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OFF
+[Strategy]Timeout=-1
+[StrategyProperty]SYMBOLIC_EXECUTION_ALIAS_CHECK_OPTIONS_KEY=SYMBOLIC_EXECUTION_ALIAS_CHECK_NEVER
+[StrategyProperty]QUERY_NEW_OPTIONS_KEY=QUERY_OFF
+[SMTSettings]useUninterpretedMultiplication=true
+[StrategyProperty]BLOCK_OPTIONS_KEY=BLOCK_CONTRACT_INTERNAL
+[StrategyProperty]METHOD_OPTIONS_KEY=METHOD_CONTRACT
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY3=USER_TACLETS_OFF
+[SMTSettings]maxGenericSorts=2
+[StrategyProperty]OSS_OPTIONS_KEY=OSS_ON
+[StrategyProperty]SPLITTING_OPTIONS_KEY=SPLITTING_DELAYED
+[SMTSettings]integersMinimum=-2147483645
+[StrategyProperty]VBT_PHASE=VBT_SYM_EX
+[SMTSettings]integersMaximum=2147483645
+"
+}
+
+\javaSource "src";
+
+\proofObligation "#Proof Obligation Settings
+#Sun Nov 10 12:44:22 CET 2019
+contract=MySet[MySet\\:\\:MySet()].JML normal_behavior operation contract.0
+name=MySet[MySet\\:\\:MySet()].JML normal_behavior operation contract.0
+class=de.uka.ilkd.key.proof.init.FunctionalOperationContractPO
+";
+
+\proof {
+(keyLog "0" (keyUser "Andy" ) (keyVersion "2bbea99a67"))
+
+(autoModeTime "82")
+
+(branch "dummy ID"
+(rule "impRight" (formula "1") (newnames "self,exc,heapAtPre,o,f"))
+(rule "andLeft" (formula "1"))
+(rule "eqSymm" (formula "3") (term "1,0,0,1,0,1"))
+(rule "assignment" (formula "3") (term "1"))
+ (builtin "One Step Simplification" (formula "3"))
+(rule "variableDeclarationAssign" (formula "3") (term "1"))
+(rule "variableDeclaration" (formula "3") (term "1") (newnames "self_1"))
+(rule "staticMethodCallStaticWithAssignmentViaTypereference" (formula "3") (term "1") (inst "#v0=m"))
+(rule "variableDeclaration" (formula "3") (term "1") (newnames "m"))
+(rule "methodBodyExpand" (formula "3") (term "1") (newnames "heapBefore_<createObject>,savedHeapBefore_<createObject>"))
+ (builtin "One Step Simplification" (formula "3"))
+(rule "variableDeclaration" (formula "3") (term "1") (newnames "__NEW__"))
+(rule "staticMethodCallStaticWithAssignmentViaTypereference" (formula "3") (term "1") (inst "#v0=m_1"))
+(rule "variableDeclaration" (formula "3") (term "1") (newnames "m_1"))
+(rule "allocateInstance" (formula "3"))
+ (builtin "One Step Simplification" (formula "4"))
+ (builtin "One Step Simplification" (formula "1") (ifInst ""  (formula "2")))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "notLeft" (formula "2"))
+(rule "notLeft" (formula "1"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "assignment" (formula "6") (term "1"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_<create>,savedHeapBefore_<create>"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "assignment_write_attribute_this" (formula "6"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallWithinClass" (formula "6") (term "1"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_<prepareEnter>,savedHeapBefore_<prepareEnter>"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallSuper" (formula "6") (term "1"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_<prepare>,savedHeapBefore_<prepare>"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallEmpty" (formula "6") (term "1"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "assignment_write_attribute_this" (formula "6"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallEmpty" (formula "6") (term "1"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "methodCallReturnIgnoreResult" (formula "6") (term "1"))
+(rule "methodCallReturn" (formula "6") (term "1"))
+(rule "assignment" (formula "6") (term "1"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallEmpty" (formula "6") (term "1"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "assignment" (formula "6") (term "1"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_<init>,savedHeapBefore_<init>"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallSuper" (formula "6") (term "1"))
+(rule "methodBodyExpand" (formula "6") (term "1") (newnames "heapBefore_<init>_0,savedHeapBefore_<init>_0"))
+ (builtin "One Step Simplification" (formula "6"))
+(rule "methodCallEmpty" (formula "6") (term "1"))
+(rule "blockEmpty" (formula "6") (term "1"))
+(rule "eval_order_access4_this" (formula "6") (term "1") (inst "#v1=a"))
+(rule "variableDeclarationAssign" (formula "6") (term "1"))
+(rule "variableDeclaration" (formula "6") (term "1") (newnames "a"))
+ (builtin "Use Operation Contract" (formula "6") (newnames "heapBefore_ArrayList,self_0,exc_0,heapAfter_ArrayList,anon_heap_ArrayList") (contract "ArrayList[ArrayList::ArrayList()].JML normal_behavior operation contract.0"))
+(branch "Post (ArrayList)"
+    (builtin "One Step Simplification" (formula "8"))
+    (builtin "One Step Simplification" (formula "5"))
+   (rule "andLeft" (formula "5"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "6") (term "1,1,0,1,0") (ifseqformula "5"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "7"))
+   (rule "notLeft" (formula "6"))
+   (rule "notLeft" (formula "6"))
+   (rule "replace_known_right" (formula "6") (term "0") (ifseqformula "12"))
+    (builtin "One Step Simplification" (formula "6"))
+   (rule "dismissNonSelectedField" (formula "12") (term "0"))
+   (rule "dismissNonSelectedField" (formula "12") (term "0"))
+   (rule "assignment" (formula "16") (term "1"))
+    (builtin "One Step Simplification" (formula "16"))
+   (rule "assignment_write_attribute_this" (formula "16"))
+    (builtin "One Step Simplification" (formula "16"))
+   (rule "pullOutSelect" (formula "12") (term "0") (inst "selectSK=java_lang_Object_created__0"))
+   (rule "simplifySelectOfCreate" (formula "1"))
+    (builtin "One Step Simplification" (formula "1") (ifInst ""  (formula "15")))
+   (rule "castDel" (formula "1") (term "1,0"))
+   (rule "sortsDisjointModuloNull" (formula "1") (term "0,0"))
+   (rule "replace_known_right" (formula "1") (term "0,0,0") (ifseqformula "15"))
+    (builtin "One Step Simplification" (formula "1") (ifInst ""  (formula "14")))
+   (rule "hideAuxiliaryEq" (formula "1"))
+   (rule "replaceKnownAuxiliaryConstant_taclet0_1" (formula "12") (term "0"))
+   (rule "methodCallEmpty" (formula "16") (term "1"))
+   (rule "blockEmpty" (formula "16") (term "1"))
+   (rule "assignment_write_attribute" (formula "16"))
+   (branch "Normal Execution (self_1 != null)"
+       (builtin "One Step Simplification" (formula "16"))
+      (rule "tryEmpty" (formula "16") (term "1"))
+      (rule "emptyModality" (formula "16") (term "1"))
+       (opengoal " ")
+   )
+   (branch "Null Reference (self_1 = null)"
+       (opengoal " ")
+   )
+)
+(branch "Exceptional Post (ArrayList)"
+    (builtin "One Step Simplification" (formula "8"))
+    (builtin "One Step Simplification" (formula "5"))
+   (rule "andLeft" (formula "5"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "6") (term "1,0,0") (ifseqformula "5"))
+   (rule "selectCreatedOfAnonAsFormulaEQ" (formula "6") (term "1,1,0,1,0") (ifseqformula "5"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "8"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "6"))
+   (rule "andLeft" (formula "10"))
+   (rule "andLeft" (formula "8"))
+   (rule "notLeft" (formula "6"))
+   (rule "close" (formula "13") (ifseqformula "12"))
+)
+(branch "Pre (ArrayList)"
+    (opengoal " ")
+)
+)
+}

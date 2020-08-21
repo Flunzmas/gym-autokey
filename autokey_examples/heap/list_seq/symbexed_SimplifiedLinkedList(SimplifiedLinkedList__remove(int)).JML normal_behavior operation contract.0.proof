@@ -1,0 +1,300 @@
+\profile "Java Profile";
+
+\settings {
+"#Proof-Settings-Config-File
+#Sun Nov 10 13:40:35 CET 2019
+[Labels]UseOriginLabels=true
+[StrategyProperty]QUERYAXIOM_OPTIONS_KEY=QUERYAXIOM_ON
+[SMTSettings]invariantForall=false
+[Strategy]ActiveStrategy=JavaCardDLStrategy
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY1=USER_TACLETS_OFF
+[StrategyProperty]QUANTIFIERS_OPTIONS_KEY=QUANTIFIERS_NON_SPLITTING_WITH_PROGS
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY2=USER_TACLETS_OFF
+[Choice]DefaultChoices=assertions-assertions\\:on , initialisation-initialisation\\:disableStaticInitialisation , intRules-intRules\\:arithmeticSemanticsIgnoringOF , programRules-programRules\\:Java , runtimeExceptions-runtimeExceptions\\:ban , JavaCard-JavaCard\\:on , Strings-Strings\\:on , modelFields-modelFields\\:showSatisfiability , bigint-bigint\\:on , sequences-sequences\\:on , moreSeqRules-moreSeqRules\\:off , reach-reach\\:on , integerSimplificationRules-integerSimplificationRules\\:full , permissions-permissions\\:off , wdOperator-wdOperator\\:L , wdChecks-wdChecks\\:on , mergeGenerateIsWeakeningGoal-mergeGenerateIsWeakeningGoal\\:off , methodExpansion-methodExpansion\\:modularOnly , optimisedSelectRules-optimisedSelectRules\\:off
+[StrategyProperty]LOOP_OPTIONS_KEY=LOOP_SCOPE_INVARIANT
+[StrategyProperty]INF_FLOW_CHECK_PROPERTY=INF_FLOW_CHECK_FALSE
+[SMTSettings]UseBuiltUniqueness=false
+[SMTSettings]explicitTypeHierarchy=false
+[SMTSettings]instantiateHierarchyAssumptions=true
+[StrategyProperty]NON_LIN_ARITH_OPTIONS_KEY=NON_LIN_ARITH_DEF_OPS
+[SMTSettings]SelectedTaclets=
+[StrategyProperty]DEP_OPTIONS_KEY=DEP_ON
+[StrategyProperty]AUTO_INDUCTION_OPTIONS_KEY=AUTO_INDUCTION_OFF
+[Strategy]MaximumNumberOfAutomaticApplications=70000
+[StrategyProperty]STOPMODE_OPTIONS_KEY=STOPMODE_DEFAULT
+[StrategyProperty]CLASS_AXIOM_OPTIONS_KEY=CLASS_AXIOM_FREE
+[SMTSettings]useConstantsForBigOrSmallIntegers=true
+[StrategyProperty]MPS_OPTIONS_KEY=MPS_MERGE
+[StrategyProperty]SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OPTIONS_KEY=SYMBOLIC_EXECUTION_NON_EXECUTION_BRANCH_HIDING_OFF
+[Strategy]Timeout=-1
+[StrategyProperty]SYMBOLIC_EXECUTION_ALIAS_CHECK_OPTIONS_KEY=SYMBOLIC_EXECUTION_ALIAS_CHECK_NEVER
+[StrategyProperty]QUERY_NEW_OPTIONS_KEY=QUERY_OFF
+[SMTSettings]useUninterpretedMultiplication=true
+[StrategyProperty]BLOCK_OPTIONS_KEY=BLOCK_CONTRACT_INTERNAL
+[StrategyProperty]METHOD_OPTIONS_KEY=METHOD_CONTRACT
+[StrategyProperty]USER_TACLETS_OPTIONS_KEY3=USER_TACLETS_OFF
+[SMTSettings]maxGenericSorts=2
+[StrategyProperty]OSS_OPTIONS_KEY=OSS_ON
+[StrategyProperty]SPLITTING_OPTIONS_KEY=SPLITTING_DELAYED
+[SMTSettings]integersMinimum=-2147483645
+[StrategyProperty]VBT_PHASE=VBT_SYM_EX
+[SMTSettings]integersMaximum=2147483645
+"
+}
+
+\javaSource "src";
+
+\proofObligation "#Proof Obligation Settings
+#Sun Nov 10 13:40:35 CET 2019
+contract=SimplifiedLinkedList[SimplifiedLinkedList\\:\\:remove(int)].JML normal_behavior operation contract.0
+name=SimplifiedLinkedList[SimplifiedLinkedList\\:\\:remove(int)].JML normal_behavior operation contract.0
+class=de.uka.ilkd.key.proof.init.FunctionalOperationContractPO
+";
+
+\proof {
+(keyLog "0" (keyUser "Andy" ) (keyVersion "2bbea99a67"))
+
+(autoModeTime "216")
+
+(branch "dummy ID"
+ (builtin "One Step Simplification" (formula "1") (newnames "i,self,exc,heapAtPre,o,f"))
+(rule "translateJavaAddInt" (formula "1") (term "1,1,1,0,0,0,1,1"))
+(rule "impRight" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "2"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "3"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "andLeft" (formula "1"))
+(rule "notLeft" (formula "2"))
+(rule "eqSymm" (formula "9") (term "0,0,0,1"))
+(rule "polySimp_addComm0" (formula "9") (term "1,1,0,0,0,0,1"))
+(rule "assignment" (formula "9") (term "1"))
+ (builtin "One Step Simplification" (formula "9"))
+(rule "Class_invariant_axiom_for_SimplifiedLinkedList" (formula "7") (inst "i=i_1") (inst "j=j") (inst "sk=sk_0"))
+(branch "Use Axiom"
+    (builtin "One Step Simplification" (formula "7"))
+   (rule "translateJavaAddInt" (formula "7") (term "1,0,2,1,1,1,0,0,0,0"))
+   (rule "translateJavaSubInt" (formula "7") (term "1,0,1,1,1,0,0,0,0"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "7"))
+   (rule "andLeft" (formula "7"))
+   (rule "eqSymm" (formula "10"))
+   (rule "eqSymm" (formula "9"))
+   (rule "eqSymm" (formula "7") (term "1,1,0,1,0,1,0"))
+   (rule "eqSymm" (formula "7") (term "1,1,0"))
+   (rule "eqSymm" (formula "7") (term "0,1,0,1,0,1,0"))
+   (rule "polySimp_elimSub" (formula "7") (term "1,0,0,1,1,0"))
+   (rule "mul_literals" (formula "7") (term "1,1,0,0,1,1,0"))
+   (rule "polySimp_addComm0" (formula "7") (term "1,0,2,0,1,1,0"))
+   (rule "polySimp_addComm0" (formula "7") (term "1,0,0,1,1,0"))
+   (rule "castedGetAny" (formula "7") (term "0,0,0,0,1,0"))
+   (rule "castedGetAny" (formula "9") (term "0"))
+   (rule "castedGetAny" (formula "7") (term "1,1,1,1,0"))
+   (rule "castedGetAny" (formula "7") (term "0,0,1,0,1,0,1,0"))
+   (rule "castedGetAny" (formula "7") (term "1,0,1,0,1,0,1,0"))
+   (rule "castedGetAny" (formula "7") (term "2,0,1,1,0"))
+   (rule "inEqSimp_commuteLeq" (formula "7") (term "0,0,0"))
+   (rule "inEqSimp_commuteLeq" (formula "7") (term "0,0,0,1,0,1,0"))
+   (rule "bsum_num_of_is_max2" (formula "7") (ifseqformula "8"))
+   (rule "polySimp_elimSub" (formula "7") (term "1"))
+   (rule "times_zero_2" (formula "7") (term "1,1"))
+   (rule "add_zero_right" (formula "7") (term "1"))
+   (rule "commute_and" (formula "8") (term "0,0"))
+   (rule "methodBodyExpand" (formula "13") (term "1") (newnames "heapBefore_remove,savedHeapBefore_remove"))
+    (builtin "One Step Simplification" (formula "13"))
+   (rule "variableDeclarationAssign" (formula "13") (term "1"))
+   (rule "variableDeclaration" (formula "13") (term "1") (newnames "node"))
+   (rule "commute_and" (formula "8") (term "0,0,1,0,1,0"))
+   (rule "commute_and" (formula "7") (term "0,0,1,0,0,2,0"))
+   (rule "methodCallWithAssignmentUnfoldArguments" (formula "13") (term "1"))
+   (rule "variableDeclarationAssign" (formula "13") (term "1"))
+   (rule "variableDeclaration" (formula "13") (term "1") (newnames "var"))
+   (rule "assignmentSubtractionInt" (formula "13") (term "1"))
+    (builtin "One Step Simplification" (formula "13"))
+   (rule "translateJavaSubInt" (formula "13") (term "0,1,0"))
+   (rule "polySimp_elimSub" (formula "13") (term "0,1,0"))
+   (rule "mul_literals" (formula "13") (term "1,0,1,0"))
+   (rule "polySimp_addComm0" (formula "13") (term "0,1,0"))
+    (builtin "Use Operation Contract" (formula "13") (newnames "heapBefore_getNext,result,exc_0") (contract "SimplifiedLinkedList[SimplifiedLinkedList::getNext(int)].JML normal_behavior operation contract.0"))
+   (branch "Post (getNext)"
+       (builtin "One Step Simplification" (formula "14"))
+       (builtin "One Step Simplification" (formula "12"))
+      (rule "andLeft" (formula "12"))
+      (rule "andLeft" (formula "12"))
+      (rule "andLeft" (formula "14"))
+      (rule "andLeft" (formula "14"))
+      (rule "notLeft" (formula "15"))
+      (rule "eqSymm" (formula "14"))
+      (rule "replace_known_right" (formula "13") (term "0") (ifseqformula "15"))
+       (builtin "One Step Simplification" (formula "13"))
+      (rule "castedGetAny" (formula "14") (term "0"))
+      (rule "assignment" (formula "17") (term "1"))
+       (builtin "One Step Simplification" (formula "17"))
+      (rule "blockEmpty" (formula "17") (term "1"))
+      (rule "variableDeclarationAssign" (formula "17") (term "1"))
+      (rule "variableDeclaration" (formula "17") (term "1") (newnames "node2"))
+       (builtin "Use Operation Contract" (formula "17") (newnames "heapBefore_getNext_0,result_0,exc_1") (contract "SimplifiedLinkedList[SimplifiedLinkedList::getNext(int)].JML normal_behavior operation contract.0"))
+      (branch "Post (getNext)"
+          (builtin "One Step Simplification" (formula "15"))
+         (rule "andLeft" (formula "15"))
+         (rule "andLeft" (formula "15"))
+         (rule "andLeft" (formula "17"))
+         (rule "andLeft" (formula "17"))
+         (rule "notLeft" (formula "18"))
+         (rule "eqSymm" (formula "17"))
+         (rule "replace_known_right" (formula "16") (term "0") (ifseqformula "18"))
+          (builtin "One Step Simplification" (formula "16"))
+         (rule "castedGetAny" (formula "17") (term "0"))
+         (rule "assignment" (formula "21") (term "1"))
+          (builtin "One Step Simplification" (formula "21"))
+         (rule "eval_order_access4" (formula "21") (term "1") (inst "#v1=n_1") (inst "#v0=n"))
+         (rule "variableDeclarationAssign" (formula "21") (term "1"))
+         (rule "variableDeclaration" (formula "21") (term "1") (newnames "n"))
+         (rule "assignment" (formula "21") (term "1"))
+          (builtin "One Step Simplification" (formula "21"))
+         (rule "variableDeclarationAssign" (formula "21") (term "1"))
+         (rule "variableDeclaration" (formula "21") (term "1") (newnames "n_1"))
+         (rule "assignment_read_attribute" (formula "21"))
+         (branch "Normal Execution (node2 != null)"
+             (builtin "One Step Simplification" (formula "21"))
+            (rule "assignment_write_attribute" (formula "21"))
+            (branch "Normal Execution (n != null)"
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "eval_order_access4_this" (formula "21") (term "1") (inst "#v1=x"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x"))
+               (rule "remove_parentheses_right" (formula "21") (term "1"))
+               (rule "seqConcatUnfoldLeft" (formula "21") (term "1") (inst "#vLeftNew=x_1"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_1"))
+               (rule "seqSubUnfoldLeft" (formula "21") (term "1") (inst "#vLeftNew=x_2"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_2"))
+               (rule "assignment_read_attribute_this" (formula "21"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "dismissNonSelectedField" (formula "21") (term "0,1,0"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "seqConcatUnfoldRight" (formula "21") (term "1") (inst "#vRightNew=x_2"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_3"))
+               (rule "seqSubUnfoldLeft" (formula "21") (term "1") (inst "#vLeftNew=x_4"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_4"))
+               (rule "assignment_read_attribute_this" (formula "21"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "dismissNonSelectedField" (formula "21") (term "0,1,0"))
+               (rule "seqSubUnfoldMiddle" (formula "21") (term "1") (inst "#vMiddleNew=x_5"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_5"))
+               (rule "assignmentAdditionInt" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "translateJavaAddInt" (formula "21") (term "0,1,0"))
+               (rule "polySimp_addComm0" (formula "21") (term "0,1,0"))
+               (rule "seqSubUnfoldRight" (formula "21") (term "1") (inst "#vRightNew=x_6"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_6"))
+               (rule "seqLengthUnfold" (formula "21") (term "1") (inst "#vNew=x_7"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_7"))
+               (rule "assignment_read_attribute_this" (formula "21"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "dismissNonSelectedField" (formula "21") (term "0,1,0"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "assignment_write_attribute_this" (formula "21"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "postdecrement_attribute" (formula "21") (term "1") (inst "#v=s"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "s"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "eval_order_access4" (formula "21") (term "1") (inst "#v1=x") (inst "#v0=s_1"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "s_1"))
+               (rule "assignment" (formula "21") (term "1"))
+                (builtin "One Step Simplification" (formula "21"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_8"))
+               (rule "compound_int_cast_expression" (formula "21") (term "1") (inst "#v=x_9"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_9"))
+               (rule "remove_parentheses_right" (formula "21") (term "1"))
+               (rule "compound_subtraction_1" (formula "21") (term "1") (inst "#v=x_10"))
+               (rule "variableDeclarationAssign" (formula "21") (term "1"))
+               (rule "variableDeclaration" (formula "21") (term "1") (newnames "x_10"))
+               (rule "assignment_read_attribute" (formula "21"))
+               (branch "Normal Execution (s != null)"
+                   (builtin "One Step Simplification" (formula "21"))
+                  (rule "dismissNonSelectedField" (formula "21") (term "0,1,0"))
+                  (rule "dismissNonSelectedField" (formula "21") (term "0,1,0"))
+                  (rule "assignmentSubtractionInt" (formula "21") (term "1"))
+                   (builtin "One Step Simplification" (formula "21"))
+                  (rule "translateJavaSubInt" (formula "21") (term "0,1,0"))
+                  (rule "polySimp_elimSub" (formula "21") (term "0,1,0"))
+                  (rule "mul_literals" (formula "21") (term "1,0,1,0"))
+                  (rule "polySimp_addComm0" (formula "21") (term "0,1,0"))
+                  (rule "widening_identity_cast_5" (formula "21") (term "1"))
+                  (rule "assignment" (formula "21") (term "1"))
+                   (builtin "One Step Simplification" (formula "21"))
+                  (rule "assignment_write_attribute" (formula "21"))
+                  (branch "Normal Execution (s_1 != null)"
+                      (builtin "One Step Simplification" (formula "21"))
+                     (rule "methodCallEmpty" (formula "21") (term "1"))
+                     (rule "tryEmpty" (formula "21") (term "1"))
+                     (rule "emptyModality" (formula "21") (term "1"))
+                      (opengoal " ")
+                  )
+                  (branch "Null Reference (s_1 = null)"
+                      (opengoal " ")
+                  )
+               )
+               (branch "Null Reference (s = null)"
+                   (opengoal " ")
+               )
+            )
+            (branch "Null Reference (n = null)"
+                (opengoal " ")
+            )
+         )
+         (branch "Null Reference (node2 = null)"
+             (opengoal " ")
+         )
+      )
+      (branch "Exceptional Post (getNext)"
+          (builtin "One Step Simplification" (formula "15"))
+         (rule "andLeft" (formula "15"))
+         (rule "andLeft" (formula "15"))
+         (rule "andLeft" (formula "17"))
+         (rule "notLeft" (formula "15"))
+         (rule "close" (formula "18") (ifseqformula "17"))
+      )
+      (branch "Pre (getNext)"
+          (opengoal " ")
+      )
+   )
+   (branch "Exceptional Post (getNext)"
+       (builtin "One Step Simplification" (formula "14"))
+       (builtin "One Step Simplification" (formula "12"))
+      (rule "andLeft" (formula "12"))
+      (rule "andLeft" (formula "12"))
+      (rule "andLeft" (formula "14"))
+      (rule "notLeft" (formula "12"))
+      (rule "close" (formula "15") (ifseqformula "14"))
+   )
+   (branch "Pre (getNext)"
+       (opengoal " ")
+   )
+)
+(branch "Show Axiom Satisfiability"
+    (builtin "One Step Simplification" (formula "8"))
+   (rule "closeTrue" (formula "8"))
+)
+)
+}

@@ -126,10 +126,7 @@ dmypy.json
 
 # ====== Custom ======
 
-# handled by KeY's gitignore files
-!key/
-
-# except the libraries, as we need them
+# unignore some KeY libs that we specifically need
 !key/**/lib
 
 # Non-python misc
