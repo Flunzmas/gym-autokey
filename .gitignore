@@ -130,7 +130,7 @@ dmypy.json
 !key/
 
 # except the libraries, as we need them
-!key/key/key.core/lib
+!key/**/lib
 
 # Non-python misc
 .vscode
