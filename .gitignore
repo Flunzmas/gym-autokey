@@ -126,6 +126,12 @@ dmypy.json
 
 # ====== Custom ======
 
+# handled by KeY's gitignore files
+!key/
+
+# except the libraries, as we need them
+!key/key/key.core/lib
+
 # Non-python misc
 .vscode
 .idea
