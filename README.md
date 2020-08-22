@@ -26,7 +26,7 @@ rm -r key.ui/examples/
 cp -r ../../autokey_examples/ key.ui/examples/
 ```
 
-3. Optional: install the Z3 SMT and add its bin directory to your PATH (If this is skipped, applying the "SMT" tactic to a goal has no effect).
+3. Optional: install the Z3 SMT solver and add its bin directory to your PATH (If this is skipped, applying the "SMT" tactic to a goal has no effect).
 
 # Training
 
