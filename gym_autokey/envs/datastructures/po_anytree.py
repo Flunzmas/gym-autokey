@@ -1,5 +1,3 @@
-import json
-
 from anytree import Node, RenderTree
 from apted.helpers import Tree
 

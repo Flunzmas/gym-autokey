@@ -1,11 +1,8 @@
-import os
-import random
-
 import numpy as np
 from gym.spaces.box import Box
 
-import config as cf
-import po_loader as pl
+import gym_autokey.envs.config as cf
+import gym_autokey.envs.po_loader as pl
 
 
 class ObligationSpace(Box):
@@ -18,7 +15,9 @@ class ObligationSpace(Box):
         self.extractor = extractor
         bounds_low = [-1.0 for i in range (self.extractor.feature_count)]
         bounds_high = [1.0 for i in range (self.extractor.feature_count)]
-        super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float32) # np.float64 is not supported by openai baselines!
+
+        # np.float64 is not supported by openai baselines!
+        super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float32)
 
     def sample(self):
         """Loads a random PO data point from the data
@@ -43,10 +42,10 @@ class ObligationSpace(Box):
                 dp = dict()
                 dp['id'] = goal_id
                 dp['origin'] = po_origin_file
-                try: # ...to retrieve AST and features
+                try:  # ...to retrieve AST and features
                     dp['ast'] = self.connector.get_obligation_ast(dp['id'])
                     dp['features'] = self.extractor.extract_features(dp['ast'])
-                except Exception: # TODO beautify
+                except Exception:  # TODO beautify
                     print("failed to retrieve AST/features!")
                     failed_attempts += 1
                     continue
@@ -58,8 +57,10 @@ class ObligationSpace(Box):
     def contains(self, observation):
         """returns True if given PO formula contains valid ID, features and AST."""
         try:
-            if observation['id'] < 0: return False
-            if not self.extractor.validate_features(observation['features']): return False
+            if observation['id'] < 0:
+                return False
+            if not self.extractor.validate_features(observation['features']):
+                return False
         except KeyError:
-            return False # a mandatory key is missing
+            return False  # a mandatory key is missing
         return True

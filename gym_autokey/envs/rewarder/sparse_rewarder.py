@@ -1,10 +1,10 @@
-from rewarder.rewarder import Rewarder
+from gym_autokey.envs.rewarder.rewarder import Rewarder
 
 
 class SparseRewarder(Rewarder):
-    '''
+    """
     The SparseRewarder yields a reward only on completion of a topgoal proof.
-    '''
+    """
 
     def __init__(self, r_ep_end: float, p_ep_end: float, p_step: float):
 
@@ -13,10 +13,10 @@ class SparseRewarder(Rewarder):
         self.step_penalty = p_step
 
     def end_and_reward_subepisode(self, subepisode):
-        '''
+        """
         Determine the due reward by checking the termination status of all
         concerned subepisodes of given topgoal.
-        '''
+        """
 
         # special treatment for parents
         if len(subepisode.child_episodes) > 0:

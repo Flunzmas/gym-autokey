@@ -1,23 +1,17 @@
 import time
 from collections import deque
-from itertools import islice
-import math
 
-from anytree import Node
-import numpy as np
 import gym
-from gym import error, spaces, utils
-from gym.utils import seeding
+from gym import spaces
 
-import config as cf
-from obligation_space import ObligationSpace
-from subepisode import Subepisode
-from key_connector import KeYConnector
-from feature_extractor import FeatureExtractor
-from rewarder.rewarder_factory import create_rewarder
-from datastructures.po_anytree import print_anytree
-from datastructures.po_node import PONode
-from datastructures.fixed_length_deque import FixedLengthDeque
+import gym_autokey.envs.config as cf
+from gym_autokey.envs.obligation_space import ObligationSpace
+from gym_autokey.envs.subepisode import Subepisode
+from gym_autokey.envs.key_connector import KeYConnector
+from gym_autokey.envs.feature_extractor import FeatureExtractor
+from gym_autokey.envs.rewarder.rewarder_factory import create_rewarder
+from gym_autokey.envs.datastructures.po_node import PONode
+from gym_autokey.envs.datastructures.fixed_length_deque import FixedLengthDeque
 
 
 class AutokeyEnv(gym.Env):

@@ -1,5 +1,5 @@
-import config as cf
-from experience import Experience
+import gym_autokey.envs.config as cf
+from gym_autokey.envs.experience import Experience
 
 
 class Subepisode:

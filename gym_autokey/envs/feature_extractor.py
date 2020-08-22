@@ -6,8 +6,8 @@ from statistics import mean
 
 import numpy as np
 
-import config as cf
-from datastructures.po_anytree import ast_anytree_to_node_list
+import gym_autokey.envs.config as cf
+from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
 
 
 class FeatureExtractor(object):

@@ -2,7 +2,8 @@ from pathlib import Path
 
 # --- dirs ---
 
-PROJ_ROOT = Path(__file__).parent
+# parent.parent.parent doesn't work
+PROJ_ROOT = (Path(__file__).parent / ".." / "..").resolve()
 DATA_PATH = PROJ_ROOT / "data"
 LOG_PATH = PROJ_ROOT / "logs"
 MODELS_PATH = PROJ_ROOT / "models"
@@ -115,3 +116,7 @@ REWARDER_TYPE = 'sparse'  # 'dense'
 PENALTY_STEP = -1.0
 REWARD_EPISODE_END = 500.0
 PENALTY_EPISODE_END = -500.0
+
+if __name__ == '__main__':
+    print("project root: {}".format(PROJ_ROOT.absolute()))
+    print("data path: {}".format(DATA_PATH.absolute()))

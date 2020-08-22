@@ -6,12 +6,11 @@ import os
 import signal
 from time import sleep
 
-import config as cf
-from datastructures.po_anytree import parse_obligation_ast
-from datastructures.ck_status_error import CKStatusError
-from helpers.dict_helper import pretty_print
-from helpers.connection_helper import socket_receive
-from helpers.file_helper import purge_key_tmp_files, remove_key_auto_generated_files
+import gym_autokey.envs.config as cf
+from gym_autokey.envs.datastructures.po_anytree import parse_obligation_ast
+from gym_autokey.envs.datastructures.ck_status_error import CKStatusError
+from gym_autokey.envs.helpers.connection_helper import socket_receive
+from gym_autokey.envs.helpers.file_helper import purge_key_tmp_files, remove_key_auto_generated_files
 
 
 class KeYConnector:

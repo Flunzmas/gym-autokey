@@ -1,6 +1,6 @@
 from anytree import Node
 
-from datastructures.ck_status_error import CKStatusError
+from gym_autokey.envs.datastructures.ck_status_error import CKStatusError
 
 
 class PONode(Node):
