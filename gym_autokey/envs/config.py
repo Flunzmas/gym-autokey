@@ -11,9 +11,9 @@ MODELS_PATH = PROJ_ROOT / "models"
 # --- data ---
 
 PO_PATH = DATA_PATH / 'po_files'
-ALL_PO_FILES = PO_PATH / 'po_no_id_all.txt'
-TRAIN_PO_FILES = PO_PATH / 'po_no_id_all.txt'
-TEST_PO_FILES = PO_PATH / 'po_no_id_all_except_simple_training.txt'
+ALL_PO_FILES = PO_PATH / 'po_all.txt'
+TRAIN_PO_FILES = PO_PATH / 'po_all.txt'
+TEST_PO_FILES = PO_PATH / 'po_all_except_simple_training.txt'
 PO_TRAIN_RATIO = 0.8  # fraction of train POs of total POs
 FEATURE_NAMES_FILE = DATA_PATH / 'feature_names.txt'
 
