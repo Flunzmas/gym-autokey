@@ -85,6 +85,9 @@ TACTIC_ABBR = {
         'EXPAND': 'EXP'
 }
 
+TACTICS = ['INT', 'HEAP', 'EQUALITY', 'AUTO', 'AUTO_NOSPLIT', 'MODELSEARCH',
+           'SMT', 'NOTHING', 'DEPENDENCY', 'QUANT', 'EXPAND']
+
 '''
 5 features for each active entry in AST_CATEGORIES, plus:
         overall node count

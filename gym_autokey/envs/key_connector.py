@@ -7,7 +7,7 @@ import signal
 from time import sleep
 
 import gym_autokey.envs.config as cf
-from gym_autokey.envs.datastructures.po_anytree import parse_obligation_ast
+from gym_autokey.envs.datastructures.po_anytree import parse_goal_ast
 from gym_autokey.envs.datastructures.ck_status_error import CKStatusError
 from gym_autokey.envs.helpers.connection_helper import socket_receive
 from gym_autokey.envs.helpers.file_helper import purge_key_tmp_files, remove_key_auto_generated_files
@@ -60,7 +60,7 @@ class KeYConnector:
 
     def get_obligation_ast(self, obligation_id):
         """in KeY, get the AST from the obligation with given ID."""
-        res = parse_obligation_ast(self.contact_key(["ast", "id", obligation_id]))
+        res = parse_goal_ast(self.contact_key(["ast", "id", obligation_id]))
         return res
 
     def execute_tactic(self, obligation_id, tactic):

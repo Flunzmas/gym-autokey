@@ -4,7 +4,7 @@ from apted.helpers import Tree
 node_id = 0
 
 
-def parse_obligation_ast(content):
+def parse_goal_ast(content):
     """
     Brings the AST into an 'anytree' shape using recursion.
     """
