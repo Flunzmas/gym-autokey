@@ -1,5 +1,4 @@
-*.log
-po_percentage*
+*
 
 # Do not ignore this file
 !.gitignore

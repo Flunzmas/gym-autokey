@@ -1,5 +1,4 @@
 #!/usr/bin/python3
-import random
 import signal
 import json
 import sys
@@ -18,6 +17,7 @@ class TacticServer:
     terminated = False
     selector = None
     sock = None
+    recData = None
 
     def __init__(self, tactic_selector):
         """
@@ -38,7 +38,7 @@ class TacticServer:
         signal.signal(signal.SIGTERM, self.disconnect)
         signal.signal(signal.SIGINT, self.disconnect)
 
-        recData = False
+        self.recData = False
 
     def run(self):
         """
@@ -93,18 +93,16 @@ class TacticServer:
         self.sock.shutdown(socket.SHUT_RDWR)
         self.sock.close()
 
-    @staticmethod
-    def recvall(sock):
+    def recvall(self, sock):
         """
         helper function to smoothly receive messages via a socket connection.
         """
 
-        global recData
         BUFF_SIZE = 8  # 192
         data = ''
 
         while True:
-            if not recData:
+            if not self.recData:
                 part = False
                 try:
                     part = sock.recv(BUFF_SIZE)
@@ -113,17 +111,17 @@ class TacticServer:
                     return False
                 if not part:
                     return False
-                recData = part.decode("utf-8")
+                self.recData = part.decode("utf-8")
 
-            nlIdx = recData.find("\n")
+            nlIdx = self.recData.find("\n")
 
             if nlIdx >= 0:
-                data += recData[0:nlIdx]
-                recData = recData[nlIdx + 1:]
+                data += self.recData[0:nlIdx]
+                self.recData = self.recData[nlIdx + 1:]
                 return data
             else:
-                data += recData
-                recData = False
+                data += self.recData
+                self.recData = False
 
     def terminate(self):
         """

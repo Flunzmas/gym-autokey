@@ -25,7 +25,7 @@ def evaluate(po_filepath: str, time_limit: int = 60, ai_only: bool = False):
     key_eval_ai_cmd = '--auto --macro AIServerMacro \'{0}\''
 
     po_filepaths = []
-    po_filepath = cf.DATA_PATH / po_filepath
+    po_filepath = cf.PO_PATH / po_filepath
     with open(po_filepath, 'r') as test_po_file:
         test_dps = [line.rstrip('\n') for line in test_po_file]
     if not test_dps[0][0].isdigit():
@@ -55,14 +55,18 @@ def evaluate(po_filepath: str, time_limit: int = 60, ai_only: bool = False):
         print('AI returned {0}'.format(cur_code))
         success_codes_ai.append(cur_code)
 
-    print("\n\ntotal: STD [{0}/{1}], AI [{2}/{3}]".format(success_codes_std.count(0), len(success_codes_std),
+    print("\n\ntotal: STD proved {0} out of {1}, AI proved {2} out of {3}".format(success_codes_std.count(0), len(success_codes_std),
                                                           success_codes_ai.count(0), len(success_codes_ai)))
-    print('results for each file:')
+
+    print('\nexit codes for each file: 0 = success, 1 = fail, 137 = timeout\n')
     for i in range(len(po_filepaths)):
+        cur_path = po_filepaths[i]
+        if len(cur_path) > 70:
+            cur_path = "..." + cur_path[-67:]
         if i < len(success_codes_std):
-            print('{0}: STD {1}, AI {2}'.format(po_filepaths[i], success_codes_std[i], success_codes_ai[i]))
+            print('{0}: STD {1} | AI {2}'.format(cur_path.rjust(71), str(success_codes_std[i]).rjust(3), str(success_codes_ai[i]).rjust(3)))
         else:
-            print('{0}: STD {1}, AI {2}'.format(po_filepaths[i], '-', success_codes_ai[i]))
+            print('{0}: STD {1} | AI {2}'.format(cur_path.rjust(71), '---', str(success_codes_ai[i]).rjust(3)))
 
 
 def run_single_file(cmd):
