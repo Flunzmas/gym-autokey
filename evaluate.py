@@ -55,8 +55,10 @@ def evaluate(po_filepath: str, time_limit: int = 60, ai_only: bool = False):
         print('AI returned {0}'.format(cur_code))
         success_codes_ai.append(cur_code)
 
-    print("\n\ntotal: STD proved {0} out of {1}, AI proved {2} out of {3}".format(success_codes_std.count(0), len(success_codes_std),
-                                                          success_codes_ai.count(0), len(success_codes_ai)))
+    print("\n\ntotal: STD proved {0} out of {1}, AI proved {2} out of {3}".format(success_codes_std.count(0),
+                                                                                  len(success_codes_std),
+                                                                                  success_codes_ai.count(0),
+                                                                                  len(success_codes_ai)))
 
     print('\nexit codes for each file: 0 = success, 1 = fail, 137 = timeout\n')
     for i in range(len(po_filepaths)):
@@ -64,7 +66,8 @@ def evaluate(po_filepath: str, time_limit: int = 60, ai_only: bool = False):
         if len(cur_path) > 70:
             cur_path = "..." + cur_path[-67:]
         if i < len(success_codes_std):
-            print('{0}: STD {1} | AI {2}'.format(cur_path.rjust(71), str(success_codes_std[i]).rjust(3), str(success_codes_ai[i]).rjust(3)))
+            print('{0}: STD {1} | AI {2}'.format(cur_path.rjust(71), str(success_codes_std[i]).rjust(3),
+                                                 str(success_codes_ai[i]).rjust(3)))
         else:
             print('{0}: STD {1} | AI {2}'.format(cur_path.rjust(71), '---', str(success_codes_ai[i]).rjust(3)))
 
