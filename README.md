@@ -1,6 +1,6 @@
 # Automated deductive Program verification in KeY
 
-This is a custom OpenAI gym environment for automated deductive program verification in KeY.
+This is a custom OpenAI gym environment for automated deductive program verification in the KeY verification system.
 
 # Background
 
@@ -26,11 +26,23 @@ rm -r key.ui/examples/
 cp -r ../../autokey_examples/ key.ui/examples/
 ```
 
-3. Optional: install the Z3 SMT solver and add its bin directory to your PATH (If this is skipped, applying the "SMT" tactic to a goal has no effect).
+3. Optional: install the Z3 SMT solver and add its bin directory to your PATH (If this is skipped, applying the "SMT" tactic to a goal has no effect just like the "NOTHING" tactic).
 
-# Training
+# Training / Running The Env
 
-TODO
+While the env is run, it generates episodes by randomly sampling a new PO from its given set of PO files. The actor then applies tactics that change the proof state, eventually closing the proof tree or reaching time/proof size limits (resulting in a failure). To test the env, you can run `test_env.py`. This script starts KeY and simulates 1000 steps inside the env, randomly selecting tactics. 
+
+![autokey_test_scr](autokey_test_scr.png)
+
+The screenshot above shows the console render output of the env during training:
+
+1. shows the available tactics for this run which are fetched from KeY after the startup.
+2. shows the applied tactics in each step, the id of the target goal and what happened to the goal after that application.
+3. shows the number of env steps so far and the number of steps taken for the current PO.
+4. shows the total number of all POs, topgoals and subepisodes encountered so far, and how many of them were closed successfully.
+5. shows the running average of successfully closed POs for the last 1000 POs.
+6. shows whether reward was given to the actor (T or F, reward is positive (+) for closed topgoals and negative (-) for failures on topgoals).
+7. shows the IDs of goals open in the following step. 
 
 # Testing/Evaluation
 
