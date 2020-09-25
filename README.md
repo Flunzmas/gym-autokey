@@ -1,10 +1,8 @@
-# Automated deductive Program verification in KeY
+# Automated Program Verification in KeY
 
-This is a custom OpenAI gym environment for automated deductive program verification in the KeY verification system.
+This is a custom OpenAI gym environment for automated rule-based deductive program verification in the KeY verification system.
 
-# Background
-
-TODO
+See ![This PDF](https://github.com/Flunzmas/gym-autokey/blob/master/background_explanation/gym-autokey_explanation.pdf) for a detailed explanation of what this is all about.
 
 # Installation
 
