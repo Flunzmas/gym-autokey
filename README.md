@@ -4,7 +4,7 @@ This is a custom OpenAI gym environment for automated rule-based deductive progr
 
 See ![This PDF](https://github.com/Flunzmas/gym-autokey/blob/master/background_explanation/gym-autokey_explanation.pdf) for a detailed explanation of what this is all about.
 
-For more information about KeY (and formal verification in general) you can visit the official webpage of ![The KeY Project](https://www.key-project.org/).
+For more information about KeY (and formal verification in general) you can visit the official webpage of [The KeY Project](https://www.key-project.org/).
 
 # Installation
 
