@@ -9,7 +9,7 @@ See ![This PDF](https://github.com/Flunzmas/gym-autokey/blob/master/background_e
 The procedure has been tested with python 3.8.
 
 
-1. Install the gym environment
+1. Install the gym environment (optionally within your venv or conda env)
 ```
 git clone git@github.com:Flunzmas/gym-autokey.git
 cd gym-autokey
@@ -44,7 +44,7 @@ The screenshot above shows the console render output of the env during training:
 
 # Testing/Evaluation
 
-In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that promts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
+In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that prompts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
 
 The _TacticSelector_ defined in `tactic_selector.py` provides a class wrapper including the function `predict()`. This function is called by the _TacticServer_ and is given an observation, by default returning a random tactic. However, by inputting your code for accessing your model you can use the model to return predictions to KeY.
 
