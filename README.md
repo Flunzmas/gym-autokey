@@ -6,6 +6,15 @@ See ![This PDF](https://github.com/Flunzmas/gym-autokey/blob/master/background_e
 
 For more information about KeY (and formal verification in general) you can visit the official webpage of [The KeY Project](https://www.key-project.org/).
 
+## OpenAI Env Attributes
+
+| Attribute         | Value                    | Notes                                                      |
+|-------------------|--------------------------|------------------------------------------------------------|
+| Action Space      | Discrete(num_tactics)    | Tactics are made available by KeY at training start        |
+| Observation Space | Box(-1, 1, num_features) | Features are sent thru a tanh() function for normalization |
+| Rewards           | -1, 0, 1                 | -1 = PO failed, 1 = PO closed, 0 otherwise                 |
+| Render Modes      | 'human'                  | In-terminal display                                        |
+
 # Installation
 
 The procedure has been tested with python 3.8.
@@ -42,7 +51,9 @@ The screenshot above shows the console render output of the env during training:
 4. shows the total number of all POs, topgoals and subepisodes encountered so far, and how many of them were closed successfully.
 5. shows the running average of successfully closed POs for the last 1000 POs.
 6. shows whether reward was given to the actor (T or F, reward is positive (+) for closed topgoals and negative (-) for failures on topgoals).
-7. shows the IDs of goals open in the following step. 
+7. shows the IDs of goals open in the following step.
+
+__Important__: Since KeY is quite a resource-demanding program, the learning process is __single threaded only__.
 
 # Testing/Evaluation
 
