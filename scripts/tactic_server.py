@@ -4,7 +4,7 @@ import json
 import sys
 import socket
 
-from tactic_selector import TacticSelector
+from scripts.tactic_selector import TacticSelector
 import gym_autokey.envs.config as cf
 
 

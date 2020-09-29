@@ -44,6 +44,12 @@ class KeYConnector:
         """
         try:
             self.available_tactics = self.contact_key(["tactics"])["tactics"]
+
+            # filter out SMT if specified
+            if cf.NO_SMT and "SMT" in self.available_tactics:
+                print("NO_SMT set to true, proceeding without the SMT tactic.")
+                self.available_tactics.remove("SMT")
+
         except CKStatusError:
             self.available_tactics = []
 

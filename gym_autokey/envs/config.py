@@ -88,6 +88,9 @@ TACTIC_ABBR = {
 TACTICS = ['INT', 'HEAP', 'EQUALITY', 'AUTO', 'AUTO_NOSPLIT', 'MODELSEARCH',
            'SMT', 'NOTHING', 'DEPENDENCY', 'QUANT', 'EXPAND']
 
+# if set to true, the SMT tactic will not be used.
+NO_SMT = True
+
 '''
 5 features for each active entry in AST_CATEGORIES, plus:
         overall node count
@@ -103,6 +106,8 @@ FEATURE_DISTRIBUTION_INFORMATION_PATH = (
 
 POWISE_BUFFER_SIZE = 1000
 STEPWISE_BUFFER_SIZE = 10000
+
+# The maximum proving tree depth allowed
 ROOT_EPIS_MAX_DEPTH = 20
 
 # After X steps, the current root episode fails by crashing.
@@ -115,10 +120,11 @@ REPRINT_SUCCESSFUL_EPISODES = False
 
 # rewards
 
-REWARDER_TYPE = 'sparse'  # 'dense'
+REWARDER_TYPE = 'sparse'
 PENALTY_STEP = -1.0
-REWARD_EPISODE_END = 500.0
-PENALTY_EPISODE_END = -500.0
+REWARD_EPISODE_END = 100.0
+PENALTY_EPISODE_END = -100.0
+
 
 if __name__ == '__main__':
     print("project root: {}".format(PROJ_ROOT.absolute()))

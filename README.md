@@ -32,7 +32,7 @@ cp -r ../../autokey_examples/ key.ui/examples/
 
 While the env is run, it generates episodes by randomly sampling a new PO from its given set of PO files. The actor then applies tactics that change the proof state, eventually closing the proof tree or reaching time/proof size limits (resulting in a failure). To test the env, you can run `test_env.py`. This script starts KeY and simulates 1000 steps inside the env, randomly selecting tactics. 
 
-![autokey_test_scr](autokey_test_scr.png)
+![autokey_test_scr](img/autokey_test_scr.png)
 
 The screenshot above shows the console render output of the env during training:
 
