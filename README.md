@@ -12,7 +12,7 @@ For more information about KeY (and formal verification in general) you can visi
 |-------------------|--------------------------|------------------------------------------------------------|
 | Action Space      | Discrete(num_tactics)    | Tactics are made available by KeY at training start        |
 | Observation Space | Box(-1, 1, num_features) | Features are sent thru a tanh() function for normalization |
-| Rewards           | -1, 0, 1                 | -1 = PO failed, 1 = PO closed, 0 otherwise                 |
+| Rewards           | {-100, 0, 100}           | -100 = PO failed, 100 = PO closed, 0 otherwise             |
 | Render Modes      | 'human'                  | In-terminal display                                        |
 
 # Installation
@@ -39,7 +39,7 @@ cp -r ../../autokey_examples/ key.ui/examples/
 
 # Training / Running The Env
 
-While the env is run, it generates episodes by randomly sampling a new PO from its given set of PO files. The actor then applies tactics that change the proof state, eventually closing the proof tree or reaching time/proof size limits (resulting in a failure). To test the env, you can run `test_env.py`. This script starts KeY and simulates 1000 steps inside the env, randomly selecting tactics. 
+While the env is run, it generates episodes by randomly sampling a new PO from its given set of PO files. The actor then applies tactics that change the proof state, eventually closing the proof tree or reaching time/proof size limits (resulting in a failure). To test the env, you can run `scripts/test_env.py`. This script starts KeY and simulates 1000 steps inside the env, randomly selecting tactics. 
 
 ![autokey_test_scr](img/autokey_test_scr.png)
 
@@ -55,14 +55,36 @@ The screenshot above shows the console render output of the env during training:
 
 __Important__: Since KeY is quite a resource-demanding program, the learning process is __single threaded only__.
 
+## Tweaking env parameters
+
+Many parameters and settings of the env are defined in `gym_autokey/envs/config.py`.
+
+The following can be edited to fit your learning/evaluation procedure:
+
+| Variable       | Type           | Explanation                                                                |
+|----------------|----------------|----------------------------------------------------------------------------|
+| NO_SMT         | bool           | if set to True, the SMT tactic is disregarded.                             |
+| TRAIN_PO_FILES | str (filepath) | the relative path to the PO file the env is sampling from during training. |
+| TEST_PO_FILES  | str (filepath) | the relative path to the default PO file used for evaluation.              |
+
+While not necessary, these variables can be changed to customise the env for your experiments:
+
+| Variable                 | Type  | Explanation                                                                         |
+|--------------------------|-------|-------------------------------------------------------------------------------------|
+| KEY_TACTIC_TIME_LIMIT    | int   | maximum time in seconds KeY is given to execute a tactic before being reset.        |
+| ROOT_EPIS_MAX_DEPTH      | int   | the maximum allowed depth of the proving tree.                                      |
+| MAX_STEPS_PER_PO         | int   | the maximum number of allowed tactic applications per PO.                           |
+| PRE_KILL_FAILED_EPISODES | bool  | if set to True, the whole PO proof is instantly aborted on failure of a subepisode. |
+| PENALTY_* / REWARD_*     | float | figures for reward and penalty.                                                     |
+
 # Testing/Evaluation
 
-In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that prompts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
+In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that prompts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `scripts/tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
 
-The _TacticSelector_ defined in `tactic_selector.py` provides a class wrapper including the function `predict()`. This function is called by the _TacticServer_ and is given an observation, by default returning a random tactic. However, by inputting your code for accessing your model you can use the model to return predictions to KeY.
+The _TacticSelector_ defined in `scripts/tactic_selector.py` provides a class wrapper including the function `predict()`. This function is called by the _TacticServer_ and is given an observation, by default returning a random tactic. However, by inputting your code for accessing your model you can use the model to return predictions to KeY.
 
-1. Edit `tactic_selector.py` and fill in the TODO-ed sections to use your learned model for the predictions. If you want to use a random selector, just leave the file as-is.
+1. Edit `scripts/tactic_selector.py` and fill in the TODO-ed sections to use your learned model for the predictions. If you want to use a random selector, just leave the file as-is.
 
-2. Start the tactic server by executing `tactic_server.py`. It creates the _TacticSelector_ that loads your trained model and uses it to predict tactics given the forwarded goal ASTs (Communication between tactic server and KeY is realized using a socket connection on port 6767, see `gym-autokey/envs/config.py`).
+2. Start the tactic server by executing `scripts/tactic_server.py`. It creates the _TacticSelector_ that loads your trained model and uses it to predict tactics given the forwarded goal ASTs (Communication between tactic server and KeY is realized using a socket connection on port 6767, see `gym-autokey/envs/config.py`).
 
-3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). A performance overview is printed to the terminal.
+3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `scripts/evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). A performance overview is printed to the terminal.
