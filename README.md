@@ -1,17 +1,26 @@
-# Automated deductive Program verification in KeY
+# Automated Program Verification in KeY
 
-This is a custom OpenAI gym environment for automated deductive program verification in the KeY verification system.
+This is a custom OpenAI gym environment for automated rule-based deductive program verification in the KeY verification system.
 
-# Background
+See ![This PDF](https://github.com/Flunzmas/gym-autokey/blob/master/background_explanation/gym-autokey_explanation.pdf) for a detailed explanation of what this is all about.
 
-TODO
+For more information about KeY (and formal verification in general) you can visit the official webpage of [The KeY Project](https://www.key-project.org/).
+
+## OpenAI Env Attributes
+
+| Attribute         | Value                    | Notes                                                      |
+|-------------------|--------------------------|------------------------------------------------------------|
+| Action Space      | Discrete(num_tactics)    | Tactics are made available by KeY at training start        |
+| Observation Space | Box(-1, 1, num_features) | Features are sent thru a tanh() function for normalization |
+| Rewards           | -1, 0, 1                 | -1 = PO failed, 1 = PO closed, 0 otherwise                 |
+| Render Modes      | 'human'                  | In-terminal display                                        |
 
 # Installation
 
 The procedure has been tested with python 3.8.
 
 
-1. Install the gym environment
+1. Install the gym environment (optionally within your venv or conda env)
 ```
 git clone git@github.com:Flunzmas/gym-autokey.git
 cd gym-autokey
@@ -42,11 +51,13 @@ The screenshot above shows the console render output of the env during training:
 4. shows the total number of all POs, topgoals and subepisodes encountered so far, and how many of them were closed successfully.
 5. shows the running average of successfully closed POs for the last 1000 POs.
 6. shows whether reward was given to the actor (T or F, reward is positive (+) for closed topgoals and negative (-) for failures on topgoals).
-7. shows the IDs of goals open in the following step. 
+7. shows the IDs of goals open in the following step.
+
+__Important__: Since KeY is quite a resource-demanding program, the learning process is __single threaded only__.
 
 # Testing/Evaluation
 
-In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that promts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
+In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that prompts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
 
 The _TacticSelector_ defined in `tactic_selector.py` provides a class wrapper including the function `predict()`. This function is called by the _TacticServer_ and is given an observation, by default returning a random tactic. However, by inputting your code for accessing your model you can use the model to return predictions to KeY.
 
@@ -54,4 +65,4 @@ The _TacticSelector_ defined in `tactic_selector.py` provides a class wrapper in
 
 2. Start the tactic server by executing `tactic_server.py`. It creates the _TacticSelector_ that loads your trained model and uses it to predict tactics given the forwarded goal ASTs (Communication between tactic server and KeY is realized using a socket connection on port 6767, see `gym-autokey/envs/config.py`).
 
-3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). While a performance overview is printed to the terminal, the TacticSelector saves a tactic selection history as a .txt file to your log folder.
+3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). A performance overview is printed to the terminal.
