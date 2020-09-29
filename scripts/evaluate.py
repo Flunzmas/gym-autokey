@@ -6,7 +6,7 @@ import numpy as np
 import gym_autokey.envs.config as cf
 
 
-def evaluate(po_filepath: str, time_limit: int = 60, ai_only: bool = False):
+def evaluate(po_filepath: str = cf.TEST_PO_FILES, time_limit: int = 60, ai_only: bool = False):
     """
     Evaluate the learned auto mode against the POs taken from given po file.
     :param po_filepath: The path to the PO file you want to use to get the POs to evaluate from.
@@ -84,7 +84,9 @@ def run_single_file(cmd):
 #  =============================================
 
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 1:
+        evaluate()
+    elif len(sys.argv) == 2:
         evaluate(po_filepath=sys.argv[1])
     elif len(sys.argv) == 3:
         evaluate(po_filepath=sys.argv[1], time_limit=int(sys.argv[2]))
