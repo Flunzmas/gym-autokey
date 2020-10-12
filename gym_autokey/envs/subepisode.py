@@ -99,9 +99,3 @@ class Subepisode:
         for c in children_eps:
             cur_subep_str += c
         return cur_subep_str
-    
-    def get_experiences(self):
-        experiences = self.experiences
-        for child in self.child_episodes:
-            experiences.extend(child.get_experiences())
-        return experiences

@@ -47,7 +47,6 @@ class KeYConnector:
 
             # filter out SMT if specified
             if cf.NO_SMT and "SMT" in self.available_tactics:
-                print("NO_SMT set to true, proceeding without the SMT tactic.")
                 self.available_tactics.remove("SMT")
 
         except CKStatusError:
@@ -119,6 +118,7 @@ class KeYConnector:
 
         if not restart:
             print("\nstarted KeY. Available tactics: {0}\n".format(self.available_tactics))
+            print("NO_SMT set to true, proceeding without the SMT tactic in this run.")
 
     def quit_key(self):
         """

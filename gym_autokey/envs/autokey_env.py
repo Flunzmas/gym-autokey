@@ -9,7 +9,6 @@ from gym_autokey.envs.obligation_space import ObligationSpace
 from gym_autokey.envs.subepisode import Subepisode
 from gym_autokey.envs.key_connector import KeYConnector
 from gym_autokey.envs.feature_extractor import FeatureExtractor
-from gym_autokey.envs.rewarder.rewarder_factory import create_rewarder
 from gym_autokey.envs.datastructures.po_node import PONode
 from gym_autokey.envs.datastructures.fixed_length_deque import FixedLengthDeque
 
@@ -33,8 +32,6 @@ class AutokeyEnv(gym.Env):
         """
         self.connector = KeYConnector()
         self.extractor = FeatureExtractor()
-        self.rewarder = create_rewarder(
-            cf.REWARDER_TYPE, cf.REWARD_EPISODE_END, cf.PENALTY_EPISODE_END, cf.PENALTY_STEP)
         self.action_space = spaces.Discrete(len(self.connector.available_tactics))
         self.observation_space = ObligationSpace(self.connector, self.extractor)
 
@@ -210,8 +207,24 @@ class AutokeyEnv(gym.Env):
     def finalize_subepisode(self):
         """
         Finalizes a subepisode by ending the episode and updating the episode counters.
+        Determine the due reward by checking the termination status of all concerned subepisodes of given topgoal.
         """
-        self.rewarder.end_and_reward_subepisode(self.cur_subepis)
+
+        # status treatment for parents
+        if len(self.cur_subepis.child_episodes) > 0:
+            children_steps = sum(
+                [cep.steps_taken + cep.children_steps_taken
+                 for cep in self.cur_subepis.child_episodes])
+            self.cur_subepis.steps_taken += children_steps
+            ch_statues = [ce.status for ce in self.cur_subepis.child_episodes]
+
+            if ch_statues == {'success'}:
+                self.cur_subepis.status = "success"
+            elif "crash" in ch_statues:
+                self.cur_subepis.status = "crash"
+            else:
+                self.cur_subepis.status = "fail"
+
         self._update_episode_counter()
 
     def _update_episode_counter(self):
@@ -367,7 +380,7 @@ class AutokeyEnv(gym.Env):
                 tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count,
                 suc_se=self.successful_subep_count, po_p=po_percent, po_dn=po_done_str.rjust(4))
 
-    def render(self):
+    def render(self, mode='human'):
         """
         Prints output to trace the learning process.
         """

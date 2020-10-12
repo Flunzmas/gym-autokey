@@ -38,7 +38,7 @@ KEY_SERVER_PORT = 5533
 TACTIC_SERVER_ADDRESS = 'localhost'
 TACTIC_SERVER_PORT = 6767
 
-# --- misc ---
+# --- hand-picked features ---
 
 OP_CLASSES = [
     "ElementaryUpdate", "Equality", "FormulaSV", "Function",
@@ -69,6 +69,8 @@ AST_CATEGORIES = {
             'class', r'^(ProgramMethod|ObserverFunction)$', 1),
         'quantifiers': ('class', r'^Quantifier$', 1)
 }
+
+# --- action space ---
 
 TACTIC_ABBR = {
         'INT': 'INT',
@@ -119,10 +121,8 @@ REPRINT_SUCCESSFUL_EPISODES = False
 
 # rewards
 
-REWARDER_TYPE = 'sparse'
-PENALTY_STEP = -1.0
-REWARD_EPISODE_END = 100.0
-PENALTY_EPISODE_END = -100.0
+REWARD_EPISODE_END = 1
+PENALTY_EPISODE_END = -1
 
 
 if __name__ == '__main__':
