@@ -101,7 +101,7 @@ def ast_anytree_to_apted(cur_node):
 
 def ast_anytree_to_node_list(cur_node):
     """
-    Converts an Anytree to an equivalent APTED Tree.
+    Converts an Anytree to a list of nodes.
     """
     node_list = [cur_node]
     for child in list(cur_node.children):

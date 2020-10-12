@@ -42,13 +42,8 @@ class ObligationSpace(Box):
                 dp = dict()
                 dp['id'] = goal_id
                 dp['origin'] = po_origin_file
-                try:  # ...to retrieve AST and features
-                    dp['ast'] = self.connector.get_obligation_ast(dp['id'])
-                    dp['features'] = self.extractor.extract_features(dp['ast'])
-                except Exception:  # TODO beautify
-                    print("failed to retrieve AST/features!")
-                    failed_attempts += 1
-                    continue
+                dp['ast'] = self.connector.get_obligation_ast(dp['id'])
+                dp['features'] = self.extractor.extract_features(dp['ast'])
                 dps.append(dp)
 
             # return dps if everything went well

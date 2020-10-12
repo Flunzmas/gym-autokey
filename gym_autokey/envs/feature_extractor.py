@@ -1,6 +1,7 @@
 import re
 import os
 import json
+import time
 from math import sqrt, tanh
 from statistics import mean
 
@@ -8,6 +9,7 @@ import numpy as np
 
 import gym_autokey.envs.config as cf
 from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
+from gym_autokey.envs.datastructures.dgl_goal_graph import dgl_graph_from_anytree, draw_graph
 
 
 class FeatureExtractor(object):
@@ -199,6 +201,7 @@ class FeatureExtractor(object):
         features['overall_height'] = self.abs_height_feature(all_nodes)
         features['overall_formula_count'] = self.abs_formula_count_feature(obligation_ast)
         features['tree_select_of_store_count'] = self.tree_select_of_store_count_feature(all_nodes)
+
         return features
 
     def analyze_feature_distributions(self, all_features):
