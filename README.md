@@ -12,7 +12,7 @@ For more information about KeY (and formal verification in general) you can visi
 |-------------------|--------------------------|------------------------------------------------------------|
 | Action Space      | Discrete(num_tactics)    | Tactics are made available by KeY at training start        |
 | Observation Space | Box(-1, 1, num_features) | Features are sent thru a tanh() function for normalization |
-| Rewards           | {-100, 0, 100}           | -100 = PO failed, 100 = PO closed, 0 otherwise             |
+| Rewards           | {-1, 0, 1}               | -1 = PO failed, 1 = PO closed, 0 otherwise                 |
 | Render Modes      | 'human'                  | In-terminal display                                        |
 
 # Installation
