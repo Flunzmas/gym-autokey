@@ -1,8 +1,8 @@
 import anytree
 
-class FeatureExtractor(object):
+class FeatExtractor(object):
     """
-    TODO
+    Base class for all feature extractors.
     """
 
     def __init__(self):

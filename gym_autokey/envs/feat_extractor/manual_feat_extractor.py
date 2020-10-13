@@ -8,9 +8,9 @@ import numpy as np
 
 import gym_autokey.envs.config as cf
 from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
-import gym_autokey.envs.feat_extractor.feature_extractor as fe
+import gym_autokey.envs.feat_extractor.feat_extractor as fe
 
-class ManualFeatureExtractor(fe.FeatureExtractor):
+class ManualFeatExtractor(fe.FeatExtractor):
     """
     This class extracts features from ASTs.
     """
@@ -272,16 +272,3 @@ class ManualFeatureExtractor(fe.FeatureExtractor):
             if abs(features[key]) > 1.0:
                 return False
         return True
-
-
-def print_features(features, name=None):
-    """
-    Pretty-prints given features.
-    """
-    if name:
-        print(name + ": ")
-    else:
-        print("")
-    for key in features:
-        print("\t%s: %s" % (key, features[key]))
-    print("")

@@ -3,15 +3,15 @@ import dgl
 import torch
 import pyhash
 
-import gym_autokey.envs.feat_extractor.feature_extractor as fe
+import gym_autokey.envs.feat_extractor.feat_extractor as fe
 
-class GraphFeatureExtractor(fe.FeatureExtractor):
+class GraphFeatExtractor(fe.FeatExtractor):
 
     hasher = None
 
     def __init__(self):
         """
-        TODO
+        Initializes a hasher object needed for creating suited graph data.
         """
 
         # hashing to more than 32 bits results in an overflow error with torch.tensor
@@ -19,7 +19,7 @@ class GraphFeatureExtractor(fe.FeatureExtractor):
 
     def extract_features(self, goal_ast : anytree.Node):
         """
-        TODO
+        Creates a dgl graph as the features.
         """
 
         node_count = 0
@@ -34,7 +34,7 @@ class GraphFeatureExtractor(fe.FeatureExtractor):
 
     def _get_graph_info_recursive(self, node_count, u, v, op_classes, op_name_hashes, cur_node):
         """
-        TODO
+        Recursive method used for the DGLGraph generation to traverse the anytree.
         """
 
         node_count += 1

@@ -1,15 +1,15 @@
-import gym_autokey.envs.feat_extractor.manual_feature_extractor as hfe
-import gym_autokey.envs.feat_extractor.graph_feature_extractor as gfe
+import gym_autokey.envs.feat_extractor.manual_feat_extractor as hfe
+import gym_autokey.envs.feat_extractor.graph_feat_extractor as gfe
 import gym_autokey.envs.config as cf
 
 def create_feature_extractor():
     """
-    TODO
+    Returns a feature extractor depending on the feature mode set in the config file.
     """
 
     if cf.FEATURE_MODE == "manual":
-        return hfe.ManualFeatureExtractor()
+        return hfe.ManualFeatExtractor()
     elif cf.FEATURE_MODE == "graph":
-        return gfe.GraphFeatureExtractor()
+        return gfe.GraphFeatExtractor()
     else:
-        return hfe.ManualFeatureExtractor()
+        return hfe.ManualFeatExtractor()

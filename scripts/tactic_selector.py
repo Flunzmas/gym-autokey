@@ -49,13 +49,13 @@ class TacticSelector:
 
     def predict(self, goal_data):
         """
-        returns a tactic from given obligation data by first extracting the features from it.
+        returns a tactic from given goal data by first extracting the features from it.
         """
 
         # get features and determine tactic per goal ID...
         cur_id = goal_data['id']
-        obligation_ast = parse_goal_ast(goal_data)
-        cur_features = self.feature_extractor.extract_features(obligation_ast)
+        goal_ast = parse_goal_ast(goal_data)
+        cur_features = self.feature_extractor.extract_features(goal_ast)
 
         # if a tactic application had no effect, known_goal_id can help to take suited measures.
         known_goal_id = False

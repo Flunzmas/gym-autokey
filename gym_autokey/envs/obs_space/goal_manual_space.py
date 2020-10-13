@@ -1,14 +1,12 @@
 import gym_autokey.envs.obs_space.goal_space as gs
 import gym_autokey.envs.key_connector as kc
-import gym_autokey.envs.feat_extractor.manual_feature_extractor as mfe
+import gym_autokey.envs.feat_extractor.manual_feat_extractor as mfe
 
 
 class GoalManualSpace(gs.GoalSpace):
-    """The observation space is the space of all valid proof obligation formulas.
-    Technically, sampling is done by loading a random
-    file from the (big) list of loadable keyroot_id_listiles. 
-    """
-    def __init__(self, connector : kc.KeYConnector, extractor : mfe.ManualFeatureExtractor):
+    """This subclass of GoalSpace deals with a feature dictionary containing hand-picked features."""
+
+    def __init__(self, connector : kc.KeYConnector, extractor : mfe.ManualFeatExtractor):
         super(GoalManualSpace, self).__init__(connector, extractor)
 
     def contains(self, x):
@@ -22,7 +20,7 @@ class GoalManualSpace(gs.GoalSpace):
 
 
     def render(self, obs : dict):
-        """TODO"""
+        """Prints the features dict to the console."""
         print("features:")
         for key in obs.keys():
             print("\t{0}: {1}".format(key, obs[key]))

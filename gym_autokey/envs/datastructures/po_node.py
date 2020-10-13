@@ -26,7 +26,7 @@ class PONode(Node):
         If retrieving the information fails, creates a bad node that is to be detected by the users.
         """
         try:
-            ast = kc.get_obligation_ast(po_id)
+            ast = kc.get_goal_ast(po_id)
             features = fh.extract_features(ast)
         except CKStatusError:
             return PONode("bad node", id=-1, ast=None, features=None, parent=parent)
