@@ -11,9 +11,13 @@ For more information about KeY (and formal verification in general) you can visi
 | Attribute         | Value                    | Notes                                                      |
 |-------------------|--------------------------|------------------------------------------------------------|
 | Action Space      | Discrete(num_tactics)    | Tactics are made available by KeY at training start        |
-| Observation Space | Box(-1, 1, num_features) | Features are sent thru a tanh() function for normalization |
+| Observation Space | Custom                   | _See below_                                                |
 | Rewards           | {-1, 0, 1}               | -1 = PO failed, 1 = PO closed, 0 otherwise                 |
 | Render Modes      | 'human'                  | In-terminal display                                        |
+
+The observation space can be adjusted by changing the value of the config file's `FEATURE_MODE` attribute, yielding of the following:
+* A Box-Like vector of hand-picked features, with values ranging from -1 to 1.
+* An instance of a DGLGraph (see [the DGL library](https://docs.dgl.ai/index.html)).
 
 # Installation
 
@@ -64,6 +68,7 @@ The following can be edited to fit your learning/evaluation procedure:
 | Variable       | Type           | Explanation                                                                |
 |----------------|----------------|----------------------------------------------------------------------------|
 | NO_SMT         | bool           | if set to True, the SMT tactic is disregarded.                             |
+| FEATURE_MODE   | str            | determines which features to use (e.g. manual or graph features)           |
 | TRAIN_PO_FILES | str (filepath) | the relative path to the PO file the env is sampling from during training. |
 | TEST_PO_FILES  | str (filepath) | the relative path to the default PO file used for evaluation.              |
 
@@ -88,3 +93,20 @@ The _TacticSelector_ defined in `scripts/tactic_selector.py` provides a class wr
 2. Start the tactic server by executing `scripts/tactic_server.py`. It creates the _TacticSelector_ that loads your trained model and uses it to predict tactics given the forwarded goal ASTs (Communication between tactic server and KeY is realized using a socket connection on port 6767, see `gym-autokey/envs/config.py`).
 
 3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `scripts/evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). A performance overview is printed to the terminal.
+
+# Attribution
+
+Here's a bibtex snippet if the repo is valuable enough to be cited.
+
+```
+@misc{gym_autokey,
+  author = {Boltres, Andreas and Ulbrich, Mattias and Beckert, Bernhard},
+  title = {An OpenAI Gym Environment for Automated Rule-Based Deductive Program Verification in KeY.},
+  year = {2020},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/Flunzmas/gym-autokey}},
+}
+```
+
+The second ([mattulbrich](https://github.com/mattulbrich)) and third author ([bbeckert](https://github.com/bbeckert)), although not directly involved in this repository, have contributed significantly to the development of this project.
