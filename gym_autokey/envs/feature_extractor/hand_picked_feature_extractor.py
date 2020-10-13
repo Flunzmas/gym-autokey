@@ -12,7 +12,7 @@ from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
 from gym_autokey.envs.datastructures.dgl_goal_graph import dgl_graph_from_anytree, draw_graph
 
 
-class FeatureExtractor(object):
+class HandPickedFeatureExtractor(object):
     """
     This class extracts features from ASTs.
     """
@@ -176,12 +176,12 @@ class FeatureExtractor(object):
 
     # ----------------------------------------------------------------------------------------
 
-    def extract_features(self, obligation_ast):
+    def extract_features(self, goal_ast):
         """
         Extracts pre-defined features from the given obligation ast.
         """
         features = dict()
-        all_nodes = ast_anytree_to_node_list(obligation_ast)
+        all_nodes = ast_anytree_to_node_list(goal_ast)
         for cat in cf.AST_CATEGORIES:
             cat_nodes = self.get_fitting_nodes(all_nodes, cf.AST_CATEGORIES[cat])
             if len(cat_nodes) == 0:  # insert (filterable dummy|neutral) values (if|if not) in feature analysis mode.
@@ -199,7 +199,7 @@ class FeatureExtractor(object):
 
         features['overall_node_count'] = self.abs_node_count_feature(all_nodes)
         features['overall_height'] = self.abs_height_feature(all_nodes)
-        features['overall_formula_count'] = self.abs_formula_count_feature(obligation_ast)
+        features['overall_formula_count'] = self.abs_formula_count_feature(goal_ast)
         features['tree_select_of_store_count'] = self.tree_select_of_store_count_feature(all_nodes)
 
         return features

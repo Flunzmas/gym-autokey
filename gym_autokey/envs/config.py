@@ -38,6 +38,10 @@ KEY_SERVER_PORT = 5533
 TACTIC_SERVER_ADDRESS = 'localhost'
 TACTIC_SERVER_PORT = 6767
 
+# --- features ---
+
+FEATURE_MODE = "manual" # "graph"
+
 # --- hand-picked features ---
 
 OP_CLASSES = [

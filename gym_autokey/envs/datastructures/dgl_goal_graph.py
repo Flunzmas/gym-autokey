@@ -5,14 +5,13 @@ import time
 import networkx as nx
 import matplotlib.pyplot as plt
 
-def dgl_graph_from_anytree(root_node):
+def dgl_graph_from_anytree(hasher, root_node):
     """
     TODO
     """
 
     node_count = 0
     u, v, op_classes, op_name_hashes = [], [], [], []
-    hasher = pyhash.fnv1_32(seed=42)  # hashing to more than 32 bits results in an overflow error with torch.tensor
 
     node_count, u, v, op_classes, op_name_hashes = _get_graph_info_recursive(node_count, u, v, op_classes,
                                                                              op_name_hashes, root_node, hasher)
