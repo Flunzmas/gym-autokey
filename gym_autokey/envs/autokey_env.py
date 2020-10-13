@@ -8,7 +8,7 @@ import gym_autokey.envs.config as cf
 from gym_autokey.envs.obligation_space import ObligationSpace
 from gym_autokey.envs.subepisode import Subepisode
 from gym_autokey.envs.key_connector import KeYConnector
-from gym_autokey.envs.feature_extractor import FeatureExtractor
+from gym_autokey.envs.feature_extractor.fabric_method import create_feature_extractor
 from gym_autokey.envs.datastructures.po_node import PONode
 from gym_autokey.envs.datastructures.fixed_length_deque import FixedLengthDeque
 
@@ -31,7 +31,7 @@ class AutokeyEnv(gym.Env):
         Properly initializes the KeY Connector and sets up counters etc.
         """
         self.connector = KeYConnector()
-        self.extractor = FeatureExtractor()
+        self.extractor = create_feature_extractor()
         self.action_space = spaces.Discrete(len(self.connector.available_tactics))
         self.observation_space = ObligationSpace(self.connector, self.extractor)
 

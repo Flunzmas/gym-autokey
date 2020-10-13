@@ -2,7 +2,7 @@ import time
 from numpy import random
 
 import gym_autokey.envs.config as cf
-from gym_autokey.envs.feature_extractor import FeatureExtractor
+from gym_autokey.envs.feature_extractor.fabric_method import create_feature_extractor
 from gym_autokey.envs.datastructures.po_anytree import parse_goal_ast
 
 
@@ -26,7 +26,7 @@ class TacticSelector:
         Instantiates a feature handler as well as a model in order to predict tactics from ASTs.
         """
 
-        self.feature_extractor = FeatureExtractor()
+        self.feature_extractor = create_feature_extractor()
 
         # --- optional: restrict the tactics that can be applied. -----------------------------------------------
 
