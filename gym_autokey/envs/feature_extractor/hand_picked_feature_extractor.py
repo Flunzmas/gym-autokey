@@ -8,8 +8,9 @@ import numpy as np
 
 import gym_autokey.envs.config as cf
 from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
+import gym_autokey.envs.feature_extractor.feature_extractor as fe
 
-class HandPickedFeatureExtractor(object):
+class HandPickedFeatureExtractor(fe.FeatureExtractor):
     """
     This class extracts features from ASTs.
     """
@@ -39,6 +40,12 @@ class HandPickedFeatureExtractor(object):
         returns a list containing neutral values for all features.
         """
         return [0.0 for i in range(self.feature_count)]
+
+    def get_feature_count(self):
+        """
+        TODO
+        """
+        return self.feature_count
 
     # ----------------------------------------------------------------------------------------
 
@@ -199,7 +206,7 @@ class HandPickedFeatureExtractor(object):
         features['overall_formula_count'] = self.abs_formula_count_feature(goal_ast)
         features['tree_select_of_store_count'] = self.tree_select_of_store_count_feature(all_nodes)
 
-        return features
+        return list(features.values())
 
     def analyze_feature_distributions(self, all_features):
         """
@@ -249,11 +256,11 @@ class HandPickedFeatureExtractor(object):
         Returns the edit distance between two feature vectors.
         """
 
-        if features_1.keys() != features_2.keys():
-            raise AttributeError("feature vectors don't contain the same features!")
+        if len(features_1) != len(features_2):
+            raise AttributeError("feature lists don't contain the same number of features!")
         squared_dist = 0.0
-        for f_name in features_1:
-            squared_dist += (features_1[f_name] - features_2[f_name]) ** 2
+        for i in range(features_1):
+            squared_dist += (features_1[i] - features_2[i]) ** 2
         return sqrt(squared_dist)
 
     def feature_equals(self, features_1, features_2):

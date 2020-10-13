@@ -13,8 +13,8 @@ class ObligationSpace(Box):
     def __init__(self, connector, extractor):
         self.connector = connector
         self.extractor = extractor
-        bounds_low = [-1.0 for i in range (self.extractor.feature_count)]
-        bounds_high = [1.0 for i in range (self.extractor.feature_count)]
+        bounds_low = [-np.inf for i in range (self.extractor.get_feature_count())]
+        bounds_high = [np.inf for i in range (self.extractor.get_feature_count())]
 
         # np.float64 is not supported by openai baselines!
         super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float32)
@@ -50,11 +50,11 @@ class ObligationSpace(Box):
             return dps, po_origin_file
 
     def contains(self, observation):
-        """returns True if given PO formula contains valid ID, features and AST."""
+        """returns True if given PO formula contains valid ID and features."""
         try:
             if observation['id'] < 0:
                 return False
-            if not self.extractor.validate_features(observation['features']):
+            if not super(ObligationSpace, self).contains(observation['features']):
                 return False
         except KeyError:
             return False  # a mandatory key is missing

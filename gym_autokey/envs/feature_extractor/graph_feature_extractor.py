@@ -19,6 +19,12 @@ class GraphFeatureExtractor(fe.FeatureExtractor):
         # hashing to more than 32 bits results in an overflow error with torch.tensor
         self.hasher = pyhash.fnv1_32(seed=42)
 
+    def get_feature_count(self):
+        """
+        TODO
+        """
+        raise NotImplementedError()
+
     def extract_features(self, goal_ast : anytree.Node):
         """
         TODO

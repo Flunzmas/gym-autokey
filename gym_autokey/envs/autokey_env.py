@@ -253,7 +253,7 @@ class AutokeyEnv(gym.Env):
         """
         features = self.cur_subepis.cur_goal.features
         # print('features: {0}'.format(features))
-        return list(features.values())
+        return features
 
     def _observe_defaults(self):
         """

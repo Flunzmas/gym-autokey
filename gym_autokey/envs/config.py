@@ -74,6 +74,16 @@ AST_CATEGORIES = {
         'quantifiers': ('class', r'^Quantifier$', 1)
 }
 
+'''
+5 features for each active entry in AST_CATEGORIES, plus:
+        overall node count
+        overall height feature
+        AST formula count (formulas below root)
+        select(store(...)) - count
+'''
+FEATURE_COUNT = len(AST_CATEGORIES) * 5 + 4
+FEATURE_DISTRIBUTION_INFORMATION_PATH = (DATA_PATH / 'feature_distribution_information.json').as_posix()
+
 # --- action space ---
 
 TACTIC_ABBR = {
@@ -95,17 +105,6 @@ TACTICS = ['INT', 'HEAP', 'EQUALITY', 'AUTO', 'AUTO_NOSPLIT', 'MODELSEARCH',
 
 # if set to true, the SMT tactic will not be used.
 NO_SMT = True
-
-'''
-5 features for each active entry in AST_CATEGORIES, plus:
-        overall node count
-        overall height feature
-        AST formula count (formulas below root)
-        select(store(...)) - count
-'''
-FEATURE_COUNT = len(AST_CATEGORIES) * 5 + 4
-FEATURE_DISTRIBUTION_INFORMATION_PATH = (
-    DATA_PATH / 'feature_distribution_information.json').as_posix()
 
 # --- RL ---
 
