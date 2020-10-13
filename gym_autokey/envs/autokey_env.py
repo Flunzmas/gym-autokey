@@ -5,10 +5,10 @@ import gym
 from gym import spaces
 
 import gym_autokey.envs.config as cf
-from gym_autokey.envs.obligation_space import ObligationSpace
 from gym_autokey.envs.subepisode import Subepisode
 from gym_autokey.envs.key_connector import KeYConnector
-from gym_autokey.envs.feature_extractor.fabric_method import create_feature_extractor
+from gym_autokey.envs.feat_extractor.fabric_method import create_feature_extractor
+from gym_autokey.envs.obs_space.fabric_method import create_goal_space
 from gym_autokey.envs.datastructures.po_node import PONode
 from gym_autokey.envs.datastructures.fixed_length_deque import FixedLengthDeque
 
@@ -30,10 +30,13 @@ class AutokeyEnv(gym.Env):
         Initializes all env variables necessary for running the environment.
         Properly initializes the KeY Connector and sets up counters etc.
         """
+        print("NO_SMT: {}".format(str(cf.NO_SMT)))
+        print("FEATURE_MODE: {}".format(cf.FEATURE_MODE))
+
         self.connector = KeYConnector()
         self.extractor = create_feature_extractor()
-        self.action_space = spaces.Discrete(len(self.connector.available_tactics))
-        self.observation_space = ObligationSpace(self.connector, self.extractor)
+        self.obs_space = create_goal_space(self.connector, self.extractor)
+        self.ac_space = spaces.Discrete(len(self.connector.available_tactics))
 
         self.max_steps_per_po = cf.MAX_STEPS_PER_PO
         self.pre_kill = cf.PRE_KILL_FAILED_EPISODES
@@ -200,8 +203,8 @@ class AutokeyEnv(gym.Env):
 
         # finish env step, reset the environment.
         obs = self.reset(exit_status=status)
-        done = self.topgoal_done
         rew = self.topgoal_rew
+        done = self.topgoal_done
         return obs, rew, done, {}  # obs, rew, done, infos
 
     def finalize_subepisode(self):
@@ -249,18 +252,11 @@ class AutokeyEnv(gym.Env):
 
     def _observe(self):
         """
-        Returns a list of feature values from the currently considered goal.
+        Returns the current goal's features.
         """
-        features = self.cur_subepis.cur_goal.features
-        # print('features: {0}'.format(features))
-        return features
-
-    def _observe_defaults(self):
-        """
-        Returns a list of default feature values.
-        """
-        default_features = self.extractor.get_feature_defaults()
-        return default_features
+        obs = self.cur_subepis.cur_goal.features
+        # self.obs_space.render(obs)
+        return obs
 
 # -------------------------------------------------------------------------------------------
 
@@ -338,11 +334,12 @@ class AutokeyEnv(gym.Env):
         """
 
         # get the information for the new po
-        datapoints, po_origin_file = self.observation_space.sample()
+        datapoints, po_origin_file = self.obs_space.sample()
         self.cur_po_filepath = po_origin_file
 
         # len(datapoints) is at least 1, otherwise observation_space.sample() would not have returned.
-        assert all([self.observation_space.contains(dp) for dp in datapoints]), "observation is not valid"
+        assert all([dp["id"] >= 0 for dp in datapoints]), "non-valid IDs in resulting dps"
+        assert all([self.obs_space.contains(dp["features"]) for dp in datapoints]), "non-valid features"
         goal_nodes = [
             PONode(str(dp['id']), id=dp['id'], ast=dp['ast'], features=dp['features'], origin=dp['origin'])
             for dp in datapoints]

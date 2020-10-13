@@ -40,7 +40,8 @@ TACTIC_SERVER_PORT = 6767
 
 # --- features ---
 
-FEATURE_MODE = "manual" # "graph"
+FEATURE_MODE = "graph"  # options are 'manual' and 'graph'.
+
 
 # --- hand-picked features ---
 
@@ -104,7 +105,7 @@ TACTICS = ['INT', 'HEAP', 'EQUALITY', 'AUTO', 'AUTO_NOSPLIT', 'MODELSEARCH',
            'SMT', 'NOTHING', 'DEPENDENCY', 'QUANT', 'EXPAND']
 
 # if set to true, the SMT tactic will not be used.
-NO_SMT = True
+NO_SMT = False
 
 # --- RL ---
 

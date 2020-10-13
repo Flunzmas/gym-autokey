@@ -116,8 +116,7 @@ class KeYConnector:
             self.retrieve_available_tactics()
 
         if not restart:
-            print("\nstarted KeY. Available tactics: {0}\n".format(self.available_tactics))
-            print("NO_SMT set to true, proceeding without the SMT tactic in this run.")
+            print("started KeY. Available tactics: {0}".format(self.available_tactics))
 
     def quit_key(self):
         """

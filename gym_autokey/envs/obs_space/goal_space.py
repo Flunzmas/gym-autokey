@@ -1,23 +1,19 @@
-import numpy as np
-from gym.spaces.box import Box
+import gym
+import anytree
 
 import gym_autokey.envs.config as cf
 import gym_autokey.envs.po_loader as pl
+import gym_autokey.envs.key_connector as kc
+import gym_autokey.envs.feat_extractor.feature_extractor as fe
 
-
-class ObligationSpace(Box):
+class GoalSpace(gym.Space):
     """The observation space is the space of all valid proof obligation formulas.
     Technically, sampling is done by loading a random
     file from the (big) list of loadable keyroot_id_listiles. 
     """
-    def __init__(self, connector, extractor):
+    def __init__(self, connector : kc.KeYConnector, extractor : fe.FeatureExtractor):
         self.connector = connector
         self.extractor = extractor
-        bounds_low = [-np.inf for i in range (self.extractor.get_feature_count())]
-        bounds_high = [np.inf for i in range (self.extractor.get_feature_count())]
-
-        # np.float64 is not supported by openai baselines!
-        super(ObligationSpace, self).__init__(low=np.array(bounds_low), high=np.array(bounds_high), dtype=np.float32)
 
     def sample(self):
         """Loads a random PO data point from the data
@@ -49,13 +45,14 @@ class ObligationSpace(Box):
             # return dps if everything went well
             return dps, po_origin_file
 
-    def contains(self, observation):
-        """returns True if given PO formula contains valid ID and features."""
-        try:
-            if observation['id'] < 0:
-                return False
-            if not super(ObligationSpace, self).contains(observation['features']):
-                return False
-        except KeyError:
-            return False  # a mandatory key is missing
-        return True
+    def observe_from_ast(self, goal_ast : anytree.Node):
+        """
+        TODO
+        """
+        return self.extractor.extract_features(goal_ast)
+
+    def render(self, obs):
+        """
+        TODO
+        """
+        raise NotImplementedError

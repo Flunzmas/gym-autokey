@@ -8,9 +8,9 @@ import numpy as np
 
 import gym_autokey.envs.config as cf
 from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
-import gym_autokey.envs.feature_extractor.feature_extractor as fe
+import gym_autokey.envs.feat_extractor.feature_extractor as fe
 
-class HandPickedFeatureExtractor(fe.FeatureExtractor):
+class ManualFeatureExtractor(fe.FeatureExtractor):
     """
     This class extracts features from ASTs.
     """
@@ -40,12 +40,6 @@ class HandPickedFeatureExtractor(fe.FeatureExtractor):
         returns a list containing neutral values for all features.
         """
         return [0.0 for i in range(self.feature_count)]
-
-    def get_feature_count(self):
-        """
-        TODO
-        """
-        return self.feature_count
 
     # ----------------------------------------------------------------------------------------
 
@@ -206,7 +200,7 @@ class HandPickedFeatureExtractor(fe.FeatureExtractor):
         features['overall_formula_count'] = self.abs_formula_count_feature(goal_ast)
         features['tree_select_of_store_count'] = self.tree_select_of_store_count_feature(all_nodes)
 
-        return list(features.values())
+        return features
 
     def analyze_feature_distributions(self, all_features):
         """

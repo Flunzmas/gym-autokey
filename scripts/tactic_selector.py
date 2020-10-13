@@ -2,7 +2,7 @@ import time
 from numpy import random
 
 import gym_autokey.envs.config as cf
-from gym_autokey.envs.feature_extractor.fabric_method import create_feature_extractor
+from gym_autokey.envs.feat_extractor.fabric_method import create_feature_extractor
 from gym_autokey.envs.datastructures.po_anytree import parse_goal_ast
 
 
