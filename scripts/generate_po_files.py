@@ -33,14 +33,19 @@ def generate_po_files(split_ratio = DEFAULT_SPLIT_RATIO):
     test_pos[-1] = test_pos[-1][:-1]
 
     # store PO lines
-    with open(cf.PO_PATH / ("po_generated_train_" + time.strftime("%d%m%Y-%H%M%S") + ".txt"), 'w') as po_train_file:
+    po_train_path = cf.PO_PATH / ("po_generated_train_" + time.strftime("%d%m%Y-%H%M%S") + ".txt")
+    print("saving training set at {}".format(po_train_path))
+    with open(po_train_path, 'w') as po_train_file:
         for dp in train_pos:
             po_train_file.write(dp)
-    with open(cf.PO_PATH / ("po_generated_test_" + time.strftime("%d%m%Y-%H%M%S") + ".txt"), 'w') as po_test_file:
+
+    po_test_path = cf.PO_PATH / ("po_generated_test_" + time.strftime("%d%m%Y-%H%M%S") + ".txt")
+    print("saving testing set at {}".format(po_test_path))
+    with open(po_test_path, 'w') as po_test_file:
         for dp in test_pos:
             po_test_file.write(dp)
 
-    print("files were generated.")
+    print("files were generated and saved.")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -11,13 +11,8 @@ import gym_autokey.envs.feat_extractor.graph_feat_extractor as gfe
 class GoalGraphSpace(gs.GoalSpace):
     """This subclass of GoalSpace deals with a feature DGLGraph."""
 
-
-    hasher = None
-
     def __init__(self, connector: kc.KeYConnector, extractor: gfe.GraphFeatExtractor):
         super(GoalGraphSpace, self).__init__(connector, extractor)
-
-        self.hasher = pyhash.fnv1_32(seed=42)  # >32 bits -> overflow error with torch.tensor
 
     def contains(self, x):
         """
