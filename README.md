@@ -18,6 +18,7 @@ For more information about KeY (and formal verification in general) you can visi
 The observation space can be adjusted by changing the value of the config file's `FEATURE_MODE` attribute, yielding of the following:
 * A Box-Like vector of hand-picked features, with values ranging from -1 to 1.
 * An instance of a DGLGraph (see [the DGL library](https://docs.dgl.ai/index.html)).
+* A string representation of the AST, either containing both the operator classes and names or just their names.
 
 # Installation
 
