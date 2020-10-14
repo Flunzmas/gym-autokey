@@ -3,18 +3,12 @@ import dgl
 import torch
 
 import numpy as np
-import gym_autokey.envs.feat_extractor.feat_extractor as fe
+import gym_autokey.envs.obs_extractor.obs_extractor as fe
 
 
-class GraphFeatExtractor(fe.FeatExtractor):
-    hasher = None
+class GraphObsExtractor(fe.ObsExtractor):
 
-    def __init__(self):
-        """
-        Initializes a hasher object needed for creating suited graph data.
-        """
-
-    def extract_features(self, goal_ast: anytree.Node):
+    def obs_from_anytree(self, goal_ast: anytree.Node):
         """
         Creates a dgl graph as the features.
         """

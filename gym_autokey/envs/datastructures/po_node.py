@@ -27,7 +27,7 @@ class PONode(Node):
         """
         try:
             ast = kc.get_goal_ast(po_id)
-            features = fh.extract_features(ast)
+            features = fh.obs_from_anytree(ast)
         except CKStatusError:
             return PONode("bad node", id=-1, ast=None, features=None, parent=parent)
         return PONode(str(po_id), id=po_id, ast=ast, features=features, parent=parent)

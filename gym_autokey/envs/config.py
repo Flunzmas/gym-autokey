@@ -40,7 +40,7 @@ TACTIC_SERVER_PORT = 6767
 
 # --- features ---
 
-FEATURE_MODE = "graph"  # options are 'manual' and 'graph'.
+FEATURE_MODE = "text_full"  # options are 'manual', 'graph', 'text_full' and 'text_names'.
 
 
 # --- hand-picked features ---

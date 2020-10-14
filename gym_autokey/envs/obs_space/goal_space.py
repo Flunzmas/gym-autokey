@@ -4,7 +4,7 @@ import anytree
 import gym_autokey.envs.config as cf
 import gym_autokey.envs.po_loader as pl
 import gym_autokey.envs.key_connector as kc
-import gym_autokey.envs.feat_extractor.feat_extractor as fe
+import gym_autokey.envs.obs_extractor.obs_extractor as fe
 
 
 class GoalSpace(gym.Space):
@@ -15,7 +15,7 @@ class GoalSpace(gym.Space):
     Technically, sampling is done by loading a random file from the (big) list of loadable keyroot_id_listiles.
     """
 
-    def __init__(self, connector: kc.KeYConnector, extractor: fe.FeatExtractor):
+    def __init__(self, connector: kc.KeYConnector, extractor: fe.ObsExtractor):
         self.connector = connector
         self.extractor = extractor
 
@@ -45,7 +45,7 @@ class GoalSpace(gym.Space):
                 dp['id'] = goal_id
                 dp['origin'] = po_origin_file
                 dp['ast'] = self.connector.get_goal_ast(dp['id'])
-                dp['features'] = self.extractor.extract_features(dp['ast'])
+                dp['features'] = self.extractor.obs_from_anytree(dp['ast'])
                 dps.append(dp)
 
             # return dps if everything went well

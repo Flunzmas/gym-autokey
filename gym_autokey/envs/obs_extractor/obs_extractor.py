@@ -1,6 +1,6 @@
 import anytree
 
-class FeatExtractor(object):
+class ObsExtractor(object):
     """
     Base class for all feature extractors.
     """
@@ -8,5 +8,5 @@ class FeatExtractor(object):
     def __init__(self):
         pass
 
-    def extract_features(self, goal_ast : anytree.Node):
+    def obs_from_anytree(self, goal_ast : anytree.Node):
         raise NotImplementedError

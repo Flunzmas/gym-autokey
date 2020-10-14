@@ -8,11 +8,11 @@ import numpy as np
 
 import gym_autokey.envs.config as cf
 from gym_autokey.envs.datastructures.po_anytree import ast_anytree_to_node_list
-import gym_autokey.envs.feat_extractor.feat_extractor as fe
+import gym_autokey.envs.obs_extractor.obs_extractor as fe
 
-class ManualFeatExtractor(fe.FeatExtractor):
+class ManualFeatObsExtractor(fe.ObsExtractor):
     """
-    This class extracts features from ASTs.
+    This class extracts manually features from ASTs.
     """
 
     feature_distribution_information = dict()
@@ -174,7 +174,7 @@ class ManualFeatExtractor(fe.FeatExtractor):
 
     # ----------------------------------------------------------------------------------------
 
-    def extract_features(self, goal_ast):
+    def obs_from_anytree(self, goal_ast):
         """
         Extracts pre-defined features from the given obligation ast.
         """

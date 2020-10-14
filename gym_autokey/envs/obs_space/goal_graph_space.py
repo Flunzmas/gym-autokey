@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 
 import gym_autokey.envs.obs_space.goal_space as gs
 import gym_autokey.envs.key_connector as kc
-import gym_autokey.envs.feat_extractor.graph_feat_extractor as gfe
+import gym_autokey.envs.obs_extractor.graph_obs_extractor as gfe
 
 
 class GoalGraphSpace(gs.GoalSpace):
     """This subclass of GoalSpace deals with a feature DGLGraph."""
 
-    def __init__(self, connector: kc.KeYConnector, extractor: gfe.GraphFeatExtractor):
+    def __init__(self, connector: kc.KeYConnector, extractor: gfe.GraphObsExtractor):
         super(GoalGraphSpace, self).__init__(connector, extractor)
 
     def contains(self, x):

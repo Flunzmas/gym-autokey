@@ -1,12 +1,12 @@
 import gym_autokey.envs.obs_space.goal_space as gs
 import gym_autokey.envs.key_connector as kc
-import gym_autokey.envs.feat_extractor.manual_feat_extractor as mfe
+import gym_autokey.envs.obs_extractor.manual_feat_obs_extractor as mfe
 
 
 class GoalManualSpace(gs.GoalSpace):
     """This subclass of GoalSpace deals with a feature dictionary containing hand-picked features."""
 
-    def __init__(self, connector : kc.KeYConnector, extractor : mfe.ManualFeatExtractor):
+    def __init__(self, connector : kc.KeYConnector, extractor : mfe.ManualFeatObsExtractor):
         super(GoalManualSpace, self).__init__(connector, extractor)
 
     def contains(self, x):

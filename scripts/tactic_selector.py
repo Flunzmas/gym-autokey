@@ -2,7 +2,7 @@ import time
 from numpy import random
 
 import gym_autokey.envs.config as cf
-from gym_autokey.envs.feat_extractor.fabric_method import create_feature_extractor
+from gym_autokey.envs.obs_extractor.fabric_method import create_feature_extractor
 from gym_autokey.envs.datastructures.po_anytree import parse_goal_ast
 
 
@@ -55,7 +55,7 @@ class TacticSelector:
         # get features and determine tactic per goal ID...
         cur_id = goal_data['id']
         goal_ast = parse_goal_ast(goal_data)
-        cur_features = self.feature_extractor.extract_features(goal_ast)
+        cur_features = self.feature_extractor.obs_from_anytree(goal_ast)
 
         # if a tactic application had no effect, known_goal_id can help to take suited measures.
         known_goal_id = False
