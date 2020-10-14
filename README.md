@@ -82,6 +82,10 @@ While not necessary, these variables can be changed to customise the env for you
 | PRE_KILL_FAILED_EPISODES | bool  | if set to True, the whole PO proof is instantly aborted on failure of a subepisode. |
 | PENALTY_* / REWARD_*     | float | figures for reward and penalty.                                                     |
 
+## Preparing training and test data
+
+I recommend splitting the available PO data into a training set and a test set. Running `scripts/generate_po_files.py` does just that, employing a 70/30% split (you can change that ratio in the script). Then, adjust the variables `TRAIN_PO_FILES` and `TEST_PO_FILES` in `gym_autokey/envs/config.py` to use the generated files.
+
 # Testing/Evaluation
 
 In order to evaluate a trained tactic selection model, the given fork of KeY includes an _AIServerMacro_ that prompts KeY to query for the next tactic to apply instead of using its own auto mode. By starting a dedicated _TacticServer_ (defined in `scripts/tactic_server.py`) that accepts messages containing goal ASTs and that responds with a tactic command, you provide KeY with the tactics that lead it to a proof for given PO.
@@ -92,7 +96,7 @@ The _TacticSelector_ defined in `scripts/tactic_selector.py` provides a class wr
 
 2. Start the tactic server by executing `scripts/tactic_server.py`. It creates the _TacticSelector_ that loads your trained model and uses it to predict tactics given the forwarded goal ASTs (Communication between tactic server and KeY is realized using a socket connection on port 6767, see `gym-autokey/envs/config.py`).
 
-3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `scripts/evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer). A performance overview is printed to the terminal.
+3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `scripts/evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer), including the ones you created earlier by splitting the available data into a training and a test set. A performance overview is printed to the terminal.
 
 # Attribution
 
