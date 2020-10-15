@@ -14,29 +14,37 @@ class GraphObsExtractor(fe.ObsExtractor):
         """
 
         node_count = 0
-        u, v = [], []
-        op_classes = []
+        u, v, op_class_ids, op_class_one_hots = [], [], [], []
 
-        node_count, u, v, op_classes = self._get_graph_info_recursive(node_count, u, v, op_classes, goal_ast)
+        node_count, u, v, op_class_ids, op_class_one_hots = self._get_graph_info_recursive(goal_ast, node_count, u, v,
+                                                                                           op_class_ids,
+                                                                                           op_class_one_hots)
         g = dgl.graph((u, v))
-        g.ndata["op_classes"] = torch.cat(op_classes, dim=0)
+        g.ndata["id"] = torch.arange(node_count)
+        g.ndata["op_class_id"] = torch.cat(op_class_ids, dim=0)
+        g.ndata["op_class_one_hot"] = torch.cat(op_class_one_hots, dim=0)
         return g
 
-    def _get_graph_info_recursive(self, node_count, u, v, op_classes, cur_node):
+    def _get_graph_info_recursive(self, cur_node, node_count, u, v, op_class_ids, op_class_one_hots):
         """
         Recursive method used for the DGLGraph generation to traverse the anytree.
         """
 
         node_count += 1
         # one-hot encoded vector containing the op_class of the node
-        op_class = torch.from_numpy(np.eye(len(op_class_to_idx.keys()))[op_class_to_idx[cur_node.op_class]])
-        op_classes.append(op_class.unsqueeze(0))
+        op_class_id = op_class_to_idx[cur_node.op_class]
+        op_class_ids.append(torch.unsqueeze(torch.tensor(op_class_id), 0))
+        op_class_one_hot = torch.from_numpy(np.eye(len(op_class_to_idx.keys()))[op_class_id])
+        op_class_one_hots.append(torch.unsqueeze(op_class_one_hot, 0))
 
         for child in cur_node.children:
             u.append(cur_node.id)
             v.append(child.id)
-            node_count, u, v, op_classes = self._get_graph_info_recursive(node_count, u, v, op_classes, child)
-        return node_count, u, v, op_classes
+
+            node_count, u, v, op_class_ids, op_class_one_hots = self._get_graph_info_recursive(child, node_count, u, v,
+                                                                                               op_class_ids,
+                                                                                               op_class_one_hots)
+        return node_count, u, v, op_class_ids, op_class_one_hots
 
 
 op_class_to_idx = {

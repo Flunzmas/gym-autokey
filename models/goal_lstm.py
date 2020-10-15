@@ -2,13 +2,13 @@ import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence
 
 
-class SequentLSTM(nn.Module):
+class GoalLSTM(nn.Module):
     """
     Credits to yns (https://stackoverflow.com/questions/49832739/variable-size-input-for-lstm-in-pytorch)
     """
 
     def __init__(self, vocab_size, embed_dim, hidden_dim, num_layers, out_dim):
-        super(SequentLSTM, self).__init__()
+        super(GoalLSTM, self).__init__()
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim=embed_dim, padding_idx=0)
         self.dropout = nn.Dropout(0.3)

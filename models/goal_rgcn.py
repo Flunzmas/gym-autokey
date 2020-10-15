@@ -9,10 +9,10 @@ from functools import partial
 Taken from https://docs.dgl.ai/en/latest/tutorials/models/1_gnn/4_rgcn.html
 """
 
-class RGCNLayer(nn.Module):
+class GoalRGCNLayer(nn.Module):
     def __init__(self, in_feat, out_feat, num_rels, num_bases=-1, bias=None,
                  activation=None, is_input_layer=False):
-        super(RGCNLayer, self).__init__()
+        super(GoalRGCNLayer, self).__init__()
         self.in_feat = in_feat
         self.out_feat = out_feat
         self.num_rels = num_rels
@@ -60,11 +60,11 @@ class RGCNLayer(nn.Module):
                 # for input layer, matrix multiply can be converted to be
                 # an embedding lookup using source node id
                 embed = weight.view(-1, self.out_feat)
-                index = edges.data['rel_type'] * self.in_feat + edges.src['id']
+                index = edges.src['op_class_id'] * self.in_feat + edges.src['id']
                 return {'msg': embed[index] * edges.data['norm']}
         else:
             def message_func(edges):
-                w = weight[edges.data['rel_type']]
+                w = weight[edges.src['op_class_id']]
                 msg = torch.bmm(edges.src['h'].unsqueeze(1), w).squeeze()
                 msg = msg * edges.data['norm']
                 return {'msg': msg}
@@ -80,10 +80,10 @@ class RGCNLayer(nn.Module):
         g.update_all(message_func, fn.sum(msg='msg', out='h'), apply_func)
 
 
-class SequentRGCN(nn.Module):
+class GoalRGCN(nn.Module):
     def __init__(self, input_dim, h_dim, out_dim, num_rels,
                  num_bases=-1, num_hidden_layers=1):
-        super(SequentRGCN, self).__init__()
+        super(GoalRGCN, self).__init__()
         self.h_dim = h_dim
         self.out_dim = out_dim
         self.num_rels = num_rels
@@ -110,16 +110,16 @@ class SequentRGCN(nn.Module):
         self.layers.append(h2o)
 
     def build_input_layer(self):
-        return RGCNLayer(self.input_dim, self.h_dim, self.num_rels, self.num_bases,
-                         activation=F.relu, is_input_layer=True)
+        return GoalRGCNLayer(self.input_dim, self.h_dim, self.num_rels, self.num_bases,
+                             activation=F.relu, is_input_layer=True)
 
     def build_hidden_layer(self):
-        return RGCNLayer(self.h_dim, self.h_dim, self.num_rels, self.num_bases,
-                         activation=F.relu)
+        return GoalRGCNLayer(self.h_dim, self.h_dim, self.num_rels, self.num_bases,
+                             activation=F.relu)
 
     def build_output_layer(self):
-        return RGCNLayer(self.h_dim, self.out_dim, self.num_rels, self.num_bases,
-                         activation=partial(F.softmax, dim=1))
+        return GoalRGCNLayer(self.h_dim, self.out_dim, self.num_rels, self.num_bases,
+                             activation=partial(F.softmax, dim=1))
 
     def forward(self, g, num_nodes):
         if self.features is not None:

@@ -96,6 +96,8 @@ class AutokeyEnv(gym.Env):
         """
 
         # time.sleep(0.3)
+        if self.env_steps == 3:
+            print(self._observe())
 
         # render the past step at the beginning if self_render
         if self.self_render:
