@@ -9,6 +9,8 @@ from functools import partial
 Taken from https://docs.dgl.ai/en/latest/tutorials/models/1_gnn/4_rgcn.html
 """
 
+weight_init_gain = 10  # tunable hyperparameter?
+
 
 class GoalRGCNLayer(nn.Module):
     def __init__(self, in_feat, out_feat, num_rels, num_bases=-1, bias=None,
@@ -38,14 +40,11 @@ class GoalRGCNLayer(nn.Module):
             self.bias = nn.Parameter(torch.Tensor(out_feat))
 
         # init trainable parameters
-        nn.init.xavier_uniform_(self.weight,
-                                gain=nn.init.calculate_gain('relu'))
+        nn.init.xavier_uniform_(self.weight, gain=weight_init_gain)
         if self.num_bases < self.num_rels:
-            nn.init.xavier_uniform_(self.w_comp,
-                                    gain=nn.init.calculate_gain('relu'))
+            nn.init.xavier_uniform_(self.w_comp, gain=weight_init_gain)
         if self.bias:
-            nn.init.xavier_uniform_(self.bias,
-                                    gain=nn.init.calculate_gain('relu'))
+            nn.init.xavier_uniform_(self.bias, gain=weight_init_gain)
 
     def forward(self, g):
         if self.num_bases < self.num_rels:
@@ -66,7 +65,6 @@ class GoalRGCNLayer(nn.Module):
                 msg = torch.bmm(val, weight_0).squeeze()
                 msg *= edges.src['norm'].unsqueeze(1)
 
-                print(msg)
                 return {'msg': msg}
         else:
             def message_func(edges):
@@ -76,12 +74,10 @@ class GoalRGCNLayer(nn.Module):
                 msg = torch.bmm(h, w).squeeze()
                 msg *= edges.src['norm'].unsqueeze(1)
 
-                print(msg)
                 return {'msg': msg}
 
         def apply_func(nodes):
             h = nodes.data['h']
-            print("h: {}".format(h))
             if self.bias:
                 h = h + self.bias
             if self.activation:
@@ -139,5 +135,4 @@ class GoalRGCN(nn.Module):
 
         hidden_outs = g.ndata.pop('h')
         final_out = self.tactic_softmax(hidden_outs[0])  # use hidden out of root node
-
         return final_out
