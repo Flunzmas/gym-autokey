@@ -9,6 +9,7 @@ from functools import partial
 Taken from https://docs.dgl.ai/en/latest/tutorials/models/1_gnn/4_rgcn.html
 """
 
+
 class GoalRGCNLayer(nn.Module):
     def __init__(self, in_feat, out_feat, num_rels, num_bases=-1, bias=None,
                  activation=None, is_input_layer=False):
@@ -51,7 +52,7 @@ class GoalRGCNLayer(nn.Module):
             # generate all weights from bases (equation (3))
             weight = self.weight.view(self.in_feat, self.num_bases, self.out_feat)
             weight = torch.matmul(self.w_comp, weight).view(self.num_rels,
-                                                        self.in_feat, self.out_feat)
+                                                            self.in_feat, self.out_feat)
         else:
             weight = self.weight
 
@@ -59,14 +60,21 @@ class GoalRGCNLayer(nn.Module):
             def message_func(edges):
                 # for input layer, matrix multiply can be converted to be
                 # an embedding lookup using source node id
-                embed = weight.view(-1, self.out_feat)
-                index = edges.src['op_class_id'] * self.in_feat + edges.src['id']
-                return {'msg': embed[index] * edges.data['norm']}
+
+                weight_0 = weight[edges.src['op_class_id'], :, :]
+                val = edges.src['op_class_one_hot'].unsqueeze(1)
+                msg = torch.bmm(val, weight_0).squeeze()
+                msg *= edges.src['norm'].unsqueeze(1)
+
+                return {'msg': msg}
         else:
             def message_func(edges):
+
                 w = weight[edges.src['op_class_id']]
-                msg = torch.bmm(edges.src['h'].unsqueeze(1), w).squeeze()
-                msg = msg * edges.data['norm']
+                h = edges.src['h'].unsqueeze(1)
+                msg = torch.bmm(h, w).squeeze()
+                msg *= edges.src['norm'].unsqueeze(1)
+
                 return {'msg': msg}
 
         def apply_func(nodes):
@@ -84,6 +92,7 @@ class GoalRGCN(nn.Module):
     def __init__(self, input_dim, h_dim, out_dim, num_rels,
                  num_bases=-1, num_hidden_layers=1):
         super(GoalRGCN, self).__init__()
+        self.input_dim = input_dim
         self.h_dim = h_dim
         self.out_dim = out_dim
         self.num_rels = num_rels
@@ -92,9 +101,6 @@ class GoalRGCN(nn.Module):
 
         # create rgcn layers
         self.build_model()
-
-        # create initial features
-        self.features = self.create_features()
 
     def build_model(self):
         self.layers = nn.ModuleList()
@@ -109,6 +115,9 @@ class GoalRGCN(nn.Module):
         h2o = self.build_output_layer()
         self.layers.append(h2o)
 
+        # softmax output
+        self.tactic_softmax = nn.Softmax()
+
     def build_input_layer(self):
         return GoalRGCNLayer(self.input_dim, self.h_dim, self.num_rels, self.num_bases,
                              activation=F.relu, is_input_layer=True)
@@ -121,9 +130,18 @@ class GoalRGCN(nn.Module):
         return GoalRGCNLayer(self.h_dim, self.out_dim, self.num_rels, self.num_bases,
                              activation=partial(F.softmax, dim=1))
 
-    def forward(self, g, num_nodes):
-        if self.features is not None:
-            g.ndata['id'] = torch.arange(num_nodes)
+    def forward(self, g):
+        print(g.ndata["op_class_one_hot"][0])
+        print("")
         for layer in self.layers:
+
             layer(g)
-        return g.ndata.pop('h')
+            print(g.ndata["h"][0])
+            print("")
+
+        hidden_outs = g.ndata.pop('h')
+        final_out = self.tactic_softmax(hidden_outs[0])  # use hidden out of root node
+        print(final_out)
+        print("")
+
+        return final_out
