@@ -66,6 +66,7 @@ class GoalRGCNLayer(nn.Module):
                 msg = torch.bmm(val, weight_0).squeeze()
                 msg *= edges.src['norm'].unsqueeze(1)
 
+                print(msg)
                 return {'msg': msg}
         else:
             def message_func(edges):
@@ -75,10 +76,12 @@ class GoalRGCNLayer(nn.Module):
                 msg = torch.bmm(h, w).squeeze()
                 msg *= edges.src['norm'].unsqueeze(1)
 
+                print(msg)
                 return {'msg': msg}
 
         def apply_func(nodes):
             h = nodes.data['h']
+            print("h: {}".format(h))
             if self.bias:
                 h = h + self.bias
             if self.activation:
@@ -116,7 +119,7 @@ class GoalRGCN(nn.Module):
         self.layers.append(h2o)
 
         # softmax output
-        self.tactic_softmax = nn.Softmax()
+        self.tactic_softmax = nn.Softmax(dim=0)
 
     def build_input_layer(self):
         return GoalRGCNLayer(self.input_dim, self.h_dim, self.num_rels, self.num_bases,
@@ -131,17 +134,10 @@ class GoalRGCN(nn.Module):
                              activation=partial(F.softmax, dim=1))
 
     def forward(self, g):
-        print(g.ndata["op_class_one_hot"][0])
-        print("")
         for layer in self.layers:
-
             layer(g)
-            print(g.ndata["h"][0])
-            print("")
 
         hidden_outs = g.ndata.pop('h')
         final_out = self.tactic_softmax(hidden_outs[0])  # use hidden out of root node
-        print(final_out)
-        print("")
 
         return final_out

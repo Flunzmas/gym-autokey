@@ -62,7 +62,10 @@ class GraphObsExtractor(fe.ObsExtractor):
         op_class_one_hot = torch.from_numpy(np.eye(len(op_class_to_idx.keys()), dtype=np.float32)[op_class_id])
         op_class_one_hots.append(torch.unsqueeze(op_class_one_hot, 0))
 
-        child_count = 1  # also counting the current node itself
+        # also counting the current node itself and creating an edge to itself
+        child_count = 1
+        u.append(cur_node.id)
+        v.append(cur_node.id)
 
         for child in cur_node.children:
             child_count += 1
