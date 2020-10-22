@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
+from torch.distributions.categorical import Categorical
 import torch.nn.functional as F
-from dgl import DGLGraph
 import dgl.function as fn
 from functools import partial
 
@@ -9,12 +9,9 @@ from functools import partial
 Taken from https://docs.dgl.ai/en/latest/tutorials/models/1_gnn/4_rgcn.html
 """
 
-weight_init_gain = 10  # tunable hyperparameter?
-
-
 class GoalRGCNLayer(nn.Module):
     def __init__(self, in_feat, out_feat, num_rels, num_bases=-1, bias=None,
-                 activation=None, is_input_layer=False):
+                 activation=None, is_input_layer=False, w_gain=10):
         super(GoalRGCNLayer, self).__init__()
         self.in_feat = in_feat
         self.out_feat = out_feat
@@ -23,6 +20,7 @@ class GoalRGCNLayer(nn.Module):
         self.bias = bias
         self.activation = activation
         self.is_input_layer = is_input_layer
+        self.w_gain = w_gain
 
         # sanity check
         if self.num_bases <= 0 or self.num_bases > self.num_rels:
@@ -40,11 +38,11 @@ class GoalRGCNLayer(nn.Module):
             self.bias = nn.Parameter(torch.Tensor(out_feat))
 
         # init trainable parameters
-        nn.init.xavier_uniform_(self.weight, gain=weight_init_gain)
+        nn.init.xavier_uniform_(self.weight, gain=self.w_gain)
         if self.num_bases < self.num_rels:
-            nn.init.xavier_uniform_(self.w_comp, gain=weight_init_gain)
+            nn.init.xavier_uniform_(self.w_comp, gain=self.w_gain)
         if self.bias:
-            nn.init.xavier_uniform_(self.bias, gain=weight_init_gain)
+            nn.init.xavier_uniform_(self.bias, gain=self.w_gain)
 
     def forward(self, g):
         if self.num_bases < self.num_rels:
@@ -88,12 +86,14 @@ class GoalRGCNLayer(nn.Module):
 
 
 class GoalRGCN(nn.Module):
-    def __init__(self, input_dim, h_dim, out_dim, num_rels,
+    def __init__(self, input_dim, rgcn_h_dim, lin_h_dim, out_dim, rgcn_w_gain, num_rels,
                  num_bases=-1, num_hidden_layers=1):
         super(GoalRGCN, self).__init__()
         self.input_dim = input_dim
-        self.h_dim = h_dim
+        self.rgcn_h_dim = rgcn_h_dim
+        self.lin_h_dim = lin_h_dim
         self.out_dim = out_dim
+        self.rgcn_w_gain = rgcn_w_gain
         self.num_rels = num_rels
         self.num_bases = num_bases
         self.num_hidden_layers = num_hidden_layers
@@ -114,25 +114,43 @@ class GoalRGCN(nn.Module):
         h2o = self.build_output_layer()
         self.layers.append(h2o)
 
-        # softmax output
-        self.tactic_softmax = nn.Softmax(dim=0)
+        # build actor and critic
+        self.build_actor()
+        self.build_critic()
+
+    def build_actor(self):
+        self.actor = nn.Sequential(
+            nn.Linear(self.rgcn_h_dim, self.lin_h_dim),
+            nn.ReLU(),
+            nn.Linear(self.lin_h_dim, self.out_dim)
+        )
+
+    def build_critic(self):
+        self.critic = nn.Sequential(
+            nn.Linear(self.rgcn_h_dim, self.lin_h_dim),
+            nn.ReLU(),
+            nn.Linear(self.lin_h_dim, 1)
+        )
 
     def build_input_layer(self):
-        return GoalRGCNLayer(self.input_dim, self.h_dim, self.num_rels, self.num_bases,
-                             activation=F.relu, is_input_layer=True)
+        return GoalRGCNLayer(self.input_dim, self.rgcn_h_dim, self.num_rels, self.num_bases,
+                             activation=F.relu, is_input_layer=True, w_gain=self.rgcn_w_gain)
 
     def build_hidden_layer(self):
-        return GoalRGCNLayer(self.h_dim, self.h_dim, self.num_rels, self.num_bases,
-                             activation=F.relu)
+        return GoalRGCNLayer(self.rgcn_h_dim, self.rgcn_h_dim, self.num_rels, self.num_bases,
+                             activation=F.relu, w_gain=self.rgcn_w_gain)
 
     def build_output_layer(self):
-        return GoalRGCNLayer(self.h_dim, self.out_dim, self.num_rels, self.num_bases,
-                             activation=partial(F.softmax, dim=1))
+        return GoalRGCNLayer(self.rgcn_h_dim, self.out_dim, self.num_rels, self.num_bases,
+                             activation=partial(F.softmax, dim=1), w_gain=self.rgcn_w_gain)
 
     def forward(self, g):
         for layer in self.layers:
             layer(g)
 
         hidden_outs = g.ndata.pop('h')
-        final_out = self.tactic_softmax(hidden_outs[0])  # use hidden out of root node
-        return final_out
+        root_node_features = hidden_outs[0]
+        probs = self.actor(root_node_features)
+        dist = Categorical(probs)
+        value = self.critic(root_node_features)
+        return dist, value

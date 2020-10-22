@@ -51,6 +51,7 @@ class AutokeyEnv(gym.Env):
         self.topgoal_done = False  # returned on episode_exit and set to False if PO is still running
         self.topgoal_rew = 0  # returned on episode_exit and set to 0 if PO is still running
         self.last_action = "---"
+        self.po_percent = None
         self.po_percent_logfile = (
                 cf.LOG_PATH / ("po_percentage_" + time.strftime("%d%m%Y-%H%M%S") + ".txt")).as_posix()
 
@@ -325,6 +326,10 @@ class AutokeyEnv(gym.Env):
         # pop new subepisode, regardless of whether new po or not
         # if self.cur_subepis is not None: print("killing_subep_prePop: {}".format(self.cur_subepis.cur_goal.id))
         self.cur_subepis = self.open_subepisodes.pop()
+
+        if len(self.po_success_history) > 0:
+            self.po_percent = round(100 * sum(self.po_success_history) / len(self.po_success_history), 1)
+
         return self._observe()
 
     def _sample_file(self):
@@ -367,8 +372,7 @@ class AutokeyEnv(gym.Env):
                 po_done_str = "T, -"
             elif self.topgoal_rew > 0:
                 po_done_str = "T, +"
-        po_percent = str(round(100 * sum(self.po_success_history) / len(self.po_success_history), 1)).rjust(5) \
-            if len(self.po_success_history) > 0 else "-----"
+        po_p_str = str(self.po_percent).rjust(5) if self.po_percent is not None else "-----"
 
         return "{ac} \u2588 step: {n_env} ENV, {n_po} PO \u2588"\
             " \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
@@ -377,7 +381,7 @@ class AutokeyEnv(gym.Env):
                 ac=self.last_action.rjust(34), n_env=str(self.env_steps).rjust(6),
                 n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count, suc_po=self.successful_po_count,
                 tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count,
-                suc_se=self.successful_subep_count, po_p=po_percent, po_dn=po_done_str.rjust(4))
+                suc_se=self.successful_subep_count, po_p=po_p_str, po_dn=po_done_str.rjust(4))
 
     def render(self, mode='human'):
         """
