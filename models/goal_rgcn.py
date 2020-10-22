@@ -110,9 +110,8 @@ class GoalRGCN(nn.Module):
         for _ in range(self.num_hidden_layers):
             h2h = self.build_hidden_layer()
             self.layers.append(h2h)
-        # hidden to output
-        h2o = self.build_output_layer()
-        self.layers.append(h2o)
+
+        # no hidden to output layer
 
         # build actor and critic
         self.build_actor()
@@ -122,7 +121,8 @@ class GoalRGCN(nn.Module):
         self.actor = nn.Sequential(
             nn.Linear(self.rgcn_h_dim, self.lin_h_dim),
             nn.ReLU(),
-            nn.Linear(self.lin_h_dim, self.out_dim)
+            nn.Linear(self.lin_h_dim, self.out_dim),
+            nn.Softmax(dim=0)
         )
 
     def build_critic(self):
@@ -150,7 +150,8 @@ class GoalRGCN(nn.Module):
 
         hidden_outs = g.ndata.pop('h')
         root_node_features = hidden_outs[0]
+
         probs = self.actor(root_node_features)
-        dist = Categorical(probs)
         value = self.critic(root_node_features)
+        dist = Categorical(probs)
         return dist, value

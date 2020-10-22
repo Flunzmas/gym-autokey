@@ -23,8 +23,8 @@ ppo_clip            = 0.2
 critic_discount     = 0.5
 entropy_beta        = 0.001
 
-ppo_steps           = 3200
-mini_match_size     = 800
+ppo_steps           = 200
+mini_batch_size     = 50
 ppo_epochs          = 10
 
 min_po_attempts     = 1000
@@ -50,12 +50,15 @@ def normalize(x):
 
 
 def ppo_iter(states, actions, log_probs, returns, advantage):
-    batch_size = states.size(0)
+    batch_size = len(states)
     # generates random mini-batches until we have covered the full batch
-    for _ in range(batch_size // mini_match_size):
-        rand_ids = np.random.randint(0, batch_size, mini_match_size)
-        yield states[rand_ids, :], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[
+    for _ in range(batch_size // mini_batch_size):
+        rand_ids = np.random.randint(0, batch_size, mini_batch_size)
+        print(rand_ids)
+        yield states[rand_ids], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[
                                                                                                        rand_ids, :]
+
+        # TODO random-pick from states with provided rand_ids (does not work since no tensor anymore)
 
 
 def ppo_update(model, optimizer, frame_idx, states, actions, log_probs, returns, advantages, clip_param=ppo_clip):
@@ -116,7 +119,6 @@ def train():
 
         for i in range(ppo_steps):
 
-            state = torch.FloatTensor(state)
             dist, value = model(state)
             action = dist.sample()
             next_state, reward, done, _ = env.step(action)
@@ -125,22 +127,20 @@ def train():
 
             log_probs.append(log_prob)
             values.append(value)
-            rewards.append(torch.FloatTensor(reward).unsqueeze(1))
-            masks.append(torch.FloatTensor(1 - done).unsqueeze(1))
+            rewards.append(torch.tensor(reward).unsqueeze(0))
+            masks.append(torch.tensor(1 - done).unsqueeze(0))
             states.append(state)
             actions.append(action)
 
             state = next_state
             frame_idx += 1
 
-        next_state = torch.FloatTensor(next_state)
         _, next_value = model(next_state)
         returns = compute_gae(next_value, rewards, masks, values)
 
         returns = torch.FloatTensor(returns).detach()
         log_probs = torch.FloatTensor(log_probs).detach()
         values = torch.FloatTensor(values).detach()
-        states = torch.FloatTensor(states)
         actions = torch.FloatTensor(actions)
         advantage = returns - values
         advantage = normalize(advantage)

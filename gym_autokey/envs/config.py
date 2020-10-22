@@ -12,7 +12,7 @@ MODELS_PATH = PROJ_ROOT / "models"
 
 PO_PATH = DATA_PATH / 'po_files'
 ALL_PO_FILES = PO_PATH / 'po_all.txt'
-TRAIN_PO_FILES = PO_PATH / 'po_all.txt'
+TRAIN_PO_FILES = PO_PATH / 'po_AQA.txt'
 TEST_PO_FILES = PO_PATH / 'po_all.txt'
 FEATURE_NAMES_FILE = DATA_PATH / 'feature_names.txt'
 
