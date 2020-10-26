@@ -99,6 +99,10 @@ The _TacticSelector_ defined in `scripts/tactic_selector.py` provides a class wr
 
 3. Evaluate your model, optionally pitting it against KeY's built-in auto mode, by executing `scripts/evaluate.py <po_file>`. Replace `<po_file>` with the name of any of the PO files (see `data/po_files/name_explanation.md` for an explanation of what the different po files offer), including the ones you created earlier by splitting the available data into a training and a test set. A performance overview is printed to the terminal.
 
+## PPO-GoalRGCN
+
+I am currently implementing a PPO agent that uses a relational GCN (see [the DGL library](https://docs.dgl.ai/index.html)). See `agents/goal_rgcn_agent.py` for the WIP code.
+
 # Attribution
 
 Here's a bibtex snippet if the repo is valuable enough to be cited.
