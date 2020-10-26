@@ -1,4 +1,5 @@
 import numpy as np
+from operator import itemgetter
 
 import torch
 import torch.optim as optim
@@ -15,7 +16,6 @@ rgcn_w_gain         = 10
 rgcn_h_dim          = 120
 lin_h_dim           = 240
 
-num_envs            = 1 # KeY can be opened only once per PC
 learning_rate       = 1e-4
 gamma               = 0.99
 gae_lambda          = 0.95
@@ -23,8 +23,8 @@ ppo_clip            = 0.2
 critic_discount     = 0.5
 entropy_beta        = 0.001
 
-ppo_steps           = 200
-mini_batch_size     = 50
+ppo_steps           = 3232
+mini_batch_size     = 202
 ppo_epochs          = 10
 
 min_po_attempts     = 1000
@@ -54,35 +54,38 @@ def ppo_iter(states, actions, log_probs, returns, advantage):
     # generates random mini-batches until we have covered the full batch
     for _ in range(batch_size // mini_batch_size):
         rand_ids = np.random.randint(0, batch_size, mini_batch_size)
-        print(rand_ids)
-        yield states[rand_ids], actions[rand_ids, :], log_probs[rand_ids, :], returns[rand_ids, :], advantage[
-                                                                                                       rand_ids, :]
-
-        # TODO random-pick from states with provided rand_ids (does not work since no tensor anymore)
-
+        picked_actions = actions[rand_ids]
+        picked_log_probs = log_probs[rand_ids]
+        picked_returns = returns[rand_ids]
+        picked_advantage = advantage[rand_ids]
+        yield list(itemgetter(*rand_ids)(states)), picked_actions , picked_log_probs, picked_returns, picked_advantage
 
 def ppo_update(model, optimizer, frame_idx, states, actions, log_probs, returns, advantages, clip_param=ppo_clip):
 
     # PPO EPOCHS is the number of times we will go through ALL the training data to make updates
     for _ in range(ppo_epochs):
         # grabs random mini-batches several times until we have covered all data
-        for state, action, old_log_probs, return_, advantage in ppo_iter(states, actions, log_probs, returns,
-                                                                         advantages):
-            dist, value = model(state)
-            entropy = dist.entropy().mean()
-            new_log_probs = dist.log_prob(action)
+        for s_mb, a_mb, olp_mb, rt_mb, av_mb in ppo_iter(states, actions, log_probs, returns, advantages):
 
-            ratio = (new_log_probs - old_log_probs).exp()
-            surr1 = ratio * advantage
-            surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+            losses = []
+            for state, action, old_log_probs, return_, advantage in zip(s_mb, a_mb, olp_mb, rt_mb, av_mb):
 
-            actor_loss = - torch.min(surr1, surr2).mean()
-            critic_loss = (return_ - value).pow(2).mean()
+                dist, value = model(state)
+                entropy = dist.entropy().mean()
+                new_log_probs = dist.log_prob(action)
 
-            loss = critic_discount * critic_loss + actor_loss - entropy_beta * entropy
+                ratio = (new_log_probs - old_log_probs).exp()
+                surr1 = ratio * advantage
+                surr2 = torch.clamp(ratio, 1.0 - clip_param, 1.0 + clip_param) * advantage
+
+                actor_loss = - torch.min(surr1, surr2).mean()
+                critic_loss = (return_ - value).pow(2).mean()
+
+                loss = critic_discount * critic_loss + actor_loss - entropy_beta * entropy
+                losses.append(loss)
 
             optimizer.zero_grad()
-            loss.backward()
+            torch.stack(losses).mean().backward()
             optimizer.step()
 
 def train():

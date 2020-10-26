@@ -32,6 +32,7 @@ class AutokeyEnv(gym.Env):
         """
         print("NO_SMT: {}".format(str(cf.NO_SMT)))
         print("FEATURE_MODE: {}".format(cf.FEATURE_MODE))
+        print("TRAIN_PO_FILES: {}".format(cf.TRAIN_PO_FILES))
 
         self.connector = KeYConnector()
         self.extractor = create_feature_extractor()
