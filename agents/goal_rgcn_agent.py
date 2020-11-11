@@ -13,8 +13,8 @@ from models.goal_rgcn import GoalRGCN
 # -- tunable hyperparams (non-tunables are initialized in train()) -------------
 
 rgcn_w_gain         = 10
-rgcn_h_dim          = 120
-lin_h_dim           = 240
+rgcn_h_dim          = 60
+lin_h_dim           = 120
 
 learning_rate       = 1e-4
 gamma               = 0.99
@@ -111,7 +111,9 @@ def train():
 
     # ------ TRAINING LOOP ------
 
-    while not can_stop_training(env):
+    can_stop_training = False
+
+    while not can_stop_training:
 
         log_probs = []
         values = []
@@ -125,7 +127,7 @@ def train():
             dist, value = model(state)
             action = dist.sample()
             next_state, reward, done, _ = env.step(action)
-            env.render()
+            # env.render()
             log_prob = dist.log_prob(action)
 
             log_probs.append(log_prob)
@@ -148,15 +150,18 @@ def train():
         advantage = returns - values
         advantage = normalize(advantage)
 
+        env.render()
         ppo_update(model, optimizer, frame_idx, states, actions, log_probs, returns, advantage)
         train_epoch += 1
+        can_stop_training = check_stop_cond(env)
 
     # ------ cleanup ------
 
     env.close()
 
 
-def can_stop_training(env):
+def check_stop_cond(env):
+    print("CAN_STOP: {0} | {1}".format(len(env.po_success_history), env.po_percent))
     return len(env.po_success_history) > min_po_attempts and env.po_percent > target_po_ratio
 
 
