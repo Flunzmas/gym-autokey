@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from operator import itemgetter
 
@@ -29,6 +31,7 @@ ppo_epochs          = 10
 
 min_po_attempts     = 1000
 target_po_ratio     = 0.95
+render_each_step    = False
 
 # ------------------------------------------------------------------------------
 
@@ -107,14 +110,13 @@ def train():
     # ------ vars etc. ------
 
     frame_idx = 0
-    train_epoch = 0
+    iteration = 0
 
     # ------ TRAINING LOOP ------
 
-    can_stop_training = False
+    while True:
 
-    while not can_stop_training:
-
+        iter_start = time.time()
         log_probs = []
         values = []
         states = []
@@ -127,7 +129,8 @@ def train():
             dist, value = model(state)
             action = dist.sample()
             next_state, reward, done, _ = env.step(action)
-            # env.render()
+            if render_each_step:
+                env.render()
             log_prob = dist.log_prob(action)
 
             log_probs.append(log_prob)
@@ -150,18 +153,24 @@ def train():
         advantage = returns - values
         advantage = normalize(advantage)
 
-        env.render()
         ppo_update(model, optimizer, frame_idx, states, actions, log_probs, returns, advantage)
-        train_epoch += 1
-        can_stop_training = check_stop_cond(env)
+
+        iter_stop = time.time()
+        print("\nPPO iteration {0} done in {1} secs. Env stats:".format(iteration, round(iter_stop - iter_start, 2)))
+        env.render(mode='cli_basic')
+
+        if can_stop_training(env):
+            print("Training stop condition met, finishing training.")
+            break
+        else:
+            iteration += 1
 
     # ------ cleanup ------
 
     env.close()
 
 
-def check_stop_cond(env):
-    print("CAN_STOP: {0} | {1}".format(len(env.po_success_history), env.po_percent))
+def can_stop_training(env):
     return len(env.po_success_history) > min_po_attempts and env.po_percent > target_po_ratio
 
 

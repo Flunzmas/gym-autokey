@@ -23,7 +23,7 @@ class AutokeyEnv(gym.Env):
     the amount of closed goals and POs.
     """
 
-    metadata = {'render.modes': ['human']}
+    metadata = {'render.modes': ['cli_full', 'cli_basic']}
 
     def __init__(self, self_render: bool = True):
         """
@@ -88,7 +88,7 @@ class AutokeyEnv(gym.Env):
         if self.connector:
             self.connector.quit_key()
 
-# -------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
     def step(self, action):
         """
@@ -97,13 +97,9 @@ class AutokeyEnv(gym.Env):
         proving process.
         """
 
-        # time.sleep(0.3)
-        if self.env_steps == 3:
-            print(self._observe())
-
         # render the past step at the beginning if self_render
         if self.self_render:
-            self.render() 
+            self.render()
         if self.env_steps % 1000 == 0 and len(self.po_success_history) > 0:
             with open(self.po_percent_logfile, 'a') as po_p_file:
                 po_p_file.write(str(round(100 * sum(self.po_success_history) / len(self.po_success_history), 1)) + "\n")
@@ -131,7 +127,7 @@ class AutokeyEnv(gym.Env):
 
         # tactic preparation
         cur_tactic = self.connector.available_tactics[action]
-        cur_tactic_app_str = ' {0}'.format(cf.TACTIC_ABBR[cur_tactic])\
+        cur_tactic_app_str = ' {0}'.format(cf.TACTIC_ABBR[cur_tactic]) \
                              + ' (#{0})'.format(self.cur_subepis.cur_goal.id).rjust(9)
         self.tactic_history.append(cur_tactic_app_str)
 
@@ -157,7 +153,7 @@ class AutokeyEnv(gym.Env):
                 self.last_action = "crash (an id is -1):" + cur_tactic_app_str
                 return self._episode_exit("crash")
             new_goals.append(new_goal_node)
-                 
+
         # Multiple new goals -> subepisode becomes parent and env continues with a subepisode
         if len(new_goals) > 1:
             child_episodes = [
@@ -180,7 +176,7 @@ class AutokeyEnv(gym.Env):
         self.last_action = "open:" + cur_tactic_app_str
         return self._observe(), 0, False, {}  # return obs, rew, done, infos
 
-# -------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
     def _episode_exit(self, status):
         """
@@ -196,7 +192,7 @@ class AutokeyEnv(gym.Env):
         self.finalize_subepisode()
         if status == "fail" or status == 'crash':
             self.po_closable = False  # current po cannot be closed anymore.
-            
+
             # end whole root episode on crash or if pre_kill is set to True.
             if status == 'crash' or self.pre_kill:
                 while self.open_subepisodes:  # status is 'open' for children, 'parent' for parents
@@ -252,7 +248,7 @@ class AutokeyEnv(gym.Env):
             if self.cur_subepis.status == "success":
                 self.successful_topgoal_count += 1
 
-# -------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
     def _observe(self):
         """
@@ -262,7 +258,7 @@ class AutokeyEnv(gym.Env):
         # self.obs_space.render(obs)
         return obs
 
-# -------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
     def reset(self, exit_status="none"):
         """
@@ -270,7 +266,7 @@ class AutokeyEnv(gym.Env):
         If there are still open subepisodes: takes the next subepisode.
         Otherwise returns initial observation of ast and features of a random PO.
         """
-        
+
         # print("reset():: {}".format(exit_status))
         # self.print_open_goals("reset")
 
@@ -290,7 +286,7 @@ class AutokeyEnv(gym.Env):
             if self.env_steps > 0:
 
                 self.total_po_count += 1
-                
+
                 # all goals went through nicely -> po successful
                 if self.po_closable:
                     # assert that KeY doesn't have open goals left either
@@ -355,15 +351,15 @@ class AutokeyEnv(gym.Env):
         # print('sample_file()::new goals: {0}'.format(sorted([se.cur_goal.id for se in goal_subepisodes])))
         self.open_subepisodes.extend(goal_subepisodes)
 
-# -------------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
 
     def episode_to_line(self):
         """
         Returns a compactified information string for the current episode.
         """
         return "EP.: {epis_steps} steps".format(epis_steps=str(self.po_steps).rjust(5))
-        
-    def env_to_line(self):  
+
+    def env_to_line(self):
         """
         Returns a compactified information string for the environment.
         """
@@ -375,25 +371,34 @@ class AutokeyEnv(gym.Env):
                 po_done_str = "T, +"
         po_p_str = str(self.po_percent).rjust(5) if self.po_percent is not None else "-----"
 
-        return "{ac} \u2588 step: {n_env} ENV, {n_po} PO \u2588"\
-            " \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"\
-            " \u2588 PO%: {po_p} \u2588 TG_done: {po_dn}"\
+        return "{ac} \u2588 step: {n_env} ENV, {n_po} PO \u2588" \
+               " PO%: {po_p} \u2588 TG_done: {po_dn}" \
+               " \u2588 \u2713: {suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep" \
             .format(
-                ac=self.last_action.rjust(34), n_env=str(self.env_steps).rjust(6),
-                n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count, suc_po=self.successful_po_count,
-                tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count,
-                suc_se=self.successful_subep_count, po_p=po_p_str, po_dn=po_done_str.rjust(4))
+            ac=self.last_action.rjust(34), n_env=str(self.env_steps).rjust(6),
+            n_po=str(self.po_steps).rjust(4), tot_po=self.total_po_count, suc_po=self.successful_po_count,
+            tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count, tot_se=self.total_subep_count,
+            suc_se=self.successful_subep_count, po_p=po_p_str, po_dn=po_done_str.rjust(4))
 
-    def render(self, mode='human'):
+    def render(self, mode='cli_full'):
         """
         Prints output to trace the learning process.
         """
-        open_goals_print = [se.cur_goal.id for se in self.open_subepisodes]
-        if len(open_goals_print) > 3:
-            open_goals_print = '[..., ' + str(open_goals_print[-3:])[1:]
-        print(
-            self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'
-            .format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
+        if mode == 'cli_full':
+            open_goals_print = [se.cur_goal.id for se in self.open_subepisodes]
+            if len(open_goals_print) > 3:
+                open_goals_print = '[..., ' + str(open_goals_print[-3:])[1:]
+            print(
+                self.env_to_line() + '  \u2588  now open: {1} | active: #{0}]'
+                .format(self.cur_subepis.cur_goal.id, str(open_goals_print)[:-1]))
+        elif mode == 'cli_basic':
+            print("env steps: {st} \u2588 PO%: {po_p} \u2588 \u2713: " \
+                  "{suc_po}/{tot_po} PO | {suc_tg}/{tot_tg} TG | {suc_se}/{tot_se} subep"
+                  .format(st=str(self.env_steps).rjust(8), tot_po=self.total_po_count, suc_po=self.successful_po_count,
+                          tot_tg=self.total_topgoal_count, suc_tg=self.successful_topgoal_count,
+                          tot_se=self.total_subep_count,
+                          suc_se=self.successful_subep_count,
+                          po_p=str(self.po_percent).rjust(5) if self.po_percent is not None else "-----"))
 
     def print_open_goals(self, origin_func: str):
         """
