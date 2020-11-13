@@ -101,7 +101,8 @@ The _TacticSelector_ defined in `scripts/tactic_selector.py` provides a class wr
 
 ## PPO-GoalRGCN
 
-I am currently implementing a PPO agent that uses a relational GCN (see [the DGL library](https://docs.dgl.ai/index.html)). See `agents/goal_rgcn_agent.py` for the WIP code.
+I have implemented a PPO agent that uses a relational GCN (see [the DGL library](https://docs.dgl.ai/index.html)). See `agents/goal_rgcn_agent.py` for the code.
+It is able to train on simple training sets, although it needs **a lot** of RAM (>= 16GB for small Graphs). Future work might tackle this issue or test the performance on bigger machines than the ones I have access to.
 
 # Attribution
 
