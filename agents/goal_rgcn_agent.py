@@ -26,8 +26,8 @@ ppo_clip            = 0.2
 critic_discount     = 0.5
 entropy_beta        = 0.001
 
-ppo_steps           = 808
-mini_batch_size     = 101
+ppo_steps           = 3232
+mini_batch_size     = 202
 ppo_epochs          = 10
 
 min_po_attempts     = 1000
